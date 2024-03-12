@@ -19,7 +19,7 @@ Set Implicit Arguments.
 
 (* nat indexed sequences implemented as maps *)
 
-Local Definition cons {X} (a : X) x n :=
+#[local] Definition cons {X} (a : X) x n :=
   match n with
   |   0 => a 
   | S n => x n
