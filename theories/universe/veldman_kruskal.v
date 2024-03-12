@@ -17,18 +17,18 @@ From KruskalFinite
   Require Import finite choice.
 
 Require Import base notations tactics
-               intercal vtree_embed
+               intercal combi_principle 
+               vtree_embed
                afs_lex afs_quasi_morphism
-               combi_principle
                universe.
 
-Import 
-       idx_notations vec_notations vtree_notations vtree_embeddings_notations
+Import idx_notations vec_notations
+       vtree_notations vtree_embeddings_notations
        af_notations afs_lex_notations.
 
 Set Implicit Arguments.
 
-Section kruskal_afs_nodes_ge.
+Section veldman_afs_nodes_ge.
 
   Variables (A : Type).
 
@@ -198,8 +198,10 @@ Section kruskal_afs_nodes_ge.
 
   Section kruskal_lift_cases.
 
-    (* case1: j < i     case2: j = i
-       case3: j > i (◩) case4: j > i (▣) *)
+    (* case 1 : j < i
+       case 2 : j = i
+       case 3 : j > i (◩) 
+       case 4 : j > i (▣) *)
 
     Inductive kruskal_lift_case : af_choice → nat → Type :=
       | kruskal_lift_case_1 c j : j < i → kruskal_lift_case c j
@@ -285,8 +287,15 @@ Section kruskal_afs_nodes_ge.
   Qed.
 
   (** The evaluation map that reconstructs a tree from the information
-      hidden inside nodes: the process of extracting substrees and hidding
-      then in nodes of X' i is the reverse map *)
+      hidden inside nodes: the process of extracting sub-trees and hidding
+      then in nodes of X' i is the reverse map 
+
+      Here we consider analysis/evaluation adapted to the case of the homeomorphic
+      embedding because the arity (1+i) of ⟨α|γ⟩ is greater than k, so the
+      analysis proceeds using intercalation of vector of lists of sub-trees. 
+
+      We call this analysis/evaluation relation kev_graph where the initial "k" 
+      reminds the reference to the proof of Kruskal's theorem in Wim Veldman's paper. *)
 
   Reserved Notation "x '-[' c ']->' y" (at level 70, no associativity, format "x  -[ c ]->  y").
   Reserved Notation "x '=[' c ']=>' y" (at level 70, no associativity, format "x  =[ c ]=>  y").
@@ -315,7 +324,7 @@ Section kruskal_afs_nodes_ge.
 
   Inductive kev_graph : af_choice → Utree → Utree → Prop :=
 
-    | kev_graph_eq_i1 c x (v' : vec _ i) v :      (** This case could be covered by kev_graph_eq_i2 for j = i and m = [∅;∅;...;∅] *)
+    | kev_graph_eq_i1 c x (v' : vec _ i) v :      (** This case could also be covered by kev_graph_eq_i2 for j = i and m = [∅;∅;...;∅] *)
 
             X i x → v' =[c]=> v → ⟨⦉x⦊₁|v'⟩ -[c]-> ⟨x|v⟩
 
@@ -337,7 +346,7 @@ Section kruskal_afs_nodes_ge.
 
   Hint Constructors kev_graph : core.
 
-  (* The domain of ev_graph is adequate, ie it is defined exactly on
+  (* The domain of kev_graph is adequate, ie it is defined exactly on
      well formed trees *)
 
   Local Fact kev_dom c t' t : t' -[c]-> t → wft (X' c) t'.
@@ -548,9 +557,9 @@ Section kruskal_afs_nodes_ge.
     | disapointing_eq x (v : vec _ i) (w : vec _ (S i)) p q : γ⦃p⦄ ≤[k,R] (lvec_vec w⦃p⦄)⦃q⦄ → disapointing ⟨⦉x,w⦊₂|v⟩
     .
 
-  Notation D' := disapointing.
-
   Set Elimination Schemes.
+
+  Notation D' := disapointing.
 
   Hint Constructors sub_dtree disapointing : core.
 
@@ -749,9 +758,6 @@ Section kruskal_afs_nodes_ge.
           in H4; eauto.
     Qed.
 
-    (* Below looks very much like the characterization of vec_embed
-             vintercal_any_vec_embed *)
-
     Local Lemma E_embed c (Hc : s k = Some c) t :
           wft X t → E c t → ⟨α|γ⟩ ≤[k,R] t.
     Proof.
@@ -850,10 +856,10 @@ Section kruskal_afs_nodes_ge.
                kev_quasi_morphism
                exceptional_embed : core.
 
-  Theorem kruskal_afs_nodes_ge : afs (wft X) (vtree_upto_embed k R)↑⟨α|γ⟩.
+  Theorem veldman_afs_nodes_ge : afs (wft X) (vtree_upto_embed k R)↑⟨α|γ⟩.
   Proof.
     generalize upto'_afs.
     afs quasi morph (kev_graph c₀) E'; eauto.
   Qed.
 
-End kruskal_afs_nodes_ge.
+End veldman_afs_nodes_ge.

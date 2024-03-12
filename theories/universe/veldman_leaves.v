@@ -16,7 +16,7 @@ From KruskalTrees
 From KruskalFinite
   Require Import finite choice.
 
-Require Import base notations tactics vtree_embed.
+Require Import base notations vtree_embed.
 
 Import vec_notations vtree_notations af_notations.
 
@@ -57,11 +57,11 @@ Section kruskal_afs_leaves_lift.
   (* If either k or n is zero then (R 0)↑α else R n *)
   Let R' n :=
     match n with
-      | 0 => (R 0)↑α
-      | _ =>
+    | 0 => (R 0)↑α
+    | _ =>
       match k with
-        | 0 => (R 0)↑α
-        | _ => R n
+      | 0 => (R 0)↑α
+      | _ => R n
       end
     end.
 
@@ -81,7 +81,7 @@ Section kruskal_afs_leaves_lift.
       * destruct H1; [ left | right ]; constructor; auto with vec_db.
       * apply finite_choice in IH2 as [ IH2 | (p & Hp) ]; fin auto.
         - left; constructor 2; auto.
-          simpl in H1; destruct k; auto; tlia.
+          simpl in H1; destruct k; auto; lia.
         - right; eauto with vtree_db.
     + destruct i as [ | i ].
       * vec invert v.
