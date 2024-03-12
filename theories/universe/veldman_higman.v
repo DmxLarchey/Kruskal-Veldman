@@ -17,12 +17,13 @@ From KruskalFinite
   Require Import finite choice.
 
 Require Import base notations tactics
-               insert dtree_embed vtree_embed
+               insert combi_principle
+               vtree_embed
                afs_lex afs_quasi_morphism
-               combi_principle
                universe.
 
-Import idx_notations vec_notations vtree_notations vtree_embeddings_notations
+Import idx_notations vec_notations
+       vtree_notations vtree_embeddings_notations
        af_notations afs_lex_notations.
 
 #[local] Reserved Notation "v '⊲' p ']' x '⇝' w" (at level 70, x at level 200, no associativity, format "v ⊲ p ] x  ⇝  w").
@@ -30,7 +31,7 @@ Import idx_notations vec_notations vtree_notations vtree_embeddings_notations
 
 Set Implicit Arguments.
 
-Section kruskal_afs_nodes_lt.
+Section veldman_afs_nodes_lt.
 
   Variables (A : Type).
 
@@ -44,11 +45,10 @@ Section kruskal_afs_nodes_lt.
              (s : nat → af_status)
              (X : nat → rel₁ U)
              (R : nat → rel₂ U)
-             (HXk : ∀n, k <= n → X n = X k)
-             (HRk : ∀n, k <= n → R n = R k)
+             (HXk : ∀n, k ≤ n → X n = X k)
+             (HRk : ∀n, k ≤ n → R n = R k)
              (HXR : ⟪s,X,R⟫ₛ)
-             (IHXR : ∀ s' X' R',
-                                 ⟪s',X',R'⟫ₛ
+             (IHXR : ∀ s' X' R', ⟪s',X',R'⟫ₛ
                                → s' k = s k
                                → ⟪s',X',R'⟫ ≺k]ₑ ⟪s,X,R⟫
                                → afs (wft X') (vtree_upto_embed k R'))
@@ -128,10 +128,8 @@ Section kruskal_afs_nodes_lt.
       exists x, p, t; auto.
   Qed.
 
-  (** by several applications of Ramsey's theorem,
-        af_sum, af_product, af_dep_product and Higman's lemma
-
-      then transported via the magic of af_relmap  *)
+  (** by several applications of Ramsey's theorem (af_sum, af_product, af_dep_sum) 
+      then transported via the magic of af rel morph  *)
 
   Local Lemma higman_lift_i_afs : afs X'i R'i.
   Proof.
@@ -175,10 +173,10 @@ Section kruskal_afs_nodes_lt.
 
   Section higman_lift_cases.
 
-    (* case1 = j ≠ i and j ≠ S i
-       case2 = j = i
-       case4 = j = S i and c = ◩
-       case4 = j = S i and c = ▣ *)
+    (* case 1 : j ≠ i and j ≠ S i
+       case 2 : j = i
+       case 3 : j = S i and c = ◩
+       case 4 : j = S i and c = ▣ *)
 
     Inductive higman_lift_case : af_choice → nat → Type :=
       | higman_lift_case_1 c j : j ≠ i
@@ -272,8 +270,15 @@ Section kruskal_afs_nodes_lt.
   Qed.
 
   (** The evaluation map that reconstructs a tree from the information
-      hidden inside nodes: the process of extracting substrees and hidding
-      then in nodes of X' i is the reverse map *)
+      hidden inside nodes: the process of extracting sub-trees and hidding
+      then in nodes of X' i is the reverse map 
+
+      Here we consider analysis/evaluation adapted to the case of the product
+      embedding because the arity (1+i) of ⟨α|γ⟩ is smaller than k, so the
+      analysis proceeds using insertion of a single sub-tree. 
+
+      We call this analysis/evaluation relation hev_graph where the initial "h" 
+      reminds the reference to the proof of Higman's theorem in Wim Veldman's paper. *)
 
   Reserved Notation "x '-[' c ']->' y" (at level 70, no associativity, format "x  -[ c ]->  y").
   Reserved Notation "x '=[' c ']=>' y" (at level 70, no associativity, format "x  =[ c ]=>  y").
@@ -546,9 +551,9 @@ Section kruskal_afs_nodes_lt.
     | disapointing_gt x (v : vec _ (S i)) :  R (S i) α x → disapointing ⟨x|v⟩
     | disapointing_eq p x t (v : vec _ i) : γ⦃p⦄ ≤[k,R] t → disapointing ⟨⦉x,p,t⦊₂|v⟩.
 
-  Notation D' := disapointing.
-
   Set Elimination Schemes.
+
+  Notation D' := disapointing.
 
   Hint Constructors sub_dtree disapointing : core.
 
@@ -817,10 +822,10 @@ Section kruskal_afs_nodes_lt.
                hev_quasi_morph
                exceptional_embed : core.
 
-  Theorem kruskal_afs_nodes_lt : afs (wft X) (vtree_upto_embed k R)↑⟨α|γ⟩.
+  Theorem veldman_afs_nodes_lt : afs (wft X) (vtree_upto_embed k R)↑⟨α|γ⟩.
   Proof.
     generalize upto'_afs.
     afs quasi morph (hev_graph c₀) E'; eauto.
   Qed.
 
-End kruskal_afs_nodes_lt.
+End veldman_afs_nodes_lt.

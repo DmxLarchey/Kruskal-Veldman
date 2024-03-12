@@ -25,20 +25,20 @@ Section universe.
 
           A
         + U
-        + Σn, idx n*U*vtree U
-        + Σn, U*vec (Σi (vec (vtree U)) i) n
+        + Σn, U*idxₙ*vtree U
+        + Σn, U*(Σi, (vtree U)ⁱ)ⁿ
         ⊆ U
 
-      where idx n ≌ {1,...,n}
-       and  vec X n ≌ X*...*X (n times)
+      where idxₙ ≌ {1,...,n}
+       and  Xⁿ ≌ X*...*X (n times)
        and  Σn,T(n) is the dependent sum
 
       together with the embeddings
 
        - univ_init : A → U
        - univ_refl : U → U
-       - univ_nest_1 : Σn, idx n*U*vtree U → U
-       - univ_nest_2 : Σn, U*vec (Σi (vec (vtree U)) i) n → U
+       - univ_nest_1 : Σn, U*idxₙ*vtree U → U
+       - univ_nest_2 : Σn, U*(Σi, (vtree U)ⁱ)ⁿ → U
 
      We do *not* need the recursor, just the embeddings
      (which are injective with disjoint 2-by-2 images).
@@ -53,14 +53,12 @@ Section universe.
 
      We can then work with U as uniform type, as is the type
      of natural numbers (which a universe for finitary structures)
-     in Wim Veldman's proof, so we abstract this aspect of
+     in "Wim Veldman's proof", so we abstract this aspect of
      his proof here.
 
      Notice that the above embeddings (which are constructors)
      are much easier to grasp in pratice than complex encodings
-     of trees into natural numbers.
-
-    *)
+     of trees into natural numbers. *)
 
   Unset Elimination Schemes.
 
@@ -85,10 +83,10 @@ Section universe.
   Set Elimination Schemes.
 
   (* We use the following notations:
-       "⦉a⦊₀" := (@univ_init _ a) in kruskal_theorem.v
-       "⦉u⦊₁" := (@univ_refl _ u) in kruskal_univ_{lt,ge}.v
-       "⦉u,p,t⦊₂" := (@univ_nest_1 _ _ u p t) in kruskal_univ_lt.v
-       "⦉u,v⦊₂" := (@univ_nest_2 _ _ u v) in kruskal_univ_ge.v *)
+       "⦉a⦊₀" := (@univ_init _ a) in veldman_theorem.v
+       "⦉u⦊₁" := (@univ_refl _ u) in veldman_{higman,kruskal}.v
+       "⦉u,p,t⦊₂" := (@univ_nest_1 _ _ u p t) in veldman_higman.v
+       "⦉u,v⦊₂" := (@univ_nest_2 _ _ u v) in veldman_kruskal.v *)
 
   (* We need injectivity and pattern matching, but *not* induction,
      ie we only need a post-fixpoint, not a fixpoint *)

@@ -27,18 +27,25 @@ Import idx notations vec_notations dtree_notations
 
 Set Implicit Arguments.
 
-Section afs_kruskal_induction.
+Section afs_induction.
 
-  (** We get a tailored induction principle for
+  (** We implement a tailored induction principle for
       the proof of Kruskal's tree theorem (the one below
-      using a universe).
+      using a universe). This allows to circumvent
+      the need for stumps (and hence Brouwer's thesis)
+      when considering Prop-bounded af predicates.
 
-      We integrate the conditions
+      Compared to afs_seq_facile_ind, we integrate the 
+      conditions
 
-              forall n : nat, k <= n -> X n = X k
-        and   forall n : nat, k <= n -> R n = R k
+              ∀n, k ≤ n → X n = X k
+        and   ∀n, k ≤ n → R n = R k
 
-      in the induction principle *)
+      in the induction principle.
+
+      Notice that this "induction upto" technique is original
+      to the current development, and in fact nowhere to be
+      founded, as far as I (DLW) am aware of. *)
 
   Variables (U : Type).
 
@@ -47,9 +54,9 @@ Section afs_kruskal_induction.
                  (R : nat → rel₂ U).
 
   Variables (Q : _ → _ → _ → Base)
-            (HQ : ∀ k X R X' R', (∀n, X n = X' n)
-                               → (∀n, R n = R' n)
-                               → Q k X R → Q k X' R')
+            (Qext : ∀ k X R X' R', (∀n, X n = X' n)
+                                 → (∀n, R n = R' n)
+                                 → Q k X R → Q k X' R')
             (IHQ : ∀ k s X R,
                        ⟪s,X,R⟫ₛ
                      → (∀n, k ≤ n → X n = X k)
@@ -62,7 +69,7 @@ Section afs_kruskal_induction.
                          → Q k' X' R')
                      → Q k X R).
 
-  Theorem afs_kruskal_induction k X R :
+  Theorem afs_upto_induction k X R :
               (∀n, afs (X n) (R n))
             → (∀n, k ≤ n → X n = X k)
             → (∀n, k ≤ n → R n = R k)
@@ -76,7 +83,7 @@ Section afs_kruskal_induction.
     apply afs_seq_facile_ind; unfold P; clear P.
     + intros k X R Y T H1 H2 H3 H4 H5.
       cut (Q k X R).
-      * apply HQ; auto.
+      * apply Qext; auto.
       * apply H3; intros.
         - rewrite !H1; auto.
         - rewrite !H2; auto.
@@ -86,9 +93,9 @@ Section afs_kruskal_induction.
       apply IH with s'; auto.
   Qed.
 
-End afs_kruskal_induction.
+End afs_induction.
 
-Section kruskal_afs_universe.
+Section veldman_afs_universe.
 
   Variables (A : Type).
 
@@ -101,13 +108,12 @@ Section kruskal_afs_universe.
             (HR : ∀n, k ≤ n → R n = R k)
             (HXR : ∀n, afs (X n) (R n)).
 
-  Theorem kruskal_afs_universe : afs (wft X) (vtree_upto_embed k R).
+  Theorem veldman_afs_universe : afs (wft X) (vtree_upto_embed k R).
   Proof.
     revert k X R HXR HX HR.
-    apply afs_kruskal_induction.
+    apply afs_upto_induction.
 
-    (** We routine check for the extensionality of the property we
-        are proving, *)
+    (** We routine check for the extensionality of the property we are proving, *)
     1:{ intros k X R Y T H1 H2.
         apply afs_mono.
         * apply wft_mono; intro; rewrite H1; auto.
@@ -168,14 +174,14 @@ Section kruskal_afs_universe.
         specialize (@HXR 0); rewrite Hs0 in HXR; red in HXR.
         apply kruskal_afs_leave_full; auto.
 
-    + (* We distinguish S i < k and k <= S i *)
+    + (* We distinguish S i < k and k ≤ S i *)
       destruct (le_lt_dec k (S i)) as [ Hik | Hik ].
 
-      * (* case k <= S i. s (S i) is irrelevant here, only s k is *)
+      * (* case k ≤ S i. The value of s (S i) is irrelevant here, only that of s k is *)
         intros _ _.
         case_eq (s k).
         - intros c Hc.
-          apply kruskal_afs_nodes_ge with s; eauto; try (intros E; rewrite E in Hc; easy).
+          apply veldman_afs_nodes_ge with s; eauto; try (intros E; rewrite E in Hc; easy).
           apply wft_fix; auto.
         - intros Hsk; exfalso.
           rewrite HXk in Ha; auto.
@@ -183,7 +189,7 @@ Section kruskal_afs_universe.
           rewrite Hsk; simpl; eauto.
       * (* case S i < k *)
         intros c Hc.
-        apply kruskal_afs_nodes_lt with s; eauto; try (intros E; rewrite E in Hc; easy).
+        apply veldman_afs_nodes_lt with s; eauto; try (intros E; rewrite E in Hc; easy).
         - intros s' X' R' H1 H2 H3.
           apply IHXR with (1 := H1); auto.
           ++ destruct H3 as [ j Hj _ E _ ]; intros; rewrite !E; auto; lia.
@@ -192,6 +198,6 @@ Section kruskal_afs_universe.
         - apply wft_fix; auto.
   Qed.
 
-End kruskal_afs_universe.
+End veldman_afs_universe.
 
 

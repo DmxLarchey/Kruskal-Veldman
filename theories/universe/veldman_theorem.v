@@ -147,7 +147,7 @@ Section afs_vtree_upto_embed.
           * intros ? ? [] []; simpl; try tauto.
             intros _ _ _ _ H1 H2.
             univ inj H1; univ inj H2; subst; auto. }
-      apply kruskal_afs_universe; auto.
+      apply veldman_afs_universe; auto.
       intros n; destruct (le_lt_dec n k) as [ Hn | Hn ]; auto.
       rewrite HXk', HRk'; eauto; tlia.
   Qed.
