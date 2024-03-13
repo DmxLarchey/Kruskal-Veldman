@@ -59,11 +59,12 @@ still, we could not consider it as a clean enough reference work for a quicker
 learning path into this complicated result:
 - too much proof code (duplication), sub-optimal proof automation;
 - too many edge cases (bad choices for the implementation of analysis/evaluation);
-- too strong hypothesis for the statement of eg. `afs_vtree_upto_embed` where
-  we required the decidability of `X : nat → rel₁ A` (but not of `R` !!) which
-  was due to the constraint of the implementation choice of the evaluation as 
-  a Coq function. This is now converted a relation and the decidability assumption
-  can then be dropped.
+- too strong hypothesis for the statement of eg. `afs_vtree_upto_embed` where:
+    - we required the decidability of `X : nat → rel₁ A` (but not of `R` !!);
+    - which was due to the constraint of the implementation choice of the
+      evaluation as a Coq function;
+    - this is now converted a relation and the decidability assumption
+      can then be dropped.
 
 In the current project, via heavy factorization, proof scripts cleanup and 
 suitable abstraction, we think that we provide a much better reference
