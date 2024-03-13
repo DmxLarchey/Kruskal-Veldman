@@ -63,8 +63,8 @@ learning path into this complicated result:
     - we required the decidability of `X : nat → rel₁ A` (but not of `R` !!);
     - which was due to the constraint of the implementation choice of the
       evaluation as a Coq function;
-    - this is now converted a relation and the decidability assumption
-      can then be dropped.
+    - this is now converted a relation, and the decidability requirement
+      has been be dropped.
 
 In the current project, via heavy factorization, proof scripts cleanup and 
 suitable abstraction, we think that we provide a much better reference
