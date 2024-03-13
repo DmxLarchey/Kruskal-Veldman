@@ -45,18 +45,20 @@ tasks is devoted to the upcomming project `Kruskal-Theorems`, to be published sh
 
 Those who have read Wim Veldman's intuitionistic proof \[1\] of Kruskal's tree theorem know
 that this proof is very involved. Converting that proof to type theory was a project we
-completed in 2015-2016 and [published as a monolithic project here](https://members.loria.fr/DLarchey/files/Kruskal).
-That proof however was based of sub-optimal design choice (for instance rose trees as nested lists instead of
-nested vectors) or a lack of some abstractions, leading to quite a lot code duplication. Although
-it gave a Coq-checkable proof script for a reasonable statement of the tree theorem and presented
-undeniable improvements over the pen&paper proof:
+completed in 2015-2016 and [published as a monolithic Coq project here](https://members.loria.fr/DLarchey/files/Kruskal).
+
+That former proof however was based on several sub-optimal design choices 
+(for instance rose trees as nested lists instead of nested vectors) 
+or a lack of some abstractions, leading to quite a lot code duplication. 
+It gave a Coq-checkable proof script for a nice statement of the tree theorem 
+and presented undeniable improvements over the pen&paper proof:
 - compared to \[1\], it lifts the proof to a type theoretic settings with
   an inductive formulation of almost full relations;
 - it solved the issue of _Church thesis_, which is an axiom used in \[1\]
   to recovered a _stump_ from a proof of almost-fullness of a relation;
 
-still, we could not consider it as a clean enough reference work for a quicker
-learning path into this complicated result:
+Still, we could not consider it as a clean enough reference work for 
+a quicker learning path into this complicated pen&paper proof:
 - too much proof code (duplication), sub-optimal proof automation;
 - too many edge cases (bad choices for the implementation of analysis/evaluation);
 - too strong hypothesis for the statement of eg. `afs_vtree_upto_embed` where:
@@ -68,9 +70,10 @@ learning path into this complicated result:
     - they are now converted to a single relation, and the decidability 
       requirement has been be dropped.
 
-In the current project, via heavy factorization, proof scripts cleanup and 
-suitable abstraction, we think that we provide a much better reference
-for entering the _intimity of this beautiful proof_.
+In the current project, via good factorization, proof scripts cleanup 
+and abstraction, we think that we provide a much better reference
+for entering the _intimity of this beautiful proof_, where some novel 
+tools are hopefully abstracted at a suitable level.
 
 # How to enter this proof?
 
