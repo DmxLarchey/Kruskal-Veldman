@@ -31,10 +31,14 @@ Theorem afs_vtree_upto_embed :
          → (∀n, n ≤ k → afs (X n) (R n))
          → afs (wft X) (⋅ ≤ₖ ⋅).
 ```
-where `vtree _` is the type of vector-based uniform `A`-indexed rose trees 
+where 
+-`vtree _` is the type of vector-based uniform `A`-indexed rose trees 
 (as defined in [`Kruskal-Trees/../vtree.v`](https://github.com/DmxLarchey/Kruskal-Trees/blob/main/theories/tree/vtree.v)
-and `afs` is the specialisation of the `af` predicate to sub-types
+- `afs` is the specialisation of the `af` predicate to sub-types
 (as defined in [`Kruskal-AlmostFull/../af.v`](https://github.com/DmxLarchey/Kruskal-AlmostFull/blob/main/theories/af/af.v).
+- and `wft X : vtree A → Prop` is the sub-type of trees `t : vtree A` such that each sub-tree `⟨x|v⟩` of `t`
+  satisfies `X n x` where `n` is the arity, ie the length of `v`. So `X` restricts the available sub-type of 
+  labels (in `A`), not uniformly, but instead, depending on the arity.
 
 The nested inductive relation `vtree_upto_embed k R`, also denoted `≤ₖ` for short, is intermediate between
 the nested product (cf. `vec_fall2`) embedding of Higman's theorem (which is only AF for trees of bounded breadth),
@@ -44,18 +48,21 @@ But when `k = 0`, then `≤ₖ` is exactly the homeomorphic embedding.
 
 Let us analyze the relation `⟨x|v⟩ ≤ₖ ⟨y|w⟩` in a more procedural way (in contrast with its inductive definition):
 - the first possibility is that `⟨x|v⟩` already `≤ₖ`-embeds into one of the sub-trees `w⦃_⦄` of `⟨y|w⟩`, irrelevant
-  of the arities or values of the roots `x` and `y`;
+  of the arities or values of the roots `x` and `y`. This part is common to the embeddings of Higman's and Kruskal's
+  theorems;
 - the second possibility applies to small arities (lesser than `k`): in that case, 
-  the arities (the length) of `v` and `w` are identical (equal to `n`) and `n` is smaller than `k`. 
+  the arities of `v` and `w` are identical (equal to `n`) and `n` is smaller than `k`. 
   Moreover, we must have `v⦃i⦄ ≤ₖ w⦃i⦄` for `i = 1,..,n`, hence this direct product recursively uses
   `≤ₖ` to compare the components. Finally the root label `x` must embed into the root label `y` 
-  using the relation `R` at index `n`, their given common arity;
+  using the relation `R` at index `n`, their given common arity. This part mimics the embedding 
+  of Higman's theorem, but only for small arities;
 - the third (and last) possibility applies to large arities (greater than `k`): in that
   case, the arity `n` of `v`, that `m` of `w`, and `k` must satisfy `k ≤ n ≤ m`. Notice that
   `n ≤ m` is enforced when stating that `v` vector-embeds into `w` recursively using `≤ₖ` to compare 
   the components. Finally, to compare the roots `x` and `y` which may have different arities, we
   use the relation `R` at index `k` but any other value above `k` will do since we assume 
-  that `R` is stable after index `k`: `R k = R (k+1) = R (k+2) = ...`
+  that `R` is stable after index `k`: `R k = R (k+1) = R (k+2) = ...` This part mimics the embedding
+  of Kruskal's theorem, but at large arities.
 
 The proof `afs_vtree_upto_embed`, in plain english that `vtree_upto_embed k R` is AF when all `R n` are AF,
 is the cornerstone of the `Kruskal-*` project series 
@@ -72,7 +79,7 @@ Those who have read Wim Veldman's account \[1\] of Kruskal's tree theorem know
 that this proof is very involved, possibly even obscure when one is not
 used to intuitionistic set theory where most objects are (encoded as) natural numbers.
 Converting that proof to type theory was a project we completed in 2015-2016 and 
-[published as a monolithic Coq project](https://members.loria.fr/DLarchey/files/Kruskal).
+[published as a monolithic Coq development](https://members.loria.fr/DLarchey/files/Kruskal).
 
 That former mechanization however was based on _several sub-optimal design choices_ 
 (for instance rose trees as nested lists instead of nested vectors) 
@@ -85,7 +92,8 @@ and presented undeniable improvements over the pen&paper proof:
   to recovered a _stump_ from a proof of almost-fullness of a relation;
 
 Still, we could not consider it as a clean enough reference work for 
-a quicker learning path into the apparently complicated pen&paper account of \[1\]:
+a quicker learning path into the apparently complicated pen&paper intuitionistic 
+account of Kruskal's theorem \[1\]:
 - too much proof code (duplication), sub-optimal proof automation;
 - too many edge cases, retrospectively due to bad design choices for 
   the Coq implementation of analysis/evaluation;
@@ -103,7 +111,46 @@ and abstraction, we think that we provide a much better reference code
 for entering the _intimacy of this beautiful proof_, where some novel 
 tools are hopefully abstracted at a suitable level.
 
-# How to enter this proof?
+# The proof sketch
+
+We describe the big picture of the proof at the cost of some vagueness here.
+Assuming relations `R₀/X₀,...,Rₖ/Xₖ` on sub-types of `A`, which we assume AF
+by `afs Xₙ Rₙ`, or equivalently `af Rₙ⇓Xₙ`, we want to show `afs (wft X) (vtree_upto_embed k R)`,
+or equivalently `af (vtree_upto_embed k R)⇓(wft X)`.
+
+The first step is to proceed by "induction" on the sequence `X₀/R₀,...,Xₖ/Rₖ`,
+but this is not exactly well-founded induction. It would be more accurate to
+say that we proceed by induction on the sequence of proofs `afs X₀ R₀,...,afs Xₖ Rₖ`
+but we avoid the details at the stage. Also, we skip the description of the order
+used for this first induction. We just call it lexicographic order.
+
+Then, having this first induction hypothesis at our disposal, we want
+to show `afs (wft X) (vtree_upto_embed k R)`. Applying the second
+constructor of `afs`, we are now invited to prove `afs (wft X) (vtree_upto_embed k R)↑t₀`
+for any tree `t₀` such that `wft X t₀`. We then proceed in a second induction,
+structural on `t₀`. Assuming `t₀ = ⟨α|γ⟩` is of arity `n`, we have new induction hypotheses, 
+namely `afs (wft X) (vtree_upto_embed k R)↑γ⦃i⦄` for `i=1,...,n`.
+
+Now there is a case distinction between `n = 0`, `0 < n < k` and `k ≤ n`. When
+`n = 0`, ie `t₀ = ⟨α|∅⟩` is a _leaf_, there is a separate treatment which is easy
+and we do not discuss it here. In the two other cases, we proceed with a similar
+sketch but the details differ: 
+- `veldman_higman.v` describes the case `0 < n < k`;
+- and `veldman_kruskal.v` describes the case `k ≤ n`.
+
+In both cases we build a new sequence of relations `R'₀/X'₀,...,R'ₚ/X'ₚ`
+where possibly `p` might differ from `k`. It can even grow. However, this
+now sequence is built smaller than `R₀/X₀,...,Rₖ/Xₖ` in the lexicographic
+order. Hence, the induction hypothesis gives us 
+`afs X' (vtree_upto_embed p R')` and we transfer the `afs` property
+via
+```coq
+afs (wft X') (vtree_upto_embed p R') → afs (wft X) (vtree_upto_embed k R)↑⟨α|γ⟩
+```
+using a well chosen _quasi morphism_ based on an _analysis/evaluation relation_
+between trees in `wft X'` and trees in `wft X`. Which concludes the proof.
+
+# How to enter this proof in more details?
 
 Our first remark would be: start with _Higman's lemma_ as in 
 [`Kruskal-Higman`](https://github.com/DmxLarchey/Kruskal-Higman) which was specifically
