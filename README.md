@@ -151,16 +151,28 @@ sketch but the details differ:
 - and [veldman_kruskal.v](theories/universe/veldman_kruskal.v) describes the case `k ≤ n`.
 
 In both cases we build a new sequence of relations `R'₀/X'₀,...,R'ₚ/X'ₚ`
-where possibly `p` might differ from `k`. It can even grow. However, this
-now sequence is built smaller than `R₀/X₀,...,Rₖ/Xₖ` in the lexicographic
-order. Hence, the induction hypothesis gives us 
+where possibly `p` might differ from `k` (it can even be larger). 
+However, this new sequence is built smaller than `R₀/X₀,...,Rₖ/Xₖ` 
+in the lexicographic order. Hence, the induction hypothesis gives us 
 `afs X' (vtree_upto_embed p R')` and we transfer the `afs` property
 via
 ```coq
 afs (wft X') (vtree_upto_embed p R') → afs (wft X) (vtree_upto_embed k R)↑⟨α|γ⟩
 ```
 using a well chosen _quasi morphism_ based on an _analysis/evaluation relation_
-between trees in `wft X'` and trees in `wft X`. Which concludes the proof.
+between trees in `wft X'` and trees in `wft X`. Which concludes the proof sketch.
+
+Some key properties are not discussed in the above sketch: 
+- to be able to build the new sequence `R'₀/X'₀,...,R'ₚ/X'ₚ`, the type `A` needs 
+  to be equipped with some structure allowing to nest (trees of) itself from within, 
+  a bit like universes in set theory;
+- the lexicographic induction needs extra information about the proof of `afs Xₙ Rₙ`
+  to be able to make a case distinction on full relation. In \[1\], stumps are
+  used but here we circumvent this using the new notion of _well-foundness up to
+  a projection_;
+- the construction of quasi-morphism is somewhat natural but not trivial at all
+  and its properties can be difficult to establish, depending on which framework
+  is used to implement it.
 
 # How to enter this proof in more details?
 
