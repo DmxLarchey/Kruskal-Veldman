@@ -78,9 +78,9 @@ a quicker learning path into the apparently complicated pen&paper account of \[1
     - we required the decidability of `X : nat → rel₁ A`, but not of `R : nat → rel₂ A` !!
     - we had to carry that extra assumption all along the proof with significant overhead;
     - this additional assumption was related to the implementation choice 
-      of the analysis/evaluations as a Coq functions;
-    - they are now converted to a single relation, and the decidability 
-      requirement has been be dropped.
+      of the analysis/evaluations as _Coq functions_;
+    - they are now converted to a _single relation_, and the decidability 
+      requirement could then be _dropped_.
 
 In the current project, via good factorization, proof scripts cleanup 
 and abstraction, we think that we provide a much better reference code
