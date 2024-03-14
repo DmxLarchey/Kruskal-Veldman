@@ -167,7 +167,7 @@ Some key properties are not discussed in the above sketch:
   to be equipped with some structure allowing to nest (trees of) itself from within, 
   a bit like universes in set theory;
 - the lexicographic induction needs extra information about the proof of `afs Xₙ Rₙ`
-  to be able to make a case distinction on full relation. In \[1\], stumps are
+  to be able to make a case distinction when `Rₙ` is a full relation on `Xₙ`. In \[1\], stumps are
   used but here we circumvent this using the new notion of _well-foundness up to
   a projection_;
 - the construction of quasi-morphism is somewhat natural but not trivial at all
