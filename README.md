@@ -61,10 +61,10 @@ Let us analyze the relation `⟨x|v⟩ ≤ₖ ⟨y|w⟩` in a more procedural wa
 - the third (and last) possibility applies to large arities (greater than `k`): in that
   case, the arity `n` of `v`, that `m` of `w`, and `k` must satisfy `k ≤ n ≤ m`. Notice that
   `n ≤ m` is enforced when stating that `v` vector-embeds into `w` recursively using `≤ₖ` to compare 
-  the components. Finally, to compare the roots `x` and `y` which may have different arities, we
-  use the relation `R` at index `k` but any other value above `k` will do since we assume 
+  the components. Finally, to compare the roots `x` and `y` which may live at different arities, we
+  use the relation `R` at index `k`. But any other value above `k` will do since we assume 
   that `R` is stable after index `k`: `R k = R (k+1) = R (k+2) = ...` This part mimics the embedding
-  of Kruskal's theorem, but at large arities.
+  of Kruskal's theorem, however only at large arities.
 
 The proof `afs_vtree_upto_embed`, in plain english that `vtree_upto_embed k R` is AF when all `R n` are AF,
 is the cornerstone of the `Kruskal-*` project series 
@@ -94,7 +94,7 @@ and presented undeniable improvements over the pen&paper proof:
   to recovered a _stump_ from a proof of almost-fullness of a relation;
 
 Still, we could not consider it as a clean enough reference work for 
-a quicker learning path into the apparently complicated pen&paper intuitionistic 
+a less painful learning path into the apparently complicated pen&paper intuitionistic 
 account of Kruskal's theorem \[1\]:
 - too much proof code (duplication), sub-optimal proof automation;
 - too many edge cases, retrospectively due to bad design choices for 
