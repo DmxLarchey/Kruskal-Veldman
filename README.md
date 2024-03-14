@@ -96,6 +96,22 @@ Then, the two main innovations for the proof of `afs_vtree_upto_embed` are:
   principles using the notion of [_well foundness up to a projection_](theories/wf/wf_upto.v), which
   allows to circumvent the use of _Church's thesis_.
 
+The core and technical part of the proof are two files, 
+[veldman_higman.v](theories/universe/veldman_higman.v) and [veldman_kruskal.v](theories/universe/veldman_kruskal.v),
+of reasonable size (around 700 loc each), sharing the same structure 
+as [af_tree_embed_fun.v](https://github.com/DmxLarchey/Kruskal-Higman/blob/main/theories/af/af_utree_embed_fun.v)
+from [`Kruskal-Higman`](https://github.com/DmxLarchey/Kruskal-Higman), which, I reiterate, should be understood
+first before switching to those two more complicated variations.
+
+Recall that during the recursive proof, we want 
+to establish that `afs (wft X) (vtree_upto_embed k R)↑t₀`:
+- [veldman_higman.v](theories/universe/veldman_higman.v) constructs a quasi-morphism when the lifting tree `t₀`
+  has root arity strictly smaller than the `k`, the one in the relation `vtree_upto_embed k R` also denoted `≤ₖ` above;
+- [veldman_kruskal.v](theories/universe/veldman_kruskal.v) constructs a quasi-morphism when the lifting tree `t₀`
+  has root arity greater than `k`;
+- also notice that the case of arity 0 for `t₀` is considered in the separate 
+  file [veldman_leaves.v](theories/universe/veldman_leaves.v) because it is a ground case for the recursive proof.
+
 # Explanations about well foundness up to a projection
 
 To be completed.
