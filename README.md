@@ -92,13 +92,14 @@ tools are hopefully abstracted at a suitable level.
 Our first remark would be: start with _Higman's lemma_ as in 
 [`Kruskal-Higman`](https://github.com/DmxLarchey/Kruskal-Higman) which was specifically
 designed as a downgrade of the more general cases of the proofs of Higman's theorem 
-and Kruskal's tree theorem \[1\]. The proof is downgraded to the cases of _at most unary trees_,
-which are nearly as simple as lists. The proof there could be made simpler,
-as done by previous authors like D. Fridlender or Monica Seisenberger, by that is
-not the point. The point is to introduce a proof sketch and tools that are
-shared with that of the current proof, but in a simpler/shorter context.
+and Kruskal's tree theorem \[1\]. This proof is downgraded to the case of _at most unary trees_,
+which are nearly as simple as lists. It could be made simpler/shorter, as done by 
+previous authors  like D. Fridlender or Monica Seisenberger, by that was precisely
+not the its goal. The main issue is to introduce a proof sketch and tools that are
+shared with that of the current proof of `afs_vtree_upto_embed` above, 
+but in a simplified context.
 
-Then, the two main innovations for the proof of `afs_vtree_upto_embed` above are:
+Once understood, the two main innovations for the proof of `afs_vtree_upto_embed` above are:
 - the use of a type that we call a [_universe_](theories/universe/universe.v) 
   and which is stable under all the type theoretic constructs that occur
   in the proof. In \[1\], this type is that of `nat` (natural numbers) in
@@ -118,7 +119,7 @@ first before switching to those two more complicated variations.
 Recall that during the recursive proof, we want 
 to establish that `afs (wft X) (vtree_upto_embed k R)↑t₀`:
 - [veldman_higman.v](theories/universe/veldman_higman.v) constructs a quasi-morphism when the lifting tree `t₀`
-  has root arity strictly smaller than the `k`, the one in the relation `vtree_upto_embed k R` also denoted `≤ₖ` above;
+  has root arity strictly smaller than `k`, the one in the relation `vtree_upto_embed k R` also denoted `≤ₖ` above;
 - [veldman_kruskal.v](theories/universe/veldman_kruskal.v) constructs a quasi-morphism when the lifting tree `t₀`
   has root arity greater than `k`;
 - also notice that the case of arity 0 for `t₀` is considered in the separate 
