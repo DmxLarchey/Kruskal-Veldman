@@ -15,7 +15,7 @@ This library is an extension of [`Kruskal-AlmostFull`](https://github.com/DmxLar
 It contains a detailed constructive/inductive account 
 of Wim Veldman's intuitionistic proofs of
 Higman's and Kruskal tree theorems \[1\].
-The result can be stated as follows:
+The main result established here can be stated as follows:
 ```coq
 Variables (A : Type) (k : nat) (X : nat → rel₁ A) (R : nat → rel₂ A).
 
@@ -34,7 +34,13 @@ Theorem afs_vtree_upto_embed :
 where `vtree _` is the type of vector-based uniform `A`-indexed rose trees 
 (as defined in [`Kruskal-Trees/../vtree.v`](https://github.com/DmxLarchey/Kruskal-Trees/blob/main/theories/tree/vtree.v)
 and `afs` is the specialisation of the `af` predicate to sub-types
-(as defined in [`Kruskal-AlmostFull/../af.v`](https://github.com/DmxLarchey/Kruskal-AlmostFull/blob/main/theories/af/af.v)
+(as defined in [`Kruskal-AlmostFull/../af.v`](https://github.com/DmxLarchey/Kruskal-AlmostFull/blob/main/theories/af/af.v).
+
+The nested inductive relation `vtree_upto_embed k R`, also denote `≤ₖ` for short, is intermediate between
+the nested product (cf. `vec_fall2`) embedding of Higman's theorem (which is only AF for trees of bounded breadth),
+and the homeomorphic (cf. `vec_embed`) embedding of Kruskal's theorem. The greater the parameter `k`, the closer
+we over approximate the product embedding while we lower approximate the homeomorphic embedding.
+But when `k = 0`, then we exactly get the homeomorphic embedding.
 
 This proof is the cornerstone of the `Kruskal-*` project series and the most technical/difficult
 part of this series. From this result, one can easily derives various forms of Kruskal's tree
@@ -90,7 +96,7 @@ as done by previous authors like D. Fridlender or Monica Seisenberger, by that i
 not the point. The point is to introduce a proof sketch and tools that are
 shared with that of the current proof, but in a simpler/shorter context.
 
-Then, the two main innovations for the proof of `afs_vtree_upto_embed` are:
+Then, the two main innovations for the proof of `afs_vtree_upto_embed` above are:
 - the use of a type that we call a [_universe_](theories/universe/universe.v) 
   and which is stable under all the type theoretic constructs that occur
   in the proof. In \[1\], this type is that of `nat` (natural numbers) in
