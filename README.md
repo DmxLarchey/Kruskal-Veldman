@@ -110,7 +110,7 @@ account of Kruskal's theorem \[1\]:
 
 In the current project, via good factorization, proof scripts cleanup 
 and abstraction, we think that we provide a much better reference code
-for entering the _intimacy of this beautiful proof_, where some novel 
+for __entering the intimacy of this beautiful proof__, where some novel 
 tools are hopefully abstracted at a suitable level.
 
 # The proof sketch
