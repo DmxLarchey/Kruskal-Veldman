@@ -127,11 +127,21 @@ but we avoid the details at this stage. Also, we skip the description of the ord
 used for this first induction. We just call it _lexicographic order_ on `afs` predicates.
 
 Then, having this first induction hypothesis at our disposal, we want
-to show `afs (wft X) (vtree_upto_embed k R)`. Applying the second
-constructor of `afs`, we are now invited to prove `afs (wft X) (vtree_upto_embed k R)↑t₀`
-for any tree `t₀` such that `wft X t₀`. We then proceed in a second induction,
-structural on `t₀`. Assuming `t₀ = ⟨α|γ⟩` is of arity `n`, we have new induction hypotheses, 
-namely `afs (wft X) (vtree_upto_embed k R)↑γ⦃i⦄` for `i=1,...,n`.
+to show 
+```coq
+afs (wft X) (vtree_upto_embed k R)
+```
+Applying the second constructor of `afs`, the proof goal becomes 
+```coq
+afs (wft X) (vtree_upto_embed k R)↑t₀
+```
+for any tree `t₀` such that `wft X t₀`. 
+We then proceed, in a second (nested) induction, structurally on `t₀`. 
+Assuming `t₀ = ⟨α|γ⟩` is of arity `n`, we have new induction hypotheses, 
+namely, for `i=1,...,n`:
+```coq
+afs (wft X) (vtree_upto_embed k R)↑γ⦃i⦄
+```
 
 Now there is a case distinction between `n = 0`, `0 < n < k` and `k ≤ n`. When
 `n = 0`, ie `t₀ = ⟨α|∅⟩` is a _leaf_, there is a separate treatment which is easy
