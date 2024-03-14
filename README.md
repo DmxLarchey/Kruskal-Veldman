@@ -43,8 +43,8 @@ and the homeomorphic (cf. `vec_embed`) embedding of Kruskal's theorem. The great
 But when `k = 0`, then `≤ₖ` is exactly the homeomorphic embedding.
 
 This proof is the cornerstone of the `Kruskal-*` project series and the most technical/difficult
-part of this series. From this result, one can easily derives various forms of Kruskal's tree
-theorem, depending on the actual implementation of rose trees using lists, vectors etc. This
+part of this series. From this result, one can easily derives various forms of Higman's and Kruskal's tree
+theorems, depending on the actual implementation of rose trees using lists, vectors etc. This
 tasks is devoted to the upcoming project `Kruskal-Theorems`, to be published as a follow-up on
 short notice.
 
@@ -52,9 +52,11 @@ short notice.
 
 # How difficult is this proof?
 
-Those who have read Wim Veldman's intuitionistic proof \[1\] of Kruskal's tree theorem know
-that this proof is very involved. Converting that proof to type theory was a project we
-completed in 2015-2016 and [published as a monolithic Coq project here](https://members.loria.fr/DLarchey/files/Kruskal).
+Those who have read Wim Veldman's account \[1\] of Kruskal's tree theorem know
+that this proof is very involved, possibly even obscure when one is not
+used to intuitionistic set theory where most objects are natural numbers.
+Converting that proof to type theory was a project we completed in 2015-2016 and 
+[published as a monolithic Coq project here](https://members.loria.fr/DLarchey/files/Kruskal).
 
 That former proof however was based on _several sub-optimal design choices_ 
 (for instance rose trees as nested lists instead of nested vectors) 
