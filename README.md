@@ -32,8 +32,7 @@ Theorem afs_vtree_upto_embed :
          → afs (wft X) (⋅ ≤ₖ ⋅).
 ```
 where
-
--`vtree _` is the type of vector-based uniform `A`-indexed rose trees 
+- `vtree _` is the type of vector-based uniform `A`-indexed rose trees 
 as defined in [`Kruskal-Trees/../vtree.v`](https://github.com/DmxLarchey/Kruskal-Trees/blob/main/theories/tree/vtree.v);
 - `afs` is the specialisation of the `af` predicate to sub-types,
 as defined in [`Kruskal-AlmostFull/../af.v`](https://github.com/DmxLarchey/Kruskal-AlmostFull/blob/main/theories/af/af.v);
