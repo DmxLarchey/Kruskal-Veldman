@@ -42,8 +42,22 @@ and the homeomorphic (cf. `vec_embed`) embedding of Kruskal's theorem. The great
 `≤ₖ` over approximates the product embedding, while `≤ₖ` also lower approximates the homeomorphic embedding.
 But when `k = 0`, then `≤ₖ` is exactly the homeomorphic embedding.
 
-This proof is the cornerstone of the `Kruskal-*` project series and the most technical/difficult
-part of this series. From this result, one can easily derives various forms of Higman's and Kruskal's tree
+Let us analyze the relation `⟨x|v⟩ ≤ₖ ⟨y|w⟩` in a more procedural way (in contrast with its inductive definition):
+- the first possibility is that `⟨x|v⟩` already `≤ₖ`-embeds into one of the sub-trees `w⦃_⦄` of `⟨y|w⟩`, irrelevant
+  of the arities or values of the roots `x` and `y`;
+- the second possibility applies to small arities (ie lesser than `k`): in that case, 
+  the arities (ie the length) of `v` and `w` are identical (equal to `n`) and `n` is smaller than `k`. 
+  Moreover, we must have `v⦃i⦄ ≤ₖ w⦃i⦄` for `i = 1,..,n` (direct product), and the root label `x` must 
+  embed into the root label `y` using the relation `R n` (hence at their given common arity);
+- the third (and last) possibility applies to large arities (ie greater than `k`): in that
+  case, the arity `n` of `v`, that `m` of `w`, and `k` must satisfy `k ≤ n ≤ m`. Notice that
+  `n ≤ m` is enforced when stating that `v` vector-embeds into `w` using `≤ₖ` to compare the 
+  component. Finally, to compare the roots `x` and `y` which may have different arities, we
+  use the relation `R k` but any above `k` will do since one hypothesis is `R n = R (n+1) = R (n+2) = ...`.
+
+The proof `afs_vtree_upto_embed`, in plain english that `vtree_upto_embed k R` is AF when all `R n` are AF,
+is the cornerstone of the `Kruskal-*` project series 
+and the most technical/difficult part of this series. From this result, one can easily derives various forms of Higman's and Kruskal's tree
 theorems, depending on the actual implementation of rose trees using lists, vectors etc. This
 tasks is devoted to the upcoming project `Kruskal-Theorems`, to be published as a follow-up on
 short notice.
