@@ -36,7 +36,8 @@ where
 as defined in [`Kruskal-Trees/../vtree.v`](https://github.com/DmxLarchey/Kruskal-Trees/blob/main/theories/tree/vtree.v);
 - `afs` is the specialisation of the `af` predicate to sub-types,
 as defined in [`Kruskal-AlmostFull/../af.v`](https://github.com/DmxLarchey/Kruskal-AlmostFull/blob/main/theories/af/af.v);
-- and `wft X : vtree A → Prop` is the sub-type of trees `t : vtree A` such that each sub-tree `⟨x|v⟩` of `t`
+- and [`wft X : vtree A → Prop`](https://github.com/DmxLarchey/Kruskal-Trees/blob/main/theories/tree/vtree.v) 
+  is the sub-type of trees `t : vtree A` such that each sub-tree `⟨x|v⟩` of `t`
   satisfies `X n x` where `n` is the arity, ie the length of `v`. So `X` restricts which labels in `A` can be
   used, not uniformly, but instead, depending on the arity. This variability is critical in the inductive proof;
 - also the relation `R` varies according to the arity but this is discussed in more details below.
