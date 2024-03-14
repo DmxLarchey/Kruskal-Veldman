@@ -147,8 +147,8 @@ Now there is a case distinction between `n = 0`, `0 < n < k` and `k ≤ n`. When
 `n = 0`, ie `t₀ = ⟨α|∅⟩` is a _leaf_, there is a separate treatment which is easy
 and we do not discuss it here. In the two other cases, we proceed with a similar
 sketch but the details differ: 
-- [veldman_higman.v](theories/universe/veldman_higman.v) describes the case `0 < n < k`;
-- and [veldman_kruskal.v](theories/universe/veldman_kruskal.v) describes the case `k ≤ n`.
+- [`veldman_higman.v`](theories/universe/veldman_higman.v) describes the case `0 < n < k`;
+- and [`veldman_kruskal.v`](theories/universe/veldman_kruskal.v) describes the case `k ≤ n`.
 
 In both cases we build a new sequence of relations `R'₀/X'₀,...,R'ₚ/X'ₚ`
 where possibly `p` might differ from `k` (it can even be larger). 
@@ -182,8 +182,8 @@ designed as a downgrade of the more general cases of the proofs of Higman's theo
 and Kruskal's tree theorem \[1\]. This proof is downgraded to the case of _at most unary trees_,
 which are nearly as simple as lists. It could be made simpler/shorter, as done by 
 previous authors  like D. Fridlender or Monica Seisenberger, by that was precisely
-not the its goal. The main issue is to introduce a proof sketch and tools that are
-shared with that of the current proof of `afs_vtree_upto_embed` above, 
+not its goal. The main issue is to experiment the above proof sketch and tools 
+that are common with that of the current proof of `afs_vtree_upto_embed` above, 
 but in a simplified context.
 
 Once understood, the two main innovations for the proof of `afs_vtree_upto_embed` above are:
@@ -197,11 +197,11 @@ Once understood, the two main innovations for the proof of `afs_vtree_upto_embed
   allows to circumvent the use of _Church's thesis_.
 
 The core and technical part of the proof are two files, 
-[veldman_higman.v](theories/universe/veldman_higman.v) and [veldman_kruskal.v](theories/universe/veldman_kruskal.v),
+[v`eldman_higman.v`](theories/universe/veldman_higman.v) and [`veldman_kruskal.v`](theories/universe/veldman_kruskal.v),
 of reasonable size (around 700 loc each), sharing the same structure 
-as [af_tree_embed_fun.v](https://github.com/DmxLarchey/Kruskal-Higman/blob/main/theories/af/af_utree_embed_fun.v)
-from [`Kruskal-Higman`](https://github.com/DmxLarchey/Kruskal-Higman), which, I reiterate, should be understood
-first before switching to those two more complicated variations.
+as [`af_tree_embed_fun.v`](https://github.com/DmxLarchey/Kruskal-Higman/blob/main/theories/af/af_utree_embed_fun.v)
+from [`Kruskal-Higman`](https://github.com/DmxLarchey/Kruskal-Higman), which, I reiterate, 
+should rather be understood first before switching to those two more complicated variations.
 
 Recall that during the recursive proof, we want 
 to establish that `afs (wft X) (vtree_upto_embed k R)↑t₀`:
