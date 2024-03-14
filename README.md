@@ -147,8 +147,8 @@ Now there is a case distinction between `n = 0`, `0 < n < k` and `k ≤ n`. When
 `n = 0`, ie `t₀ = ⟨α|∅⟩` is a _leaf_, there is a separate treatment which is easy
 and we do not discuss it here. In the two other cases, we proceed with a similar
 sketch but the details differ: 
-- `veldman_higman.v` describes the case `0 < n < k`;
-- and `veldman_kruskal.v` describes the case `k ≤ n`.
+- [veldman_higman.v](theories/universe/veldman_higman.v) describes the case `0 < n < k`;
+- and [veldman_kruskal.v](theories/universe/veldman_kruskal.v) describes the case `k ≤ n`.
 
 In both cases we build a new sequence of relations `R'₀/X'₀,...,R'ₚ/X'ₚ`
 where possibly `p` might differ from `k`. It can even grow. However, this
