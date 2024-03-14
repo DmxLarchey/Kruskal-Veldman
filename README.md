@@ -45,15 +45,17 @@ But when `k = 0`, then `≤ₖ` is exactly the homeomorphic embedding.
 Let us analyze the relation `⟨x|v⟩ ≤ₖ ⟨y|w⟩` in a more procedural way (in contrast with its inductive definition):
 - the first possibility is that `⟨x|v⟩` already `≤ₖ`-embeds into one of the sub-trees `w⦃_⦄` of `⟨y|w⟩`, irrelevant
   of the arities or values of the roots `x` and `y`;
-- the second possibility applies to small arities (ie lesser than `k`): in that case, 
-  the arities (ie the length) of `v` and `w` are identical (equal to `n`) and `n` is smaller than `k`. 
-  Moreover, we must have `v⦃i⦄ ≤ₖ w⦃i⦄` for `i = 1,..,n` (direct product), and the root label `x` must 
-  embed into the root label `y` using the relation `R n` (hence at their given common arity);
-- the third (and last) possibility applies to large arities (ie greater than `k`): in that
+- the second possibility applies to small arities (lesser than `k`): in that case, 
+  the arities (the length) of `v` and `w` are identical (equal to `n`) and `n` is smaller than `k`. 
+  Moreover, we must have `v⦃i⦄ ≤ₖ w⦃i⦄` for `i = 1,..,n`, hence this direct product recursively uses
+  `≤ₖ` to compare the components. Finally the root label `x` must embed into the root label `y` 
+  using the relation `R` at index `n`, their given common arity;
+- the third (and last) possibility applies to large arities (greater than `k`): in that
   case, the arity `n` of `v`, that `m` of `w`, and `k` must satisfy `k ≤ n ≤ m`. Notice that
-  `n ≤ m` is enforced when stating that `v` vector-embeds into `w` using `≤ₖ` to compare the 
-  component. Finally, to compare the roots `x` and `y` which may have different arities, we
-  use the relation `R k` but any above `k` will do since one hypothesis is `R n = R (n+1) = R (n+2) = ...`.
+  `n ≤ m` is enforced when stating that `v` vector-embeds into `w` recursively using `≤ₖ` to compare 
+  the components. Finally, to compare the roots `x` and `y` which may have different arities, we
+  use the relation `R` at index `k` but any other value above `k` will do since we assume 
+  that `R` is stable after index `k`: `R k = R (k+1) = R (k+2) = ...`
 
 The proof `afs_vtree_upto_embed`, in plain english that `vtree_upto_embed k R` is AF when all `R n` are AF,
 is the cornerstone of the `Kruskal-*` project series 
