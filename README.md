@@ -36,11 +36,11 @@ where `vtree _` is the type of vector-based uniform `A`-indexed rose trees
 and `afs` is the specialisation of the `af` predicate to sub-types
 (as defined in [`Kruskal-AlmostFull/../af.v`](https://github.com/DmxLarchey/Kruskal-AlmostFull/blob/main/theories/af/af.v).
 
-The nested inductive relation `vtree_upto_embed k R`, also denote `≤ₖ` for short, is intermediate between
+The nested inductive relation `vtree_upto_embed k R`, also denoted `≤ₖ` for short, is intermediate between
 the nested product (cf. `vec_fall2`) embedding of Higman's theorem (which is only AF for trees of bounded breadth),
 and the homeomorphic (cf. `vec_embed`) embedding of Kruskal's theorem. The greater the parameter `k`, the closer
-we over approximate the product embedding while we lower approximate the homeomorphic embedding.
-But when `k = 0`, then we exactly get the homeomorphic embedding.
+`≤ₖ` over approximates the product embedding, while `≤ₖ` also lower approximates the homeomorphic embedding.
+But when `k = 0`, then `≤ₖ` is exactly the homeomorphic embedding.
 
 This proof is the cornerstone of the `Kruskal-*` project series and the most technical/difficult
 part of this series. From this result, one can easily derives various forms of Kruskal's tree
