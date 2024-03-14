@@ -54,11 +54,11 @@ short notice.
 
 Those who have read Wim Veldman's account \[1\] of Kruskal's tree theorem know
 that this proof is very involved, possibly even obscure when one is not
-used to intuitionistic set theory where most objects are natural numbers.
+used to intuitionistic set theory where most objects are (encoded as) natural numbers.
 Converting that proof to type theory was a project we completed in 2015-2016 and 
-[published as a monolithic Coq project here](https://members.loria.fr/DLarchey/files/Kruskal).
+[published as a monolithic Coq project](https://members.loria.fr/DLarchey/files/Kruskal).
 
-That former proof however was based on _several sub-optimal design choices_ 
+That former mechanization however was based on _several sub-optimal design choices_ 
 (for instance rose trees as nested lists instead of nested vectors) 
 or a lack of some abstractions, leading to quite a lot code duplication. 
 It gave a Coq-checkable proof script for a nice statement of the tree theorem 
@@ -69,7 +69,7 @@ and presented undeniable improvements over the pen&paper proof:
   to recovered a _stump_ from a proof of almost-fullness of a relation;
 
 Still, we could not consider it as a clean enough reference work for 
-a quicker learning path into this apparently complicated pen&paper proof:
+a quicker learning path into the apparently complicated pen&paper account of \[1\]:
 - too much proof code (duplication), sub-optimal proof automation;
 - too many edge cases, retrospectively due to bad design choices for 
   the Coq implementation of analysis/evaluation;
