@@ -12,8 +12,10 @@
 # What is this library?
 
 This library is an extension of [`Kruskal-AlmostFull`](https://github.com/DmxLarchey/Kruskal-AlmostFull).
-It contains a detailed constructive/inductive proof of Wim Veldman's variant \[1\] of the proofs of
-Higman's and Kruskal tree theorems. The result can be stated as follows:
+It contains a detailed constructive/inductive account 
+of Wim Veldman's intuitionistic proofs of
+Higman's and Kruskal tree theorems \[1\].
+The result can be stated as follows:
 ```coq
 Variables (A : Type) (k : nat) (X : nat → rel₁ A) (R : nat → rel₂ A).
 
@@ -35,9 +37,10 @@ and `afs` is the specialisation of the `af` predicate to sub-types
 (as defined in [`Kruskal-AlmostFull/../af.v`](https://github.com/DmxLarchey/Kruskal-AlmostFull/blob/main/theories/af/af.v)
 
 This proof is the cornerstone of the `Kruskal-*` project series and the most technical/difficult
-part of this project. From this result one can easily derives various forms of Kruskal's tree
+part of this series. From this result, one can easily derives various forms of Kruskal's tree
 theorem, depending on the actual implementation of rose trees using lists, vectors etc. This
-tasks is devoted to the upcomming project `Kruskal-Theorems`, to be published shortly.
+tasks is devoted to the upcoming project `Kruskal-Theorems`, to be published as a follow-up on
+short notice.
 
 \[1\]. [_An intuitionistic proof of Kruskal's theorem_](https://link.springer.com/article/10.1007/s00153-003-0207-x), Wim Veldman, 2004
 
@@ -47,7 +50,7 @@ Those who have read Wim Veldman's intuitionistic proof \[1\] of Kruskal's tree t
 that this proof is very involved. Converting that proof to type theory was a project we
 completed in 2015-2016 and [published as a monolithic Coq project here](https://members.loria.fr/DLarchey/files/Kruskal).
 
-That former proof however was based on several sub-optimal design choices 
+That former proof however was based on _several sub-optimal design choices_ 
 (for instance rose trees as nested lists instead of nested vectors) 
 or a lack of some abstractions, leading to quite a lot code duplication. 
 It gave a Coq-checkable proof script for a nice statement of the tree theorem 
@@ -58,21 +61,22 @@ and presented undeniable improvements over the pen&paper proof:
   to recovered a _stump_ from a proof of almost-fullness of a relation;
 
 Still, we could not consider it as a clean enough reference work for 
-a quicker learning path into this complicated pen&paper proof:
+a quicker learning path into this apparently complicated pen&paper proof:
 - too much proof code (duplication), sub-optimal proof automation;
-- too many edge cases (bad choices for the implementation of analysis/evaluation);
-- too strong hypothesis for the statement of eg. `afs_vtree_upto_embed` where:
+- too many edge cases, retrospectively due to bad design choices for 
+  the Coq implementation of analysis/evaluation;
+- as a consequence, too strong hypotheses for the statement of 
+  eg. `afs_vtree_upto_embed` where:
     - we required the decidability of `X : nat → rel₁ A`, but not of `R : nat → rel₂ A` !!
-    - we had to carry that extra assumption all along the proof with a
-      non-negligible overhead;
+    - we had to carry that extra assumption all along the proof with significant overhead;
     - this additional assumption was related to the implementation choice 
       of the analysis/evaluations as a Coq functions;
     - they are now converted to a single relation, and the decidability 
       requirement has been be dropped.
 
 In the current project, via good factorization, proof scripts cleanup 
-and abstraction, we think that we provide a much better reference
-for entering the _intimity of this beautiful proof_, where some novel 
+and abstraction, we think that we provide a much better reference code
+for entering the _intimacy of this beautiful proof_, where some novel 
 tools are hopefully abstracted at a suitable level.
 
 # How to enter this proof?
