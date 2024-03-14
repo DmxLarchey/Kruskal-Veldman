@@ -20,7 +20,7 @@ The main result established here can be stated as follows:
 Variables (A : Type) (k : nat) (X : nat → rel₁ A) (R : nat → rel₂ A).
 
 Inductive vtree_upto_embed : vtree A → vtree A → Prop :=
-  | vtree_upto_embed_subt t n x (v : vec _ n) i : t ≤ₖ v⦃i⦄ → t ≤ₖ ⟨x|v⟩
+  | vtree_upto_embed_subt t m y (w : vec _ m) i : t ≤ₖ w⦃i⦄ → t ≤ₖ ⟨y|w⟩
   | vtree_upto_embed_lt n x (v : vec _ n) y w : n < k → R n x y → vec_fall2 (⋅ ≤ₖ ⋅) v w → ⟨x|v⟩ ≤ₖ ⟨y|w⟩
   | vtree_upto_embed_ge n x (v : vec _ n) m y (w : vec _ m) : k ≤ n → R k x y → vec_embed (⋅ ≤ₖ ⋅) v w → ⟨x|v⟩ ≤ₖ ⟨y|w⟩
 where "s ≤ₖ t" := (vtree_upto_embed s t).
@@ -31,14 +31,16 @@ Theorem afs_vtree_upto_embed :
          → (∀n, n ≤ k → afs (X n) (R n))
          → afs (wft X) (⋅ ≤ₖ ⋅).
 ```
-where 
+where
+
 -`vtree _` is the type of vector-based uniform `A`-indexed rose trees 
-(as defined in [`Kruskal-Trees/../vtree.v`](https://github.com/DmxLarchey/Kruskal-Trees/blob/main/theories/tree/vtree.v)
-- `afs` is the specialisation of the `af` predicate to sub-types
-(as defined in [`Kruskal-AlmostFull/../af.v`](https://github.com/DmxLarchey/Kruskal-AlmostFull/blob/main/theories/af/af.v).
+as defined in [`Kruskal-Trees/../vtree.v`](https://github.com/DmxLarchey/Kruskal-Trees/blob/main/theories/tree/vtree.v);
+- `afs` is the specialisation of the `af` predicate to sub-types,
+as defined in [`Kruskal-AlmostFull/../af.v`](https://github.com/DmxLarchey/Kruskal-AlmostFull/blob/main/theories/af/af.v);
 - and `wft X : vtree A → Prop` is the sub-type of trees `t : vtree A` such that each sub-tree `⟨x|v⟩` of `t`
-  satisfies `X n x` where `n` is the arity, ie the length of `v`. So `X` restricts the available sub-type of 
-  labels (in `A`), not uniformly, but instead, depending on the arity.
+  satisfies `X n x` where `n` is the arity, ie the length of `v`. So `X` restricts which labels in `A` can be
+  used, not uniformly, but instead, depending on the arity. This variability is critical in the inductive proof;
+- also the relation `R` varies according to the arity but this is discussed in more details below.
 
 The nested inductive relation `vtree_upto_embed k R`, also denoted `≤ₖ` for short, is intermediate between
 the nested product (cf. `vec_fall2`) embedding of Higman's theorem (which is only AF for trees of bounded breadth),
