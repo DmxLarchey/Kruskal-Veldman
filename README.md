@@ -252,15 +252,18 @@ Some key properties are not discussed in the above sketch:
   also when `Xₙ` is an empty sub-type. None of these conditions can be decided. 
   In \[1\], _stumps_ are used for this tasks. But while stumps can be computed
   from `afs Xₙ Rₙ` in the `Type`-bounded case, in the `Prop`-bounded case, they
-  cannot be computed. In \[1\], Church thesis is used for this purpose. 
-  But here we circumvent it by using the (new ?) notion of _well-foundness up 
-  to a projection_ which allows us to access the above information (fullness of
-  `Rₙ` or emptiness of `Xₙ`) internally in the proof;
+  cannot be computed:
+    - in \[1\], _Church thesis_ is used specifically for this purpose. 
+    - but here, we circumvent its usage by using the (new ?) notion 
+      of _well-foundness up to a projection_ which allows us to access 
+      the above information (fullness of `Rₙ` or emptiness of `Xₙ`) 
+      in the internals of the proof as soon as the output type does not 
+      state properties about this (hidden) information;
 3. the construction of quasi-morphism is somewhat natural but not trivial at all
   and its properties can be difficult to establish, depending on which framework
-  is used to implement it.
+  is used to implement it. See below for more information.
 
-# How to enter this proof in more details?
+# How to enter this proof in more details
 
 Our first remark would be: start with _Higman's lemma_ as in 
 [`Kruskal-Higman`](https://github.com/DmxLarchey/Kruskal-Higman) which was specifically
