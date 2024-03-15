@@ -205,7 +205,7 @@ afs (wft X) (vtree_upto_embed k R)
 ```
 Applying the second constructor of `afs`, the proof goal becomes 
 ```coq
-∀t₀, wft X t₀ afs (wft X) → (vtree_upto_embed k R)↑t₀
+∀t₀, wft X t₀ → afs (wft X) (vtree_upto_embed k R)↑t₀
 ```
 We then proceed, in a second (nested) induction, structurally on `t₀`. 
 Assuming `t₀ = ⟨α|γ⟩` is of arity `n`, we have new induction hypotheses, 
