@@ -269,25 +269,27 @@ Some key properties are not discussed in the above sketch:
 Our first remark would be: start with _Higman's lemma_ as in 
 [`Kruskal-Higman`](https://github.com/DmxLarchey/Kruskal-Higman) which was specifically
 designed as a downgrade of the more general cases of the proofs of Higman's theorem 
-and Kruskal's tree theorem \[1\]. This proof is downgraded to the case of _at most unary trees_,
-which are nearly as simple as lists. It could be made simpler/shorter, as done by 
-previous authors  like D. Fridlender or Monica Seisenberger, by that was precisely
-not its goal. The main issue is to experiment the above proof sketch and tools 
-that are common with that of the current proof of `afs_vtree_upto_embed` above, 
-but in a simplified context.
+and Kruskal's tree theorem \[1\]. This proof concerns the restricted case of _unary trees_,
+which are nearly as simple as lists.
 
-Once understood, the two main innovations for the proof of `afs_vtree_upto_embed` above are:
+It could be made simpler/shorter (but still constructive), 
+as done by previous authors like D. Fridlender \[2\], but that was precisely
+not the goal. The main goal there was to implement the proof sketch and tools 
+that are common with that of the current proof of `afs_vtree_upto_embed` above, 
+but in a simpler/shorter context.
+
+Once that proof of Higman's lemma is understood, 
+the two main innovations for the proof of `afs_vtree_upto_embed` above are
+(as described above):
 - the use of a type that we call a [_universe_](theories/universe/universe.v) 
   and which is stable under all the type theoretic constructs that occur
-  in the proof. In \[1\], this type is that of `nat` (natural numbers) in
-  which all data-structures are implemented. In our generalization, we
-  build a universe as an inductive type extending the start type `A` above;
+  in the proof;
 - the implementation of the [_easier_ and _more facile_](theories/af/afs_lex.v) lexicographic induction 
   principles using the notion of [_well foundness up to a projection_](theories/wf/wf_upto.v), which
   allows to circumvent the use of _Church's thesis_.
 
 The core and technical part of the proof are two files, 
-[v`eldman_higman.v`](theories/universe/veldman_higman.v) and [`veldman_kruskal.v`](theories/universe/veldman_kruskal.v),
+[`veldman_higman.v`](theories/universe/veldman_higman.v) and [`veldman_kruskal.v`](theories/universe/veldman_kruskal.v),
 of reasonable size (around 700 loc each), sharing the same structure 
 as [`af_tree_embed_fun.v`](https://github.com/DmxLarchey/Kruskal-Higman/blob/main/theories/af/af_utree_embed_fun.v)
 from [`Kruskal-Higman`](https://github.com/DmxLarchey/Kruskal-Higman), which, I reiterate, 
@@ -301,6 +303,8 @@ to establish that `afs (wft X) (vtree_upto_embed k R)↑t₀`:
   has root arity greater than `k`;
 - also notice that the case of arity 0 for `t₀` is considered in the separate 
   file [veldman_leaves.v](theories/universe/veldman_leaves.v) because it is a ground case for the recursive proof.
+
+\[2\] _Higman's lemma in type theory_, Daniel Fridlender, TYPES 1996
 
 # Explanations about well foundness up to a projection
 
