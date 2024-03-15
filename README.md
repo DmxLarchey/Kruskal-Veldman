@@ -19,7 +19,7 @@ It contains a detailed constructive/inductive account
 of Wim Veldman's intuitionistic proofs of a variant of Kruskal's tree theorems \[1\].
 Actually the result is [a mixture of Higman's and Kruskal's theorems](#What-is-the-main-result).
 
-From this result, one can easily derives, via simple surjective relational morphisms,
+From this result, one can easily derive, via simple surjective relational morphisms,
  various forms of Higman's and Kruskal's tree theorems, depending on the actual implementation 
 of rose trees using lists, vectors etc. This tasks is devoted to the upcoming project `Kruskal-Theorems`, 
 to be published as a follow-up on short notice.
@@ -41,11 +41,11 @@ to access parts of that project specifically. Here is the current split:
 - [`Kruskal-Finite`](https://github.com/DmxLarchey/Kruskal-Finite), library to manage finiteness (listability);
 - [`Kruskal-AlmostFull`](https://github.com/DmxLarchey/Kruskal-AlmostFull), the basic tools for A(lmost) F(ull) relations (up to Coquand's Ramsey's theorem);
 - [`Kruskal-Higman`](https://github.com/DmxLarchey/Kruskal-Higman), the proof of Higman's lemma (or Higman's theorem for unary trees) (see below);
-- `Kruskal-Theorems` (upcoming)
+- `Kruskal-Veldman` (in here) and `Kruskal-Theorems` (upcoming)
 
 ## Usage
 
-To use it directly or via `Kruskal-Theorems`, it can be installed via `opam` after importing the [`coq-opam`/`released`](https://github.com/coq/opam) 
+To use it directly or via `Kruskal-Theorems`, it can be installed via `opam` after importing the [`coq-opam`](https://github.com/coq/opam)/`released`
 package:
 ```console
 opam repo add coq-released https://coq.inria.fr/opam/released
@@ -53,7 +53,7 @@ opam update
 opam install coq-kruskal-veldman
 ```
 Notice that, as with [`Kruskal-AlmostFull`](https://github.com/DmxLarchey/Kruskal-AlmostFull) (and [`Kruskal-Higman`](https://github.com/DmxLarchey/Kruskal-Higman) btw),
-the library comes in a `Prop`-bounded and a `Type`-bounded flavor, both generated with the very same code base. To access eg. the `Prop`-bounded version
+the library comes in `Prop`-bounded and `Type`-bounded flavors, both generated with the very same code base. To access eg. the `Prop`-bounded version
 in Coq source code, one should import via:
 ```coq
 From KruskalTrees Require Import idx vec vtree.
@@ -77,7 +77,7 @@ and then compile the eg. `Type`-bounded version of the library with:
 ```console
 make type
 ```
-while the `Prop`-bounded could be obtained via `make prop`. Notice that only one
+while the `Prop`-bounded version could be obtained via `make prop`. Notice that only one
 can be compiled in a given directory because the code base in the same, except from
 one selector file `base/base_implem.v` which is copied either from [`implem/prop.v`](theories/implem/prop.v)
 or [`implem/type.v`](theories/implem/type.v) depending on `make prop` or `make type`.
@@ -119,29 +119,28 @@ The nested inductive relation `vtree_upto_embed k R`, also denoted `≤ₖ` for 
 the nested product (cf. `vec_fall2`) embedding of Higman's theorem (which is only AF for trees of bounded breadth),
 and the homeomorphic (cf. `vec_embed`) embedding of Kruskal's theorem. The greater the parameter `k`, the closer
 `≤ₖ` over approximates the product embedding, while `≤ₖ` also lower approximates the homeomorphic embedding.
-But when `k = 0`, then `≤ₖ` is exactly the homeomorphic embedding.
+But when `k = 0`, then `≤ₖ = ≤₀` is exactly the homeomorphic embedding.
 
 Let us analyze the relation `⟨x|v⟩ ≤ₖ ⟨y|w⟩` in a more procedural way (in contrast with its inductive definition):
-- the first possibility is that `⟨x|v⟩` already `≤ₖ`-embeds into one of the sub-trees `w⦃_⦄` of `⟨y|w⟩`, irrelevant
+1. the first possibility is that `⟨x|v⟩` already `≤ₖ`-embeds into one of the sub-trees `w⦃_⦄` of `⟨y|w⟩`, irrelevant
   of the arities or values of the roots `x` and `y`. This part is common to the embeddings of Higman's and Kruskal's
   theorems;
-- the second possibility applies to small arities (lesser than `k`): in that case, 
+2. the second possibility applies to small arities (lesser than `k`): in that case, 
   the arities of `v` and `w` are identical (equal to `n`) and `n` is smaller than `k`. 
-  Moreover, we must have `v⦃i⦄ ≤ₖ w⦃i⦄` for `i = 1,..,n`, hence this direct product recursively uses
-  `≤ₖ` to compare the components. Finally the root label `x` must embed into the root label `y` 
-  using the relation `R` at index `n`, their given common arity. This part mimics the embedding 
+  Moreover, we must have `v⦃i⦄ ≤ₖ w⦃i⦄` for `i = 1,..,n`, hence this _direct product_ recursively uses
+  `≤ₖ` to compare the components of `v` and `w`. Finally the root label `x` must embed into the root label `y` 
+  using the relation `R` at index `n`, their common arity. This part mimics the embedding 
   of Higman's theorem, but only for small arities;
-- the third (and last) possibility applies to large arities (greater than `k`): in that
+3. the third (and last) possibility applies to large arities (greater than `k`): in that
   case, the arity `n` of `v`, that `m` of `w`, and `k` must satisfy `k ≤ n ≤ m`. Notice that
   `n ≤ m` is enforced when stating that `v` vector-embeds into `w` recursively using `≤ₖ` to compare 
   the components. Finally, to compare the roots `x` and `y` which may live at different arities, we
-  use the relation `R` at index `k`. But any other value above `k` will do since we assume 
+  use the relation `R` at (fixed) index `k`. But any other value above `k` will do since we assume 
   that `R` is stable after index `k`: `R k = R (k+1) = R (k+2) = ...` This part mimics the embedding
-  of Kruskal's theorem, however only at large arities.
+  of Kruskal's theorem, however only for large arities.
 
-The proof `afs_vtree_upto_embed`, in plain english that `vtree_upto_embed k R` is AF when all `R n` are AF,
-is the cornerstone of the `Kruskal-*` project series 
-and the most technical/difficult part of this series. 
+The proof `afs_vtree_upto_embed`, in plain english that `vtree_upto_embed k R` is AF when all `R₀,...,Rₖ` 
+are AF, is the cornerstone of the `Kruskal-*` project series and the most technical/difficult part of this series. 
 
 # How difficult is this proof?
 
