@@ -22,11 +22,11 @@ From KruskalTrees
     *   ∩₁ and ∩₂ : intersection      (in KruskalTrees)
 *)
 
-#[global] Notation "'rel₁' X" := (X -> Prop) (at level 1).
-#[global] Notation "'rel₂' X" := (X -> X -> Prop) (at level 1).
+#[global] Notation "'rel₁' X" := (X → Prop) (at level 1).
+#[global] Notation "'rel₂' X" := (X → X → Prop) (at level 1).
 
-#[global] Notation "⊥₁" := (fun _ => False).
-#[global] Notation "⊥₂" := (fun _ _ => False).
+#[global] Notation "⊥₁" := (λ _, False).
+#[global] Notation "⊥₂" := (λ _ _, False).
 
 (* Compatibility Layer accross different versions of Coq *)
 
