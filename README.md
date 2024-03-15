@@ -286,8 +286,8 @@ that are common with that of the current proof of `afs_vtree_upto_embed` above,
 but in a simpler/shorter context.
 
 Once that proof of Higman's lemma is understood, 
-the two main innovations for the proof of `afs_vtree_upto_embed` above are
-(as described above):
+the two main innovations for the proof of `afs_vtree_upto_embed` are
+as described above:
 - the use of a type that we call a [_universe_](theories/universe/universe.v) 
   and which is stable under all the type theoretic constructs that occur
   in the proof;
