@@ -11,10 +11,82 @@
 
 # What is this library?
 
-This library is an extension of [`Kruskal-AlmostFull`](https://github.com/DmxLarchey/Kruskal-AlmostFull).
+## Short Description
+
+This library `Kruskal-Veldman` is an extension of [`Kruskal-AlmostFull`](https://github.com/DmxLarchey/Kruskal-AlmostFull).
 It contains a detailed constructive/inductive account 
-of Wim Veldman's intuitionistic proofs of
-Higman's and Kruskal tree theorems \[1\].
+of Wim Veldman's intuitionistic proofs of a variant of Kruskal's tree theorems \[1\].
+Actually it is a mixture of Higman's and Kruskal's theorems.
+
+From this result, one can easily derives, via simple surjective relational morphisms,
+ various forms of Higman's and Kruskal's tree theorems, depending on the actual implementation 
+of rose trees using lists, vectors etc. This tasks is devoted to the upcoming project `Kruskal-Theorems`, 
+to be published as a follow-up on short notice.
+
+\[1\]. [_An intuitionistic proof of Kruskal's theorem_](https://link.springer.com/article/10.1007/s00153-003-0207-x), Wim Veldman, 2004
+
+## Target audience
+
+This library is not intended for direct usage, but it is possible to do so. 
+Rather, `Kruskal-Theorems` will contain the high-level theorems that are intended
+to be imported.
+
+On the other hand, `Kruskal-Veldman`, in addition of being an intermediate step, was specifically designed 
+to be read/studied by those readers who wish to understand the internal details of this difficult
+proof. It comes from a _major refactoring effort_ of a [former monolithic proof](https://members.loria.fr/DLarchey/files/Kruskal) 
+of the theorem, a project that as been since split into several sub-libraries, initiated by requests to access parts
+of the project specifically:
+- [`Kruskal-Trees`](https://github.com/DmxLarchey/Kruskal-Trees), extra library for lists, vectors, and rose trees; 
+- [`Kruskal-Finite`](https://github.com/DmxLarchey/Kruskal-Finite), library to manage finiteness (listability);
+- [`Kruskal-AlmostFull`](https://github.com/DmxLarchey/Kruskal-AlmostFull), the basic tools for A(lmost) F(ull) relations (up to Coquand's Ramsey's theorem);
+- [`Kruskal-Higman`](https://github.com/DmxLarchey/Kruskal-Higman), the proof of Higman's lemma (or Higman's theorem for unary trees) (see below);
+- `Kruskal-Theorems` (upcoming)
+
+## Usage
+
+To use it directly or via `Kruskal-Theorems`, it can be installed via `opam` after importing the [`coq-opam`/`released`](https://github.com/coq/opam) 
+package:
+```console
+opam repo add coq-released https://coq.inria.fr/opam/released
+opam update
+opam install coq-kruskal-veldman
+```
+Notice that, is with [`Kruskal-AlmostFull`](https://github.com/DmxLarchey/Kruskal-AlmostFull) (and [`Kruskal-Higman`](https://github.com/DmxLarchey/Kruskal-Higman) btw),
+the library comes in a `Prop`-bounded and a `Type`-bounded flavor, both generated with the very same code base. To access eg. the `Prop`-bounded version,
+one should import via:
+```coq
+From KruskalTrees Require Import idx vec vtree.
+From KruskalAfProp Require Import almostfull.
+From KruskalVeldmanProp Require Import vtree_embed veldman_theorem.
+```
+
+When the intention is to review the code with the help of an IDE for the Coq proof assistant, 
+the procedure is a bit different. Then it is advised to download the current code base, either
+the [release](https://github.com/DmxLarchey/Kruskal-Veldman/releases) or the `main` branch
+here, and unpack it in say the `Kruskal-Veldman` directory.
+```console
+git clone https://github.com/DmxLarchey/Kruskal-Veldman.git
+cd Kruskal-Veldman
+```
+Then one should install the dependencies via:
+```console
+opam install . --deps-only
+```
+and then compile the eg. `Type`-bounded version of the library with:
+```console
+make type
+```
+while the `Prop`-bounded could be obtained via `make prop`. Notice that only one
+can be compiled in a given directory because the code base in the same, except from
+one selector file `base/base_implem.v` which is copied either from [`implem/prop.v`](theories/implem/prop.v)
+or `implem/type.v`(theories/implem/type.v) depending on `make prop` or `make type`.
+
+Then one can review the code base with say [`CoqIDE`](https://coq.inria.fr/download) 
+or [`vscoq`](https://github.com/coq-community/vscoq). But see below for a detailed
+introduction on the proof implemented here.
+
+# What is the main result
+
 The main result established here can be stated as follows:
 ```coq
 Variables (A : Type) (k : nat) (X : nat → rel₁ A) (R : nat → rel₂ A).
@@ -68,12 +140,7 @@ Let us analyze the relation `⟨x|v⟩ ≤ₖ ⟨y|w⟩` in a more procedural wa
 
 The proof `afs_vtree_upto_embed`, in plain english that `vtree_upto_embed k R` is AF when all `R n` are AF,
 is the cornerstone of the `Kruskal-*` project series 
-and the most technical/difficult part of this series. From this result, one can easily derives various forms of Higman's and Kruskal's tree
-theorems, depending on the actual implementation of rose trees using lists, vectors etc. This
-tasks is devoted to the upcoming project `Kruskal-Theorems`, to be published as a follow-up on
-short notice.
-
-\[1\]. [_An intuitionistic proof of Kruskal's theorem_](https://link.springer.com/article/10.1007/s00153-003-0207-x), Wim Veldman, 2004
+and the most technical/difficult part of this series. 
 
 # How difficult is this proof?
 
