@@ -13,10 +13,11 @@
 
 ## Short Description
 
-This library `Kruskal-Veldman` is an extension of [`Kruskal-AlmostFull`](https://github.com/DmxLarchey/Kruskal-AlmostFull).
+This library `Kruskal-Veldman` is an extension of [`Kruskal-AlmostFull`](https://github.com/DmxLarchey/Kruskal-AlmostFull)
+and [`Kruskal-Higman`](https://github.com/DmxLarchey/Kruskal-Higman) libraries.
 It contains a detailed constructive/inductive account 
 of Wim Veldman's intuitionistic proofs of a variant of Kruskal's tree theorems \[1\].
-Actually it is a mixture of Higman's and Kruskal's theorems.
+Actually the result is [a mixture of Higman's and Kruskal's theorems](#What-is-the-main-result).
 
 From this result, one can easily derives, via simple surjective relational morphisms,
  various forms of Higman's and Kruskal's tree theorems, depending on the actual implementation 
