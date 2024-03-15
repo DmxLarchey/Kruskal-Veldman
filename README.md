@@ -299,7 +299,7 @@ The core and technical part of the proof are two files,
 [`veldman_higman.v`](theories/universe/veldman_higman.v) and [`veldman_kruskal.v`](theories/universe/veldman_kruskal.v),
 of reasonable size (around 700 loc each), sharing the same structure 
 as [`af_tree_embed_fun.v`](https://github.com/DmxLarchey/Kruskal-Higman/blob/main/theories/af/af_utree_embed_fun.v)
-from [`Kruskal-Higman`](https://github.com/DmxLarchey/Kruskal-Higman), which, I reiterate, 
+from [`Kruskal-Higman`](https://github.com/DmxLarchey/Kruskal-Higman), which we insist, 
 should rather be understood first before switching to those two more complicated variations.
 
 Recall that during the recursive proof, we want 
