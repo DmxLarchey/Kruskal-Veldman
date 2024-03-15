@@ -231,22 +231,24 @@ using a well chosen _quasi morphism_ based on an _analysis/evaluation relation_
 between trees in `wft X'` and trees in `wft X`. Which concludes the proof sketch.
 
 Some key properties are not discussed in the above sketch: 
-- to be able to build the new sequence `R'₀/X'₀,...,R'ₚ/X'ₚ`, the type `A` needs 
+1. to be able to build the new sequence `R'₀/X'₀,...,R'ₚ/X'ₚ`, the type `A` needs 
   to be equipped with some structure allowing eg. to nest (trees of) itself 
   from within, a bit like universes in set theory. Of course, this won't be possible for
-  an arbitrary type. In \[1\], the choice is made for `A` to be `nat`, which is
-  the natural choice for intuitionistic set theory, which also limits the main 
-  result to `nat`. But here, we first embed an arbitrary type `A` into a richer 
-  type `universe A` (in [universe.v](theories/universe/universe.v)), 
-  that has the necessary structure for the proof (in [veldman_universe.v](theories/universe/veldman_universe.v)). 
-  Then at the end of the proof (in [`veldman_theorem.v](theories/universe/veldman_theorem.v)), 
-  we project the result for `universe A` back to the arbitrary type `A` by a 
-  simple morphism;
-- the lexicographic induction needs extra information about the proof of `afs Xₙ Rₙ`
+  an arbitrary type: 
+    - in \[1\], the choice is made for `A` to be `nat`, which is
+      the natural choice for intuitionistic set theory, but this also limits the main 
+      result to `nat`, or at types that must be first embedded into `nat`; 
+    - we proceed otherwise: we first embed an arbitrary type `A` into a richer 
+      type `universe A` (in [universe.v](theories/universe/universe.v)), 
+     that has the necessary structure for the proof (in [veldman_universe.v](theories/universe/veldman_universe.v));
+    - then at the end of the proof (in [`veldman_theorem.v](theories/universe/veldman_theorem.v)), 
+      we project the result for `universe A` back to the arbitrary type `A` by a 
+      simple morphism;
+2. the lexicographic induction needs extra information about the proof of `afs Xₙ Rₙ`
   to be able to make a case distinction when `Rₙ` is a full relation on `Xₙ`. In \[1\], stumps are
   used but here we circumvent this using the new notion of _well-foundness up to
   a projection_;
-- the construction of quasi-morphism is somewhat natural but not trivial at all
+3. the construction of quasi-morphism is somewhat natural but not trivial at all
   and its properties can be difficult to establish, depending on which framework
   is used to implement it.
 
