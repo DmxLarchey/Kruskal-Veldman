@@ -187,7 +187,7 @@ tools are hopefully abstracted at a suitable level.
 
 We describe the big picture of the proof at the cost of some vagueness here.
 Assuming `k` and relations `R₀/X₀,...,Rₖ/Xₖ` on sub-types of `A`, of which
-neither `k` nor the `Rₙ` are fixed, for which we assume AF
+neither `k` nor the `Rₙ` are fixed, and for which we assume AF
 by `afs Xₙ Rₙ`, or equivalently `af Rₙ⇓Xₙ`, we want to show `afs (wft X) (vtree_upto_embed k R)`,
 or equivalently `af (vtree_upto_embed k R)⇓(wft X)`, where the `_ ⇓ _` notation
  represents the _restriction_ of a relation to a sub-type.
@@ -205,9 +205,8 @@ afs (wft X) (vtree_upto_embed k R)
 ```
 Applying the second constructor of `afs`, the proof goal becomes 
 ```coq
-afs (wft X) (vtree_upto_embed k R)↑t₀
+∀t₀, wft X t₀ afs (wft X) → (vtree_upto_embed k R)↑t₀
 ```
-for any tree `t₀` such that `wft X t₀`. 
 We then proceed, in a second (nested) induction, structurally on `t₀`. 
 Assuming `t₀ = ⟨α|γ⟩` is of arity `n`, we have new induction hypotheses, 
 namely, for `i=1,...,n`:
