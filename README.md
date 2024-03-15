@@ -240,8 +240,11 @@ Some key properties are not discussed in the above sketch:
       result to `nat`, or to types that must be first embedded into `nat`; 
     - we proceed otherwise: we first embed an arbitrary type `A` into a richer 
       type `U := universe A` (in [`universe.v`](theories/universe/universe.v)), 
-     that has the necessary structure for the proof (in [`veldman_universe.v`](theories/universe/veldman_universe.v));
-    - then at the end of the proof (in [`veldman_theorem.v`](theories/universe/veldman_theorem.v)), 
+     that has the necessary structure for the proofs in 
+     [`velman_higman.v`](theories/universe/veldman_higman.v), 
+     [`veldman_kruskal`](theories/universe/veldman_kruskal.v) and 
+     [`veldman_universe.v`](theories/universe/veldman_universe.v);
+    - then at the end of the proof in [`veldman_theorem.v`](theories/universe/veldman_theorem.v), 
       we project the result for `universe A` back to the arbitrary type `A` by a 
       simple morphism;
 2. the lexicographic induction needs extra information about the proof of `afs Xₙ Rₙ`
