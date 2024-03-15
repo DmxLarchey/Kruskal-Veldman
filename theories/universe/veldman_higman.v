@@ -732,10 +732,6 @@ Section veldman_afs_nodes_lt.
           apply sub_dtree_inv_rt in H4 as [ -> | [] ]; eauto.
       + apply fin_vec_fall2_find with (R := ana _) in H; auto.
     Qed.
-
-   (* Below looks very much like the characterization of vec_embed
-              intercalate_any_vec_fall2 *)
-
     Local Lemma E_embed c (Hc : s (S i) = Some c) t :
           wft X t → E c t → ⟨α|γ⟩ ≤[k,R] t.
     Proof.
@@ -758,7 +754,7 @@ Section veldman_afs_nodes_lt.
         destruct (vinsert_surjective v q) as (u & Hu & Hu').
         destruct (hereditary _ ⦉x,q,v⦃q⦄⦊₂ u)
           as [ (p & Hp) | (v'' & H5 & H6) ]; eauto.
-        * intro; rewrite Hu'; auto.
+        * apply vinsert_fall with (1 := Hu); auto.
         * right; constructor 1 with (vinsert_idx q p).
           apply IHv; rewrite <- Hu'; assumption.
         * apply disapointing_inv_2 in H6; auto.
@@ -774,7 +770,7 @@ Section veldman_afs_nodes_lt.
         destruct (vinsert_surjective v q) as (u & Hu & Hu').
         destruct (hereditary _ ⦉x,q,v⦃q⦄⦊₂ u)
           as [ (p & Hp) | (v'' & H5 & H6) ]; eauto.
-        * apply vinsert_fall with (1 := Hu); auto.
+        * apply vinsert_fall with (1 := Hu). auto.
         * right; constructor 1 with (vinsert_idx q p).
           apply IHv; rewrite <- Hu'; assumption.
         * apply disapointing_inv_2 in H6; auto.
