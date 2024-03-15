@@ -306,6 +306,6 @@ to establish that `afs (wft X) (vtree_upto_embed k R)↑t₀`:
 
 \[2\] _Higman's lemma in type theory_, Daniel Fridlender, TYPES 1996
 
-# Explanations about well foundness up to a projection
+# Well foundness up to a projection
 
 To be completed.
