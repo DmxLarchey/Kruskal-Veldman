@@ -248,9 +248,14 @@ Some key properties are not discussed in the above sketch:
       we project the result for `U := universe A` back to the arbitrary type `A` by a 
       simple surjective morphism (trivial projection since `U` extends `A`);
 2. the lexicographic induction needs extra information about the proof of `afs Xₙ Rₙ`
-  to be able to make a case distinction when `Rₙ` is a full relation on `Xₙ`. In \[1\], stumps are
-  used but here we circumvent this using the new notion of _well-foundness up to
-  a projection_;
+  to be able to make a case distinction when `Rₙ` is a full relation on `Xₙ`, and
+  also when `Xₙ` is an empty sub-type. None of these conditions can be decided. 
+  In \[1\], _stumps_ are used for this tasks. But while stumps can be computed
+  from `afs Xₙ Rₙ` in the `Type`-bounded case, in the `Prop`-bounded case, they
+  cannot be computed. In \[1\], Church thesis is used for this purpose. 
+  But here we circumvent it by using the (new ?) notion of _well-foundness up 
+  to a projection_ which allows us to access the above information (fullness of
+  `Rₙ` or emptiness of `Xₙ`) internally in the proof;
 3. the construction of quasi-morphism is somewhat natural but not trivial at all
   and its properties can be difficult to establish, depending on which framework
   is used to implement it.
