@@ -52,18 +52,18 @@ opam repo add coq-released https://coq.inria.fr/opam/released
 opam update
 opam install coq-kruskal-veldman
 ```
-Notice that, is with [`Kruskal-AlmostFull`](https://github.com/DmxLarchey/Kruskal-AlmostFull) (and [`Kruskal-Higman`](https://github.com/DmxLarchey/Kruskal-Higman) btw),
-the library comes in a `Prop`-bounded and a `Type`-bounded flavor, both generated with the very same code base. To access eg. the `Prop`-bounded version,
-one should import via:
+Notice that, as with [`Kruskal-AlmostFull`](https://github.com/DmxLarchey/Kruskal-AlmostFull) (and [`Kruskal-Higman`](https://github.com/DmxLarchey/Kruskal-Higman) btw),
+the library comes in a `Prop`-bounded and a `Type`-bounded flavor, both generated with the very same code base. To access eg. the `Prop`-bounded version
+in Coq source code, one should import via:
 ```coq
 From KruskalTrees Require Import idx vec vtree.
 From KruskalAfProp Require Import almostfull.
 From KruskalVeldmanProp Require Import vtree_embed veldman_theorem.
 ```
 
-When the intention is to review the code with the help of an IDE for the Coq proof assistant, 
-the procedure is a bit different. Then it is advised to download the current code base, either
-the [release](https://github.com/DmxLarchey/Kruskal-Veldman/releases) or the `main` branch
+When the intention is to review the code base of `Kruskal-Veldman` with the help of an IDE for the Coq proof assistant, 
+the procedure is a bit different. Then it is advised to download the current code base, either via
+the [release](https://github.com/DmxLarchey/Kruskal-Veldman/releases), or cloning the `main` branch
 here, and unpack it in say the `Kruskal-Veldman` directory.
 ```console
 git clone https://github.com/DmxLarchey/Kruskal-Veldman.git
@@ -80,7 +80,7 @@ make type
 while the `Prop`-bounded could be obtained via `make prop`. Notice that only one
 can be compiled in a given directory because the code base in the same, except from
 one selector file `base/base_implem.v` which is copied either from [`implem/prop.v`](theories/implem/prop.v)
-or `implem/type.v`(theories/implem/type.v) depending on `make prop` or `make type`.
+or [`implem/type.v`](theories/implem/type.v) depending on `make prop` or `make type`.
 
 Then one can review the code base with say [`CoqIDE`](https://coq.inria.fr/download) 
 or [`vscoq`](https://github.com/coq-community/vscoq). But see below for a detailed
