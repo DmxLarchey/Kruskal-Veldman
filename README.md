@@ -254,8 +254,8 @@ Some _key properties_ are not discussed in the above sketch:
   to be able to make a case distinction when `Rₙ` is a full relation on `Xₙ`, and
   also when `Xₙ` is an empty sub-type. None of these conditions can be decided. 
   In \[1\], _stumps_ are used for this tasks. But while stumps can be computed
-  from `afs Xₙ Rₙ` in the `Type`-bounded case, in the `Prop`-bounded case, they
-  cannot be computed:
+  from `afs Xₙ Rₙ` in the `Type`-bounded case, on the contrary they
+  cannot be computed in the `Prop`-bounded case:
     - in \[1\], _Church thesis_ is used specifically for this purpose, but
       the price is of an _assumed axiom_;
     - in here, we _circumvent_ Church thesis by using the (new ?) notion 
