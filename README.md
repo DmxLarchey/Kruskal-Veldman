@@ -186,10 +186,11 @@ tools are hopefully abstracted at a suitable level.
 # The proof sketch
 
 We describe the big picture of the proof at the cost of some vagueness here.
-Assuming relations `R₀/X₀,...,Rₖ/Xₖ` on sub-types of `A`, which we assume AF
+Assuming `k` and relations `R₀/X₀,...,Rₖ/Xₖ` on sub-types of `A`, of which
+neither `k` nor the `Rₙ` are fixed, for which we assume AF
 by `afs Xₙ Rₙ`, or equivalently `af Rₙ⇓Xₙ`, we want to show `afs (wft X) (vtree_upto_embed k R)`,
-or equivalently `af (vtree_upto_embed k R)⇓(wft X)`, where the notation
-`_ ⇓ _` represents the _restriction_ of a relation to a sub-type.
+or equivalently `af (vtree_upto_embed k R)⇓(wft X)`, where the `_ ⇓ _` notation
+ represents the _restriction_ of a relation to a sub-type.
 
 The first step is to proceed by "induction" on the sequence `X₀/R₀,...,Xₖ/Rₖ`,
 but this is not exactly well-founded induction. It would be more accurate to
@@ -215,16 +216,16 @@ afs (wft X) (vtree_upto_embed k R)↑γ⦃i⦄
 ```
 
 Now there is a case distinction between `n = 0`, `0 < n < k` and `k ≤ n`. When
-`n = 0`, ie `t₀ = ⟨α|∅⟩` is a _leaf_, there is a separate treatment which is easy
-and we do not discuss it here. In the two other cases, we proceed with a similar
-sketch but the details differ: 
+`n = 0`, ie `t₀ = ⟨α|∅⟩` is a _leaf_, there is a separate treatment which is easier
+and we do not discuss it here. In the two other cases, we proceed with a common
+overall sketch but the details differ: 
 - [`veldman_higman.v`](theories/universe/veldman_higman.v) describes the case `0 < n < k`;
-- and [`veldman_kruskal.v`](theories/universe/veldman_kruskal.v) describes the case `k ≤ n`.
+- [`veldman_kruskal.v`](theories/universe/veldman_kruskal.v) describes the case `k ≤ n`.
 
 In both cases we build a new sequence of relations `R'₀/X'₀,...,R'ₚ/X'ₚ`
 where possibly `p` might differ from `k` (it can even be larger). 
 However, this new sequence is built smaller than `R₀/X₀,...,Rₖ/Xₖ` 
-in the lexicographic order. Hence, the induction hypothesis gives us 
+in the lexicographic order mentionned above. Hence, the induction hypothesis gives us 
 `afs X' (vtree_upto_embed p R')` and we transfer the `afs` property
 via
 ```coq
