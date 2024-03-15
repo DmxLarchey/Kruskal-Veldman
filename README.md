@@ -159,11 +159,11 @@ and presented undeniable improvements over the pen&paper proof:
   an inductive formulation of almost full relations;
 - it circumvented (and hence solved) the issue of _Church thesis_, 
   which is an axiom used in \[1\] to recovered a _stump_ from a proof 
-  of almost-fullness of a relation.
-Beware that we do not give a proof of Church thesis, we simply avoid its usage.
+  of almost-fullness of a relation. Beware that we do not give a proof of Church 
+  thesis, we simply avoid its usage.
 
-Still, we could not consider it as a clean enough reference work for 
-a less painful learning path into the apparently complicated pen&paper intuitionistic 
+Still, we could not consider that monolithic proof as a clean enough reference work for 
+a less painful learning path into the arguably complicated pen&paper intuitionistic 
 account of Kruskal's theorem \[1\]:
 - too much proof code (duplication), sub-optimal proof automation;
 - too many edge cases, retrospectively due to bad design choices for 
@@ -171,7 +171,8 @@ account of Kruskal's theorem \[1\]:
 - as a consequence, too strong hypotheses for the statement of 
   eg. `afs_vtree_upto_embed` where:
     - we required the decidability of `X : nat → rel₁ A`, but not of `R : nat → rel₂ A` !!
-    - we had to carry that extra assumption all along the proof with significant overhead;
+    - we had to carry that extra assumption all along the inductive steps of the proof
+      with significant overhead;
     - this additional assumption was related to the implementation choice 
       of the analysis/evaluations as _Coq functions_;
     - they are now converted to a _single relation_, and the decidability 
@@ -187,7 +188,8 @@ tools are hopefully abstracted at a suitable level.
 We describe the big picture of the proof at the cost of some vagueness here.
 Assuming relations `R₀/X₀,...,Rₖ/Xₖ` on sub-types of `A`, which we assume AF
 by `afs Xₙ Rₙ`, or equivalently `af Rₙ⇓Xₙ`, we want to show `afs (wft X) (vtree_upto_embed k R)`,
-or equivalently `af (vtree_upto_embed k R)⇓(wft X)`.
+or equivalently `af (vtree_upto_embed k R)⇓(wft X)`, where the notation
+`_ ⇓ _` represents the _restriction_ of a relation to a sub-type.
 
 The first step is to proceed by "induction" on the sequence `X₀/R₀,...,Xₖ/Rₖ`,
 but this is not exactly well-founded induction. It would be more accurate to
