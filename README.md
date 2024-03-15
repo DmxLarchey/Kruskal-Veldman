@@ -233,15 +233,15 @@ between trees in `wft X'` and trees in `wft X`. Which concludes the proof sketch
 Some key properties are not discussed in the above sketch: 
 1. to be able to build the new sequence `R'₀/X'₀,...,R'ₚ/X'ₚ`, the type `A` needs 
   to be equipped with some structure allowing eg. to nest (trees of) itself 
-  from within, a bit like universes in set theory. Of course, this won't be possible for
-  an arbitrary type: 
+  from within, a bit like universes in set theory. Of course, an arbitrary type
+  `A` does not have this property. 
     - in \[1\], the choice is made for `A` to be `nat`, which is
       the natural choice for intuitionistic set theory, but this also limits the main 
-      result to `nat`, or at types that must be first embedded into `nat`; 
+      result to `nat`, or to types that must be first embedded into `nat`; 
     - we proceed otherwise: we first embed an arbitrary type `A` into a richer 
-      type `universe A` (in [universe.v](theories/universe/universe.v)), 
-     that has the necessary structure for the proof (in [veldman_universe.v](theories/universe/veldman_universe.v));
-    - then at the end of the proof (in [`veldman_theorem.v](theories/universe/veldman_theorem.v)), 
+      type `U := universe A` (in [`universe.v`](theories/universe/universe.v)), 
+     that has the necessary structure for the proof (in [`veldman_universe.v`](theories/universe/veldman_universe.v));
+    - then at the end of the proof (in [`veldman_theorem.v`](theories/universe/veldman_theorem.v)), 
       we project the result for `universe A` back to the arbitrary type `A` by a 
       simple morphism;
 2. the lexicographic induction needs extra information about the proof of `afs Xₙ Rₙ`
