@@ -1,5 +1,4 @@
 opam-version: "2.0"
-name: "Coq-Kruskal-Veldman"
 version: "1.0"
 synopsis: "Wim Veldman's proof of Higman's and Kruskal tree theorems"
 description: """
@@ -22,9 +21,16 @@ install: [
 
 depends: [
   "coq" {>= "8.14" & < "8.20~"}
-  "coq-kruskal-trees" {>= "1.3"}
-  "coq-kruskal-finite" {>= "1.3"}
-  "coq-kruskal-almostfull" {>= "1.0"}
+  "coq-kruskal-trees"
+  "coq-kruskal-finite"
+  "coq-kruskal-almostfull"
   "coq-kruskal-higman" {>= "1.0"}
+]
+
+tags: [
+  "category:Computer Science/Data Types and Data Structures"
+  "date:2024-03-15"
+  "logpath:KruskalVeldmanProp"
+  "logpath:KruskalVeldmanType"
 ]
 
