@@ -24,7 +24,7 @@ From this result, one can easily derives, via simple surjective relational morph
 of rose trees using lists, vectors etc. This tasks is devoted to the upcoming project `Kruskal-Theorems`, 
 to be published as a follow-up on short notice.
 
-\[1\]. [_An intuitionistic proof of Kruskal's theorem_](https://link.springer.com/article/10.1007/s00153-003-0207-x), Wim Veldman, 2004
+\[1\] [_An intuitionistic proof of Kruskal's theorem_](https://link.springer.com/article/10.1007/s00153-003-0207-x), Wim Veldman, 2004
 
 ## Target audience
 
@@ -32,8 +32,8 @@ This library is not intended for direct usage, but it is possible to do so.
 Rather, `Kruskal-Theorems` will contain the high-level theorems that are intended
 to be imported.
 
-On the other hand, `Kruskal-Veldman`, in addition of being an intermediate step, was specifically designed 
-to be read/studied by those readers who wish to understand the internal details of this difficult
+On the other hand, `Kruskal-Veldman`, in addition of being an intermediate step, was specifically _designed 
+to be read/studied_ by those readers who wish to _understand the internal details_ of this difficult
 proof. It comes from a _major refactoring effort_ of a [former monolithic proof](https://members.loria.fr/DLarchey/files/Kruskal) 
 of the theorem, a project that as been since split into several sub-libraries, initiated by requests to access parts
 of the project specifically:
