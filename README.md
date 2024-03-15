@@ -267,7 +267,7 @@ Some _key properties_ are not discussed in the above sketch:
   and its properties can be difficult to establish, depending on which framework
   is used to implement it (eg `list` or `vec` based rose trees). The 
   [`Kruskal-Finite`](https://github.com/DmxLarchey/Kruskal-Finite) library tools
-  where specifically designed to allow for manageable proofs of that those
+  where specifically designed to allow for manageable proofs that those
   quasi-morphisms have finite inverse images.
 
 # How to enter the recursive proof in more details
