@@ -261,11 +261,14 @@ Some _key properties_ are not discussed in the above sketch:
     - in here, we _circumvent_ Church thesis by using the (new ?) notion 
       of _well-foundness up to a projection_ which allows us to access 
       the above information (fullness of `Rₙ` or emptiness of `Xₙ`) 
-      in the internals of the proof as soon as the output type does not 
+      in the internals of the recursive proof as soon as the output type does not 
       state properties about this (hidden) information;
 3. the construction of quasi-morphism is somewhat natural but not trivial at all
   and its properties can be difficult to establish, depending on which framework
-  is used to implement it. See below for more information.
+  is used to implement it (eg `list` or `vec` based rose trees). The 
+  [`Kruskal-Finite`](https://github.com/DmxLarchey/Kruskal-Finite) library tools
+  where specifically designed to allow for manageable proofs of that those
+  quasi-morphisms have finite inverse images.
 
 # How to enter this proof in more details
 
