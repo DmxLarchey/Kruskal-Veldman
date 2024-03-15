@@ -243,13 +243,13 @@ Some _key properties_ are not discussed in the above sketch:
       result to `nat`, or to types that must be first embedded into `nat`; 
     - we proceed otherwise: in [`universe.v`](theories/universe/universe.v)
       we first embed an arbitrary type `A` into a richer type `U := universe A` 
-     that has the necessary structure for the proofs in 
+     that has the necessary structure for the recursive proofs in 
      [`velman_higman.v`](theories/universe/veldman_higman.v), 
      [`veldman_kruskal`](theories/universe/veldman_kruskal.v) and 
      [`veldman_universe.v`](theories/universe/veldman_universe.v);
-    - then at the end of the proof in [`veldman_theorem.v`](theories/universe/veldman_theorem.v), 
-      we project the result for `U := universe A` back to the arbitrary type `A` by a 
-      simple surjective morphism (trivial projection since `U` extends `A`);
+    - then, after the recursive proof, we project in [`veldman_theorem.v`](theories/universe/veldman_theorem.v)
+      the result for `U := universe A` back to the arbitrary type `A` by a 
+      simple surjective morphism, a trivial projection since `U` extends `A`;
 2. the lexicographic induction needs extra information about the proof of `afs Xₙ Rₙ`
   to be able to make a case distinction when `Rₙ` is a full relation on `Xₙ`, and
   also when `Xₙ` is an empty sub-type. None of these conditions can be decided. 
