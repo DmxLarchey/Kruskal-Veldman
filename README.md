@@ -157,7 +157,7 @@ It gave a Coq-checkable proof script for a nice statement of the tree theorem
 and presented undeniable improvements over the pen&paper proof:
 - compared to \[1\], it lifts the proof to a type theoretic settings with
   an inductive formulation of almost full relations;
-- it solved the issue of _Church thesis_, which is an axiom used in \[1\]
+- it circumvented the issue of _Church thesis_, which is an axiom used in \[1\]
   to recovered a _stump_ from a proof of almost-fullness of a relation;
 
 Still, we could not consider it as a clean enough reference work for 
