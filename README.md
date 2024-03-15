@@ -309,7 +309,8 @@ to establish that `afs (wft X) (vtree_upto_embed k R)↑t₀`:
 - [veldman_kruskal.v](theories/universe/veldman_kruskal.v) constructs a quasi-morphism when the lifting tree `t₀`
   has root arity greater than `k`;
 - also notice that the case of arity 0 for `t₀` is considered in the separate 
-  file [veldman_leaves.v](theories/universe/veldman_leaves.v) because it is a ground case for the recursive proof.
+  file [veldman_leaves.v](theories/universe/veldman_leaves.v) because it is a
+  simpler case for the recursive proof.
 
 \[2\] _Higman's lemma in type theory_, Daniel Fridlender, TYPES 1996
 
