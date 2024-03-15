@@ -254,7 +254,7 @@ Some key properties are not discussed in the above sketch:
   from `afs Xₙ Rₙ` in the `Type`-bounded case, in the `Prop`-bounded case, they
   cannot be computed:
     - in \[1\], _Church thesis_ is used specifically for this purpose, but
-      of course this is at the price of an _assumed axiom_;
+      the price is of an _assumed axiom_;
     - in here, we _circumvent_ Church thesis by using the (new ?) notion 
       of _well-foundness up to a projection_ which allows us to access 
       the above information (fullness of `Rₙ` or emptiness of `Xₙ`) 
