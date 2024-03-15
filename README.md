@@ -253,8 +253,9 @@ Some key properties are not discussed in the above sketch:
   In \[1\], _stumps_ are used for this tasks. But while stumps can be computed
   from `afs Xₙ Rₙ` in the `Type`-bounded case, in the `Prop`-bounded case, they
   cannot be computed:
-    - in \[1\], _Church thesis_ is used specifically for this purpose. 
-    - but here, we circumvent its usage by using the (new ?) notion 
+    - in \[1\], _Church thesis_ is used specifically for this purpose, but
+      of course this is at the price of an _assumed axiom_;
+    - in here, we _circumvent_ Church thesis by using the (new ?) notion 
       of _well-foundness up to a projection_ which allows us to access 
       the above information (fullness of `Rₙ` or emptiness of `Xₙ`) 
       in the internals of the proof as soon as the output type does not 
