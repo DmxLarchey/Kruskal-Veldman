@@ -32,11 +32,11 @@ This library is not intended for direct usage, but it is possible to do so.
 Rather, `Kruskal-Theorems` will contain the high-level theorems that are intended
 to be imported.
 
-On the other hand, `Kruskal-Veldman`, in addition of being an intermediate step, was specifically _designed 
-to be read/studied_ by those readers who wish to _understand the internal details_ of this difficult
-proof. It comes from a _major refactoring effort_ of a [former monolithic proof](https://members.loria.fr/DLarchey/files/Kruskal) 
-of the theorem, a project that as been since split into several sub-libraries, initiated by requests to access parts
-of the project specifically:
+On the other hand, `Kruskal-Veldman`, in addition of being an intermediate step, was specifically __designed 
+to be read/studied__ by those readers who wish to _understand the internal details_ of this difficult
+proof. It comes from a major refactoring effort of a [former monolithic Coq proof](https://members.loria.fr/DLarchey/files/Kruskal) 
+of the theorem, a project that as been since split into several sub-libraries, initiated after some requests have been formulated 
+to access parts of that project specifically. Here is the current split:
 - [`Kruskal-Trees`](https://github.com/DmxLarchey/Kruskal-Trees), extra library for lists, vectors, and rose trees; 
 - [`Kruskal-Finite`](https://github.com/DmxLarchey/Kruskal-Finite), library to manage finiteness (listability);
 - [`Kruskal-AlmostFull`](https://github.com/DmxLarchey/Kruskal-AlmostFull), the basic tools for A(lmost) F(ull) relations (up to Coquand's Ramsey's theorem);
