@@ -270,17 +270,18 @@ Some _key properties_ are not discussed in the above sketch:
   where specifically designed to allow for manageable proofs of that those
   quasi-morphisms have finite inverse images.
 
-# How to enter this proof in more details
+# How to enter the recursive proof in more details
 
 Our first remark would be: start with _Higman's lemma_ as in 
 [`Kruskal-Higman`](https://github.com/DmxLarchey/Kruskal-Higman) which was specifically
 designed as a downgrade of the more general cases of the proofs of Higman's theorem 
 and Kruskal's tree theorem \[1\]. This proof concerns the restricted case of _unary trees_,
-which are nearly as simple as lists.
+which are just lists with an extra label on the empty list.
 
 It could be made simpler/shorter (but still constructive), 
 as done by previous authors like D. Fridlender \[2\], but that was precisely
-not the goal. The main goal there was to implement the proof sketch and tools 
+not the goal. The main goal of [`Kruskal-Higman`](https://github.com/DmxLarchey/Kruskal-Higman)
+was to implement the proof sketch and tools 
 that are common with that of the current proof of `afs_vtree_upto_embed` above, 
 but in a simpler/shorter context.
 
