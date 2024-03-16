@@ -501,23 +501,27 @@ Section veldman_afs_nodes_lt.
   (* Ana(lysis) is the converse of evaluation *)
   Notation ana c := (λ t t', t' -[c]-> t).
 
-  Local Theorem hev_inv_image_fin c t : wft X t → fin (ana c t).
+  (* Vector/product analysis *)
+  Notation vana c := (λ v v', v' =[c]=> v).
+
+  (* hev has finite inverse image, ie ana(lisys) is finitary *)
+  Local Theorem fin_ana c t : wft X t → fin (ana c t).
   Proof.
-    induction 1 as [ j x v H1 H2 IH2 ] using wft_rect.
+    induction 1 as [ j x v Hx Hv IHv ] using wft_rect.
     finite eq (hev_analysis c x v).
     finite union.
-    + destruct (eq_nat_dec j i) as [ -> | C ].
-      2: now finite as (fun _ => False).
+    + destruct (eq_nat_dec j i) as [ -> | ].
+      2: now finite as ⊥₁.
       repeat finite cst left.
       finite compose.
       finite as (vec_fall2 (ana c) v).
       split; apply vec_fall2_swap.
-    + destruct (eq_nat_dec j (S i)) as [ -> | C ].
-      2: now finite as (fun _ => False).
+    + destruct (eq_nat_dec j (S i)) as [ -> | ].
+      2: now finite as ⊥₁.
       repeat finite dec left.
       finite compose.
       intros [ a u p ] H; simpl in *.
-      apply (vinsert_fall _ H) in H2 as [H2 H3].
+      apply (vinsert_fall _ H) in Hv as [H2 H3].
       repeat finite dec left.
       finite compose.
       finite as (vec_fall2 (ana c) u).
@@ -528,16 +532,23 @@ Section veldman_afs_nodes_lt.
     + repeat finite dec left.
       finite compose.
       finite as (vec_fall2 (ana c) v).
-      1: split; apply vec_fall2_swap.
+      split; apply vec_fall2_swap.
     + destruct c.
-      * destruct (eq_nat_dec j (S i)) as [ -> | C ].
-        2: now finite as (fun _ => False).
-        repeat finite dec left.
-        finite compose.
-        finite as (vec_fall2 (ana ◩) v).
-        1: split; apply vec_fall2_swap.
-      * now finite as (fun _ => False).
+      2: now finite as ⊥₁.
+      destruct (eq_nat_dec j (S i)) as [ -> | ].
+      2: now finite as ⊥₁.
+      repeat finite dec left.
+      finite compose.
+      finite as (vec_fall2 (ana ◩) v).
+      split; apply vec_fall2_swap.
   Qed.
+
+  Hint Resolve fin_ana : core.
+
+  Local Corollary fin_vana n c (v : vec _ n) : vec_fall (wft X) v → fin (vana c v).
+  Proof. intro; apply fin_vec_fall2 with (R := ana c); eauto. Qed.
+
+  Hint Resolve fin_vana : core.
 
   (** An analysis on (X',R') is disapointing if either
         - its root node is above "α" wrt to R at arity 1+i
@@ -546,7 +557,7 @@ Section veldman_afs_nodes_lt.
 
   Unset Elimination Schemes.
 
-  Inductive disapointing : Utree -> Prop :=
+  Inductive disapointing : Utree → Prop :=
     | disapointing_gt x (v : vec _ (S i)) :  R (S i) α x → disapointing ⟨x|v⟩
     | disapointing_eq p x t (v : vec _ i) : γ⦃p⦄ ≤[k,R] t → disapointing ⟨⦉x,p,t⦊₂|v⟩.
 
@@ -596,9 +607,7 @@ Section veldman_afs_nodes_lt.
   Local Fact sub_vtree_has_disap r t : r ≤st t → E' r → E' t.
   Proof. intros ? (w & ? & ?); exists w; eauto. Qed.
 
-  Hint Resolve disap_has_disap
-               sub_vtree_has_disap
-               hev_inv_image_fin : core.
+  Hint Resolve disap_has_disap sub_vtree_has_disap : core.
 
   (* Here we use left inversion lemma for hev_graph *)
 
@@ -615,7 +624,7 @@ Section veldman_afs_nodes_lt.
     + specialize (fun t => IH _ t E1); clear E1.
       apply hev_graph_inv_left in E3
         as [ (<- & E3) | [ (H1 & H2 & H3 & v & E3 & <-) | (H1 & H2 & -> & v & E3 & <-) ] ].
-      (* cases i <> j *)
+      (* cases i ≠ j *)
       2,3: destruct (IH _ (E3 _)); eauto with vtree_db.
       (* case j = i *)
       destruct x' as [ | x | n x q a | ]; try easy.
@@ -627,7 +636,7 @@ Section veldman_afs_nodes_lt.
         left; constructor 1 with (vinsert_idx q p); rewrite <- E6; auto.
     + (* j < S i, so either j < i or j = i *)
       destruct (higman_lift_cases c j) as [ c j Hj1 Hj2 | c | | ].
-      * (* j <> i and j <> S i *)
+      * (* j ≠ i and j ≠ S i *)
          rewrite higman_lift_rel_neq in H1; auto.
         apply hev_graph_neq_inv in E3 as (E3 & v2 & E4 & <-); auto.
         apply hev_graph_neq_inv in E1 as (E1 & v1 & E2 & <-); auto.
@@ -724,18 +733,17 @@ Section veldman_afs_nodes_lt.
     Local Lemma E_hereditary c n x' (v : vec _ n) t :
             vec_fall (wft X) v
           → E c t
-          → (∀v', v' =[c]=> v → ⟨x'|v'⟩ -[c]-> t)
+          → (∀v', vana c v v' → ana c t ⟨x'|v'⟩)
           → Esub_or_D' c v x'.
     Proof.
       intros Hv Ht1 Ht2; red.
-      assert ((∀v', v' =[c]=> v → ∃p, E' v'⦃p⦄)
-            ∨ (∃v', v' =[c]=> v ∧ D' ⟨x'|v'⟩)) 
+      assert ((∀v', vana c v v' → ∃p, E' v'⦃p⦄)
+            ∨ (∃v', vana c v v' ∧ D' ⟨x'|v'⟩)) 
         as [H| (? & _ & ?)]; eauto.
       + apply fin_choice; auto.
-        * apply fin_idx_rel with (R := λ _ v', v' -[_]-> _); auto.
-        * intros v' Hv'.
-          destruct (Ht1 ⟨x'|v'⟩) as (t' & H' & ?); auto.
-          apply sub_dtree_inv_rt in H' as [ -> | [] ]; eauto.
+        intros v' Hv'.
+        destruct (Ht1 ⟨x'|v'⟩) as (t' & H' & ?); auto.
+        apply sub_dtree_inv_rt in H' as [ -> | [] ]; eauto.
       + apply fin_vec_fall2_find with (R := ana _) in H; auto.
     Qed.
 
@@ -772,9 +780,9 @@ Section veldman_afs_nodes_lt.
     Proof.
       induction 1 as [ j x v Hx Hv0 IHv ] using wft_rect; intros Hv.
       (* We specialize E_hereditary on c so the next destruct with instanciate c *)
-      generalize (fun j x' u' H => @E_hereditary c j x' u' _ H Hv); intros hereditary.
+      generalize (λ j x' u' H, @E_hereditary c j x' u' _ H Hv); intros hereditary.
       destruct (higman_lift_cases c j) as [ c j H1 H2 | c | | ].
-      + (* case j <> i j <> S i *)
+      + (* case j ≠ i and j ≠ S i *)
         destruct (hereditary _ x v) as [ [] | (v' & H4) ]; eauto with vtree_db.
         apply disapointing_length in H4; lia.
       + (* case j = i *)
