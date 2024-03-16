@@ -162,7 +162,7 @@ and presented undeniable improvements over the pen&paper proof:
   of almost-fullness of a relation. Beware that we do not give a proof of Church 
   thesis, we simply avoid its usage.
 
-Still, we could not consider that monolithic proof as a clean enough reference work for 
+Still, we could not consider that former monolithic development as a clean enough reference work for 
 a less painful learning path into the arguably complicated pen&paper intuitionistic 
 account of Kruskal's theorem \[1\]:
 - too much proof code (duplication), sub-optimal proof automation;
@@ -201,9 +201,11 @@ but this is not exactly well-founded induction. It would be more accurate to
 say that we proceed by induction on the sequence of proofs `afs X₀ R₀,...,afs Xₖ Rₖ`
 but we avoid the details at this stage. Also, we skip the description of the order
 used for this first induction. We just call it _lexicographic order_ on `afs` predicates.
-
-Then, having this first induction hypothesis at our disposal, we want
-to show 
+This gives use our fist induction hypothesis as:
+```coq
+for any R'₀⇓X'₀,...,R'ₚ⇓X'ₚ st (∀n, afs Xₙ Rₙ) and lex.-smaller that R₀⇓X₀,...,Rₖ⇓Xₖ, we have afs (wft X') (vtree_upto_embed p R')
+```
+Then, having this first induction hypothesis at our disposal, we want to show 
 ```coq
 afs (wft X) (vtree_upto_embed k R)
 ```
