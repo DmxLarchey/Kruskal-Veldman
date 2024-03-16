@@ -98,7 +98,7 @@ Section props.
     + induction 1 as [ m v | n x u m v k w H1 (-> & H2) ]; simpl in *.
       * exists eq_refl; auto.
       * subst w; exists eq_refl; auto.
-    + intros (-> & H); simpl in *; subst.
+    + intros (-> & ?); simpl in *; subst.
       induction u; constructor; auto.
   Qed.
 
@@ -116,31 +116,31 @@ Section props.
   Proof. induction u; auto with vec_db. Qed.
 
   Inductive vapp_out : Type :=
-    | c_vapp_out n (_ : vec X n) : vapp_out.
+    | c_vapp_out n : vec X n → vapp_out.
 
   Definition is_vapp_out n (u : vec _ n) m (v : vec _ m) o :=
     match o with @c_vapp_out k w => u ⊞ v ⇝ w end.
 
-  Definition vapp_total n u m v : sig (@is_vapp_out n u m v).
+  Definition vapp_total n u m v : {o | @is_vapp_out n u m v o}.
   Proof.
     exists (c_vapp_out (vec_app u v)); apply vapp_iff_vec_app.
     exists eq_refl; auto.
   Qed.
 
   Inductive vapp_in : Type :=
-    | c_vapp_in n (_ : vec X n) m (_ : vec X m) : vapp_in.
+    | c_vapp_in n m : vec X n → vec X m → vapp_in.
 
   Definition is_vapp_in k (w : vec _ k) i :=
-    match i with @c_vapp_in n u m v => u ⊞ v ⇝ w end.
+    match i with c_vapp_in u v => u ⊞ v ⇝ w end.
 
-  Fact is_vapp_in_nil_iff a : is_vapp_in ∅ a ↔ c_vapp_in ∅ ∅ = a.
+  Local Fact is_vapp_in_nil_iff a : is_vapp_in ∅ a ↔ c_vapp_in ∅ ∅ = a.
   Proof.
     split.
     + destruct a; simpl; intros; vapp inv all; auto.
     + intros <-; simpl; constructor.
   Qed.
 
-  Fact is_vapp_in_cons_iff k x (w : vec _ k) a :
+  Local Fact is_vapp_in_cons_iff k x (w : vec _ k) a :
            is_vapp_in (x##w) a
         ↔  c_vapp_in ∅ (x##w) = a
          ∨ ∃a', match a' with
@@ -148,12 +148,12 @@ Section props.
                 end ∧ is_vapp_in w a'.
   Proof.
     split.
-    + destruct a as [ n u m v ]; simpl; intros; vapp inv all; auto.
+    + destruct a as [ n m u v ]; simpl; intros; vapp inv all; auto.
       right; exists (c_vapp_in u v); auto.
     + intros [ <- | ([] & <- & H2) ]; constructor; auto.
   Qed.
 
-  Fact vapp_fin k w : fin (@is_vapp_in k w).
+  Lemma vapp_fin k w : fin (@is_vapp_in k w).
   Proof.
     induction w as [ | k y w IH ].
     + finite eq is_vapp_in_nil_iff.
@@ -262,7 +262,7 @@ Section props.
 
   Fact vapp_assoc nu (u : vec X nu) nv (v : vec _ nv) nuv (uv : vec _ nuv) 
                   nw (w : vec _ nw) nr (r : vec _ nr) :
-          u ⊞ v ⇝ uv
+           u ⊞ v ⇝ uv
         → uv ⊞ w ⇝ r
         → ∃ nvw (vw : vec _ nvw), u ⊞ vw ⇝ r ∧ v ⊞ w ⇝ vw.
   Proof.
@@ -402,7 +402,7 @@ Section embed.
     induction 1; intros; vapp inv all; eauto with vec_db.
   Qed.
 
- Local Lemma vapp_embed_split nc (c : vec X nc) nu (u : vec _ nu) nv (v : vec _ nv) nw (w : vec _ nw) :
+ Local Lemma vapp_embed_comm nc (c : vec X nc) nu (u : vec _ nu) nv (v : vec _ nv) nw (w : vec _ nw) :
         u ⊞ v ⇝ w
       → c ≤ₑ w
       → ∃ na (a : vec _ na) nb (b : vec _ nb), a ⊞ b ⇝ c ∧ a ≤ₑ u ∧ b ≤ₑ v.
@@ -417,10 +417,13 @@ Section embed.
   Qed.
 
   Lemma vapp_embed_middle_choice x nu (u : vec X nu) y nv (v : vec _ nv) nw (w : vec _ nw) nr (r : vec _ nr) :
-       v ⊞ (y##w) ⇝ r → x##u ≤ₑ r → u ≤ₑ w ∨ ∃i, R x (v⦃i⦄).
+       v ⊞ (y##w) ⇝ r
+     → x##u ≤ₑ r
+     → u ≤ₑ w 
+     ∨ ∃i, R x v⦃i⦄.
   Proof.
     intros H1 H2.
-    destruct (vapp_embed_split H1 H2) as (na & a & nb & b & H3 & H4 & H5).
+    destruct (vapp_embed_comm H1 H2) as (na & a & nb & b & H3 & H4 & H5).
     destruct a as [ | z na a ].
     + destruct (vapp_fun H3 (vapp_0 _)); subst; simpl eq_rect in *.
       apply vec_embed_inv_left in H5 as [ (H6 & H5) | H5 ]; auto.
@@ -431,47 +434,3 @@ Section embed.
   Qed.
 
 End embed.
-
-Section subvec.
-
-  (* THIS SECTION SEEMS OBSOLETE *)
-
-  Variables (X : Type).
-
-  Local Fact subvec_refl n (v : vec X n) : v ≤sv v.
-  Proof. apply vec_sub_refl. Qed.
-
-  Local Fact vapp_subvec_left p (w : vec X p) n (u : vec _ n) n' (u' : vec _ n')
-                                        m (v : vec _ m) m' (v' : vec _ m') :
-          w ⊞ u ⇝ u'
-        → w ⊞ v ⇝ v'
-        → u ≤sv v
-        → u' ≤sv v'.
-  Proof.
-    intros H; revert H m v m' v'.
-    induction 1; intros; vapp inv all; eauto with vec_db.
-  Qed.
-
-  Local Fact vapp_subvec_choose na (a : vec X na) nu (u : vec _ nu) nv (v : vec _ nv) nw (w : vec _ nw) : 
-        u ⊞ v ⇝ w 
-      → a ≤sv w 
-      → a ≤sv v 
-      ∨ match a with
-        | ∅    => True
-        | x##_ => ∃ p, u⦃p⦄ = x
-        end.
-  Proof.
-    induction 1 as [ | nu x u nv v nw w H IH ] in na, a |- *; eauto.
-    intros [ [ Ha | Ha ]%IH | Ha ]%vec_embed_inv_right; eauto; 
-      destruct a as [ | y na a ]; eauto with vec_db.
-    + destruct Ha as (p & <-); right; now exists (idx_nxt p).
-    + destruct Ha as (-> & _); right; now exists idx_fst.
-  Qed.
-
-  Local Fact vapp_subvec_split nc (c : vec X nc) nu (u : vec _ nu) nv (v : vec _ nv) nw (w : vec _ nw) :
-        u ⊞ v ⇝ w
-      → c ≤sv w
-      → ∃ na (a : vec _ na) nb (b : vec _ nb), a ⊞ b ⇝ c ∧ a ≤sv u ∧ b ≤sv v.
-  Proof. apply vapp_embed_split. Qed.
-
-End subvec.

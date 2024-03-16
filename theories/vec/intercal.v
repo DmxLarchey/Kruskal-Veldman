@@ -28,9 +28,8 @@ Set Implicit Arguments.
 
 #[global] Reserved Notation "v '⧓' m '⇝' w" (at level 70, no associativity, format "v ⧓ m  ⇝  w").
 
-Inductive vintercal_graph X : ∀n, vec X n → hvec X (S n) → ∀m, vec X m → Prop :=
+Inductive vintercal_graph X : ∀ n (_ : vec X n) (_ : hvec X (S n)) m (_ : vec X m), Prop :=
   | vintercal_0 n (v : vec _ n) i (u : vec _ i) (w : hvec _ n) m (a : vec _ m) k (b : vec _ k) :
-
                 v⧒w ⇝ a
               → u⊞a ⇝ b
               → v ⧓ ⦑i,u⦒##w ⇝ b
@@ -107,12 +106,12 @@ Section vintercal_graph.
   Qed.
 
   Inductive vintercal_out : Type :=
-    | c_vinter_out n (_ : vec X n) : vintercal_out.
+    | c_vinter_out n : vec X n → vintercal_out.
 
   Definition is_vintercal_out n v w o :=
     match o with @c_vinter_out k r => @vintercal_graph X n v w k r end.
 
-  Fact vintercal_total n v w : sig (@is_vintercal_out n v w).
+  Fact vintercal_total n v w : {o | @is_vintercal_out n v w o}.
   Proof.
     vec invert w as x w; destruct x as [i x].
     destruct (vmix_total v w) as ([j r] & Hr); simpl in Hr.
@@ -121,16 +120,16 @@ Section vintercal_graph.
   Qed.
 
   Inductive vintercal_in n : Type :=
-    | c_vinter_in (_ : vec X n) (_ : hvec X (S n)) : vintercal_in n.
+    | c_vinter_in : vec X n → hvec X (S n) → vintercal_in n.
 
   Definition is_vintercal_in j r n (m : vintercal_in n) :=
     match m with c_vinter_in v w => @vintercal_graph X n v w j r end.
 
-  Fact is_vintercal_in_iff j r n m :
+  Local Fact is_vintercal_in_iff j r n m :
        @is_vintercal_in j r n m
      ↔ ∃ c : vapp_in _,
          match c with
-         | @c_vapp_in _ i a j b => ∃ d : vmix_in _ n,
+         | @c_vapp_in _ i j a b => ∃ d : vmix_in _ n,
            match d with
            | @c_vmix_in _ _ v w => c_vinter_in v (⦑i,a⦒##w)
            end = m
@@ -148,11 +147,28 @@ Section vintercal_graph.
       constructor 1 with (1 := H2); auto.
   Qed.
 
-  Fact vintercal_fin j r n : fin (@is_vintercal_in j r n).
+  Lemma vintercal_fin j r n : fin (@is_vintercal_in j r n).
   Proof.
     finite eq (@is_vintercal_in_iff _ _ _).
     finite compose.
     intros [] ?; finite compose; auto with vec_db.
+  Qed.
+
+  Hint Resolve vintercal_fin : core.
+
+  (** This is finite left/right choice but with double quantification on u w *)
+  Corollary vintercal_choice j (v : vec X j) n (P Q : vec _ n → _) :
+         (∀ u w, u⧓w ⇝ v → P u w ∨ Q u w)
+       → (∀ u w, u⧓w ⇝ v → P u w)
+       ∨ (∃ u w, u⧓w ⇝ v ∧ Q u w).
+  Proof.
+    intros H.
+    assert (∀d, is_vintercal_in v d
+              → match d with c_vinter_in u w => P u w end
+              ∨ match d with c_vinter_in u w => Q u w end) as G.
+    1: intros []; simpl; auto.
+    apply fin_choice in G as [ G | ([] & []) ]; eauto.
+    left; intros u w; exact (G (c_vinter_in u w)).
   Qed.
 
   Fact vintercal_fall (P : rel₁ X) n u w m r :
@@ -192,7 +208,9 @@ Section vintercal_graph.
   Qed.
 
   Fact vintercal_prj n u w m r :
-       @vintercal_graph X n u w m r → ∀i, (∃j, r⦃i⦄ = u⦃j⦄) ∨ (∃ p q, r⦃i⦄ = (lvec_vec w⦃p⦄)⦃q⦄).
+       @vintercal_graph X n u w m r
+     → ∀i, (∃j, r⦃i⦄ = u⦃j⦄)
+         ∨ (∃ p q, r⦃i⦄ = (lvec_vec w⦃p⦄)⦃q⦄).
   Proof.
     induction 1 as [ n v i u w m a k b H1 H2 ]; intros j.
     destruct (vapp_prj H2 j) as [ (p & Hp) | (p & Hp) ].
@@ -282,7 +300,7 @@ Section vec_embed_intercalate.
   Qed.
 
   (* For u v of the same length, if it is not possible to
-     split v as _ ⧓ w without having some component of u
+     intercalate v as _ ⧓ w without having some component of u
      R-related to some component of w, then u is R related to v *)
 
   Theorem vintercal_any_vec_fall2 n (u v : vec _ (S n)) :
@@ -292,7 +310,7 @@ Section vec_embed_intercalate.
     revert u v; induction n as [ | n IHn ]; intros u v H; vec invert u as x u; vec invert v as y v.
     + vec invert u; vec invert v; apply vec_fall2_cons; auto with vec_db.
       destruct (H ∅ (⦑_,y##∅⦒##∅)) as (p & q & Hpq); eauto with vec_db.
-       repeat idx invert p; simpl in q; repeat idx invert q; auto.
+      repeat idx invert p; simpl in q; repeat idx invert q; auto.
     + destruct (H v (⦑_,y##∅⦒##vec_set (fun _ => ⦑_,∅⦒)))
         as (p & q & Hpq); simpl.
       * constructor 1 with (a := v); auto with vec_db.
@@ -311,7 +329,7 @@ Section vec_embed_intercalate.
           revert q Hpq; vec rew; simpl; intro; idx invert all.
   Qed.
 
-  Hint Resolve vintercal_fin vec_fall2_embed vintercal_any_vec_fall2 : core.
+  Hint Resolve vec_fall2_embed vintercal_any_vec_fall2 : core.
 
   (** This is a critical characterization of vec_embed (the converse is also
       provable but not used in these proofs
@@ -320,7 +338,7 @@ Section vec_embed_intercalate.
       into an "existential" property, a bit like the PHP *)
 
   Theorem vintercal_any_vec_embed n (f : vec _ (S n)) m (g : vec _ m) :
-        S n ≤ m
+        n < m
       → (∀ v w, v ⧓ w ⇝ g → ∃ i j, R f⦃i⦄ (lvec_vec w⦃i⦄)⦃j⦄)
       → f ≤ₑ g.
   Proof.
@@ -337,34 +355,37 @@ Section vec_embed_intercalate.
         idx invert q; eauto with vec_db.
         constructor 3.
         apply vec_sg_embed_prj; eauto.
-    + assert (H1: forall i : vintercal_in Y (S n), is_vintercal_in v i
-            -> match i with
-               | c_vinter_in _ w => exists p q, R (x##u)⦃p⦄ (lvec_vec w⦃p⦄)⦃q⦄
-               end \/ R x y).
-       1:{ intros [ v' w ]; simpl; intros H1.
+    + assert (H1: ∀ v' w, v'⧓w ⇝ v → (∃ p q, R (x##u)⦃p⦄ (lvec_vec w⦃p⦄)⦃q⦄) ∨ R x y).
+      1:{ intros v' w  H1.
            vec invert w as [i a] w.
            destruct (H v' (⦑_,y##a⦒##w)) as (p & q & Hpq).
            + apply vintercal_inv in H1 as (j & w1 & H1 & H2); simpl in H1.
              constructor 1 with (1 := H1); auto with vec_db.
            + idx invert p; simpl in *.
              * idx invert q; auto.
-               left; exists idx_fst, q; auto.
-             * left; exists (idx_nxt p), q; auto. }
-       apply fin_choice in H1 as [ H1 | (_ & _ & H1) ]; auto.
-       * destruct (eq_nat_dec (S n) m) as [ <- | Hnm ]; auto.
-         constructor 3; apply IHv; auto; tlia.
-         intros v' w Hw.
-         apply (H1 (c_vinter_in v' w)); simpl; auto.
-       * constructor 2; auto.
-         apply IHv; tlia.
-         intros v' w Hi; simpl in Hi.
-         destruct (H (y##v') (⦑_,∅⦒##w)) as (p & q & Hpq).
-         - destruct Hi as [ n v' j u' w k a m v G1 G2 ]; simpl.
-           constructor 1 with (a := y##v); auto with vec_db.
-           constructor 2 with (1 := G1); auto.
-         - idx invert p; simpl in *.
-           ++ idx invert q.
-           ++ exists p, q; auto.
+               left; exists 𝕆, q; auto.
+             * left; exists (𝕊 p), q; auto. }
+      apply vintercal_choice in H1 as [ H1 | (_ & _ & _ & H1) ]; eauto.
+      * destruct (eq_nat_dec (S n) m) as [ <- | Hnm ]; auto.
+        constructor 3; apply IHv; auto; tlia.
+      * constructor 2; auto.
+        apply IHv; tlia.
+        intros v' w Hi; simpl in Hi.
+        destruct (H (y##v') (⦑_,∅⦒##w)) as (p & q & Hpq).
+        - destruct Hi as [ n v' j u' w k a m v G1 G2 ]; simpl.
+          constructor 1 with (a := y##v); auto with vec_db.
+          constructor 2 with (1 := G1); auto.
+        - idx invert p; simpl in *.
+          ++ idx invert q.
+          ++ exists p, q; auto.
+  Qed.
+
+  Local Remark vintercal_any_vec_fall2' n (u v : vec _ (S n)) :
+        (∀ v' w, v' ⧓ w ⇝ v → ∃ i j, R u⦃i⦄ (lvec_vec w⦃i⦄)⦃j⦄)
+      → u =[R]= v.
+  Proof.
+    intros H%vintercal_any_vec_embed; auto.
+    now apply vec_embed_fall2 with (e := eq_refl) in H.
   Qed.
 
   (* Much like the PHP, we need to generalize here and idx2nat *)
@@ -403,16 +424,15 @@ Section vec_embed_intercalate.
       If f is the nil vector then f R-embeds into any g
 
       If f is a vector of strictly positive length 1+n:
-
-      f R-embeds into g if and only if 
-       - length of f = 1+n <= length of g
-       - for any intercalation of g = w0++[v1]++w1++...++[vn]++wn,
-         there is i such that f⦃i⦄ belongs to w⦃i⦄
+        f R-embeds into g if and only if 
+         - length of f = 1+n <= length of g
+         - and for any intercalation of g = w0++[v1]++w1++...++[vn]++wn,
+           there is i such that f⦃i⦄ R-embeds into w⦃i⦄
   
       Observation (DLW):
        - it is reminds me of the PHP
-       - it is a critical tool in the proof of Kruskal's tree thm,
-         ie the soundness of the construction of the quasi morphism
+       - it is a critical property in the proof "veldman_kruskal.v",
+         related the soundness of the construction of the quasi morphism
 
       See also vec_fall2_iff_vinsert in vec_rel/rel/insert.v *)
 
