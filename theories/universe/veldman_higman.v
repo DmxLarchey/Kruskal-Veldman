@@ -716,22 +716,23 @@ Section veldman_afs_nodes_lt.
     Qed.
 
     (* Either 
-       - v (of arity n) has an exceptional component 
+       - v (of arity n) has an exceptional sub-tree
        - or there is disapointing tree of arity n rooted at x' *)
-    Let Ecomp_or_D' c n (v : vec _ n) x' :=
+    Let Esub_or_D' c n (v : vec _ n) x' :=
       (∃p, E c v⦃p⦄) ∨ (∃v' : vec _ n, D' ⟨x'|v'⟩).
 
     Local Lemma E_hereditary c n x' (v : vec _ n) t :
             vec_fall (wft X) v
           → E c t
           → (∀v', v' =[c]=> v → ⟨x'|v'⟩ -[c]-> t)
-          → Ecomp_or_D' c v x'.
+          → Esub_or_D' c v x'.
     Proof.
       intros Hv Ht1 Ht2; red.
       assert ((∀v', v' =[c]=> v → ∃p, E' v'⦃p⦄)
-            ∨ (∃v', v' =[c]=> v ∧ D' ⟨x'|v'⟩)) as [H| (? & _ & ?)]; eauto.
+            ∨ (∃v', v' =[c]=> v ∧ D' ⟨x'|v'⟩)) 
+        as [H| (? & _ & ?)]; eauto.
       + apply fin_choice; auto.
-        * apply fin_idx_rel with (R := λ p v', v' -[_]-> _); auto.
+        * apply fin_idx_rel with (R := λ _ v', v' -[_]-> _); auto.
         * intros v' Hv'.
           destruct (Ht1 ⟨x'|v'⟩) as (t' & H' & ?); auto.
           apply sub_dtree_inv_rt in H' as [ -> | [] ]; eauto.
@@ -754,7 +755,7 @@ Section veldman_afs_nodes_lt.
     Local Lemma vinsert_choice_embed c x (v : vec _ (S i)) u q y :
              u ⊲q] y ⇝ v
            → (∀p, E c v⦃p⦄ → ⟨α|γ⟩ ≤[k,R] v⦃p⦄)
-           → Ecomp_or_D' c u ⦉x,q,y⦊₂
+           → Esub_or_D' c u ⦉x,q,y⦊₂
            →  γ⦃q⦄ ≤[k,R] y
            ∨ ⟨α|γ⟩ ≤[k,R] ⟨x|v⟩.
     Proof.
@@ -770,6 +771,7 @@ Section veldman_afs_nodes_lt.
           wft X t → E c t → ⟨α|γ⟩ ≤[k,R] t.
     Proof.
       induction 1 as [ j x v Hx Hv0 IHv ] using wft_rect; intros Hv.
+      (* We specialize E_hereditary on c so the next destruct with instanciate c *)
       generalize (fun j x' u' H => @E_hereditary c j x' u' _ H Hv); intros hereditary.
       destruct (higman_lift_cases c j) as [ c j H1 H2 | c | | ].
       + (* case j <> i j <> S i *)
@@ -777,29 +779,25 @@ Section veldman_afs_nodes_lt.
         apply disapointing_length in H4; lia.
       + (* case j = i *)
         destruct (hereditary _ ⦉x⦊₁ v) as [ [] | (v' & H4) ]; eauto with vtree_db.
-        apply disapointing_inv_1 in H4 as [].
+        now apply disapointing_inv_1 in H4.
       + (* case j = S i and c = ◩ *)
         destruct (hereditary _ x v) as [ [] | (v' & H4) ]; eauto with vtree_db.
-        apply disapointing_inv_lt in H4.
-        (* Same proof here as below *** FACTORIZE MORE ?? *)
         apply Rαx_choice_embed.
-        * trivial. 
-        * intros u q y Hu.
-          apply vinsert_choice_embed with (c := ◩) (1 := Hu); eauto.
-          apply hereditary.
-          - apply vinsert_fall with (1 := Hu); auto.
-          - destruct (vinsert_eq Hu); eauto.
+        * now apply disapointing_inv_lt in H4.
+        * (* hereditary is called (again) by eauto *)
+          intros u q y Hu.
+          apply vinsert_choice_embed with (c := ◩) (1 := Hu); auto.
+          destruct (proj2 (vinsert_fall _ Hu) Hv0); eauto.
       + (* case j = S i and c = ▣ *)
-        (* Same proof here as above *** FACTORIZE MORE ?? *)
         apply Rαx_choice_embed; trivial.
-        * specialize (HXR (S i)).
+        * (* R (S i) is total on X (S i) so ... *)
+          specialize (HXR (S i)).
           rewrite Hc in HXR; simpl in HXR.
           apply HXR; auto.
-        * intros u q y Hu.
-          apply vinsert_choice_embed with (c := ▣) (1 := Hu); eauto.
-          apply hereditary.
-          - apply vinsert_fall with (1 := Hu); auto.
-          - destruct (vinsert_eq Hu); eauto.
+        * (* hereditary is called by eauto *)
+          intros u q y Hu.
+          apply vinsert_choice_embed with (c := ▣) (1 := Hu); auto.
+          destruct (proj2 (vinsert_fall _ Hu) Hv0); eauto.
     Qed.
 
   End exceptional_vs_embedding.
