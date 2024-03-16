@@ -183,9 +183,14 @@ and abstraction, we think that we provide a much better reference code
 for __entering the intimacy of this beautiful proof__, where some novel 
 tools are hopefully abstracted at a suitable level.
 
-# The proof sketch
+# The big picture of the proof
 
 We describe the big picture of the proof at the cost of some vagueness here.
+At the end of the section, we point out keys aspects than must be refined
+before this sketch can be turn into a type-checkable Coq proof.
+
+## The proof sketch
+
 Assuming `k` and relations `R₀/X₀,...,Rₖ/Xₖ` on sub-types of `A`, of which
 neither `k` nor the `Rₙ` are fixed, and for which we assume AF
 by `afs Xₙ Rₙ`, or equivalently `af Rₙ⇓Xₙ`, we want to show `afs (wft X) (vtree_upto_embed k R)`,
@@ -232,6 +237,8 @@ afs (wft X') (vtree_upto_embed p R') → afs (wft X) (vtree_upto_embed k R)↑�
 ```
 using a well chosen _quasi morphism_ based on an _analysis/evaluation relation_
 between trees in `wft X'` and trees in `wft X`. Which concludes the proof sketch.
+
+## Some key issues that must be refined
 
 Some _key properties_ are not discussed in the above sketch: 
 1. to be able to build the new sequence `R'₀/X'₀,...,R'ₚ/X'ₚ`, the type `A` needs 
