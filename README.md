@@ -191,13 +191,12 @@ before this sketch can be turn into a type-checkable Coq proof.
 
 ## The proof sketch
 
-Assuming `k` and relations `R₀/X₀,...,Rₖ/Xₖ` on sub-types of `A`, of which
+Assuming `k` and relations `R₀⇓X₀,...,Rₖ⇓Xₖ` on sub-types of `A`, of which
 neither `k` nor the `Rₙ` are fixed, and for which we assume AF
-by `afs Xₙ Rₙ`, or equivalently `af Rₙ⇓Xₙ`, we want to show `afs (wft X) (vtree_upto_embed k R)`,
-or equivalently `af (vtree_upto_embed k R)⇓(wft X)`, where the `_ ⇓ _` notation
- represents the _restriction_ of a relation to a sub-type.
+by `afs Xₙ Rₙ` (ie `af Rₙ⇓Xₙ`), we want to show `afs (wft X) (vtree_upto_embed k R)`,
+where the `_ ⇓ _` notation represents the _restriction_ of a relation to a sub-type.
 
-The first step is to proceed by "induction" on the sequence `X₀/R₀,...,Xₖ/Rₖ`,
+The first step is to proceed by "induction" on the sequence `R₀⇓X₀,...,Rₖ⇓Xₖ`,
 but this is not exactly well-founded induction. It would be more accurate to
 say that we proceed by induction on the sequence of proofs `afs X₀ R₀,...,afs Xₖ Rₖ`
 but we avoid the details at this stage. Also, we skip the description of the order
