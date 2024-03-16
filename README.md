@@ -229,10 +229,10 @@ overall sketch but the details differ:
 - [`veldman_higman.v`](theories/universe/veldman_higman.v) describes the case `0 < n < k`;
 - [`veldman_kruskal.v`](theories/universe/veldman_kruskal.v) describes the case `k ≤ n`.
 
-In both cases we build a new sequence of relations `R'₀⇓X'₀,...,R'ₚ⇓X'ₚ`
+In both cases we build a new sequence of AF relations `R'₀⇓X'₀,...,R'ₚ⇓X'ₚ`
 where possibly `p` might differ from `k`; it can even be larger. 
 However, this new sequence is built smaller than `R₀⇓X₀,...,Rₖ⇓Xₖ` 
-in the lexicographic order mentionned above. Hence, the first induction hypothesis gives us 
+in the lexicographic order mentioned above. Hence, the first induction hypothesis gives us 
 `afs X' (vtree_upto_embed p R')` and we transfer the AF property
 via
 ```coq
@@ -311,6 +311,9 @@ of reasonable size (around 700 loc each), sharing the same structure
 as [`af_tree_embed_fun.v`](https://github.com/DmxLarchey/Kruskal-Higman/blob/main/theories/af/af_utree_embed_fun.v)
 from [`Kruskal-Higman`](https://github.com/DmxLarchey/Kruskal-Higman), which we insist, 
 should rather be understood first before switching to those two more complicated variations.
+To be fair, these two files `veldman_{higman,kruskal}.v` rely heavily on a library for 
+the _insertion_ and _intercalation_ of dependent vectors, critically viewed as _relations_, 
+and __not__ functions, to avoid the worst setoid hell I ever contemplated.
 
 Recall that during the recursive proof, we want 
 to establish that `afs (wft X) (vtree_upto_embed k R)↑t₀`:
