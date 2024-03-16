@@ -213,9 +213,9 @@ Applying the second constructor of `afs`, the proof goal becomes
 ```
 We then proceed, in a second (nested) induction, structurally on `t₀`. 
 Assuming `t₀ = ⟨α|γ⟩` is of arity `n`, we have new induction hypotheses, 
-namely, for `i=1,...,n`:
+namely:
 ```coq
-afs (wft X) (vtree_upto_embed k R)↑γ⦃i⦄
+∀i∈{1,...,n}, afs (wft X) (vtree_upto_embed k R)↑γ⦃i⦄
 ```
 
 Now there is a case distinction between `n = 0`, `0 < n < k` and `k ≤ n`. When
