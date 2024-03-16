@@ -311,6 +311,7 @@ of reasonable size (around 700 loc each), sharing the same structure
 as [`af_tree_embed_fun.v`](https://github.com/DmxLarchey/Kruskal-Higman/blob/main/theories/af/af_utree_embed_fun.v)
 from [`Kruskal-Higman`](https://github.com/DmxLarchey/Kruskal-Higman), which we insist, 
 should rather be understood first before switching to those two more complicated variations.
+
 To be fair, these two files `veldman_{higman,kruskal}.v` rely heavily on a library for 
 the _insertion_ and _intercalation_ of dependent vectors, critically viewed as _relations_, 
 and __not__ functions, to avoid the worst setoid hell I ever contemplated.
