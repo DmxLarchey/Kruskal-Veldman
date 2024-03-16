@@ -201,10 +201,10 @@ but this is not exactly well-founded induction. It would be more accurate to
 say that we proceed by induction on the sequence of proofs `afs X₀ R₀,...,afs Xₖ Rₖ`
 but we avoid the details at this stage. Also, we skip the description of the order
 used for this first induction. We just call it _lexicographic order_ on `afs` predicates.
-This gives use our fist induction hypothesis as:
+This gives use our first (informally stated) induction hypothesis as:
 ```
-for any R'₀⇓X'₀,...,R'ₚ⇓X'ₚ st (∀n, afs Xₙ Rₙ) 
-    and lex.-smaller that R₀⇓X₀,...,Rₖ⇓Xₖ, 
+for any R'₀⇓X'₀,...,R'ₚ⇓X'ₚ st (∀n, afs X'ₙ R'ₙ) 
+    and which is lex.-smaller that R₀⇓X₀,...,Rₖ⇓Xₖ, 
 we have afs (wft X') (vtree_upto_embed p R')
 ```
 Then, having this first induction hypothesis at our disposal, we want to show 
