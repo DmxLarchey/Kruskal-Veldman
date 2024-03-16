@@ -28,7 +28,7 @@ Set Implicit Arguments.
 
 #[global] Reserved Notation "v '⧒' m '⇝' w" (at level 70, no associativity, format "v ⧒ m  ⇝  w").
 
-Inductive vmix_graph X : ∀n, vec X n → hvec X n → ∀m, vec X m → Prop :=
+Inductive vmix_graph X : ∀ n (_ : vec X n) (_ : hvec X n) m (_ : vec X m), Prop :=
     | vmix_0 :
                 ∅ ⧒ ∅ ⇝ ∅
     | vmix_1 n x (v : vec _ n) i a (w : vec _ n) m (r : vec _ m) m' (r' : vec _ m') :
@@ -90,10 +90,10 @@ Section vmix_graph.
   Inductive vmix_out : Type :=
     | c_vmix_out m : vec X m → vmix_out.
 
-  Definition is_vmix_out n v w o :=
-    match o with @c_vmix_out m r => @vmix_graph X n v w m r end.
+  Definition is_vmix_out n (v : vec _ n) w o :=
+    match o with c_vmix_out r => v ⧒ w ⇝ r end.
 
-  Definition vmix_total n v w : sig (@is_vmix_out n v w).
+  Definition vmix_total n v w : {o | @is_vmix_out n v w o}.
   Proof.
     revert w; induction v as [ | x n v IH ]; intros w.
     + vec invert w; exists (c_vmix_out ∅); constructor.
@@ -124,8 +124,7 @@ Section vmix_graph.
              ∧ lvec_vec a ⊞ r' ⇝ r }}
           )%type.
   Proof.
-    intros H; apply vmix_inv in H; simpl in H.
-    destruct H as (<- & H); split; auto.
+    intros (<- & H)%vmix_inv; split; auto.
     destruct (vmix_total u w) as ([j r'] & H'); simpl in H'.
     exists j, r'; split; auto.
     destruct H as (j' & r'' & H & H1).
@@ -157,7 +156,7 @@ Section vmix_graph.
         | ∅    => False
         | x##r =>
           ∃ a, match a with
-               | @c_vapp_in _ i u j v =>
+               | @c_vapp_in _ i j u v =>
                  ∃ c : vmix_in n,
                    match c with
                    | c_vmix_in v' w => @c_vmix_in (S n) (x##v') (⦑i,u⦒##w)
@@ -174,7 +173,7 @@ Section vmix_graph.
         exists (c_vapp_in a r'); split; auto.
         exists (c_vmix_in v w); auto.
    + destruct r as [ | j x r ]; try easy.
-     intros ([i u k v] & ([v' w] & <- & H2) & H3); simpl.
+     intros ([] & ([] & <- & H2) & ?); simpl.
      constructor 2 with (1 := H2); auto.
   Qed.
 
@@ -203,10 +202,8 @@ Section vmix_graph.
 
   Fact vmix_id_inv n u : { w | @vmix_graph X n u w _ u }.
   Proof.
-    induction u as [ | n x u (w & Hw) ].
-    + exists ∅; constructor.
-    + exists (⦑_,∅⦒##w).
-      constructor 2 with (r := u); auto with vec_db.
+    exists (vec_set (fun _ => ⦑_,∅⦒)).
+    induction u; simpl; eauto with vec_db.
   Qed.
 
   (* 𝕆𝕊 λ ∀∃ → ↔ ∧ ∨ *)
