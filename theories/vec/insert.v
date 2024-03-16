@@ -99,62 +99,13 @@ Section vinsert.
       exists (c_vinsert_out (y##w)); simpl; auto.
   Qed.
 
-  Inductive vinsert_in : Type :=
-    | c_vinsert_in (_ : X) n : vec X n → idx (S n) → vinsert_in.
+  Inductive vinsert_in n : Type :=
+    | c_vinsert_in (_ : X) : vec X n → idx (S n) → vinsert_in n.
 
-  Definition is_vinsert_in m (w : vec _ m) i :=
-    match i with @c_vinsert_in x n v p => v ⊲p] x ⇝ w end.
+  Definition is_vinsert_in m (w : vec _ m) n (i : vinsert_in n) :=
+    match i with c_vinsert_in x v p => v ⊲p] x ⇝ w end.
 
-  Fact vinsert_surj m (w : vec X m) : ∀p, { n : _ & { v : _ & { e : m = S n | v ⊲p↺e] w⦃p⦄ ⇝ w } } }.
-  Proof.
-    induction w as [ | x m v IHv ]; intros p; idx invert p.
-    + exists m, v, eq_refl; simpl; auto.
-    + destruct (IHv p) as (n & w & -> & H); simpl in *.
-      exists (S n), (x##w), eq_refl; simpl; auto.
-  Qed.
-
-  Fact is_vinsert_in_nil_iff i : is_vinsert_in ∅ i ↔ False.
-  Proof.
-    split; try easy.
-    destruct i as [ x n v p ]; simpl; intros H.
-    apply vinsert_inv in H; idx invert p; simpl in H.
-    + destruct H as (e & _); lia.
-    + destruct n; simpl in H; auto.
-  Qed.
-
-  Fact is_vinsert_in_cons_iff m y w i :
-          @is_vinsert_in (S m) (y##w) i
-        ↔ c_vinsert_in y w 𝕆 = i
-        ∨ ∃i', match i' with
-               | @c_vinsert_in x n v p => c_vinsert_in x (y##v) (𝕊 p)
-               end = i
-             ∧ is_vinsert_in w i'.
-  Proof.
-    split.
-    + destruct i as [ x n v p ]; simpl; intros H.
-      apply vinsert_inv in H; idx invert p; simpl in H.
-      * destruct H as (e & H); inversion e; subst; eq refl.
-        apply vec_cons_inj in H as (-> & ->); auto.
-      * destruct v as [ | z n v ]; try easy; simpl in H.
-        destruct H as [ H -> ]; right.
-        exists (c_vinsert_in x v p); split; auto.
-    + intros [ <- | ([x n v p] & H1 & H2) ]; subst; simpl in *; auto.
-  Qed.
-
-  Fact vinsert_fin m w : fin (@is_vinsert_in m w).
-  Proof.
-    induction w as [ | y m w IHw ].
-    + finite eq is_vinsert_in_nil_iff.
-    + finite eq (is_vinsert_in_cons_iff _ _).
-  Qed.
-
-  Inductive vinsert'_in n : Type :=
-    | c_vinsert'_in (_ : X) : vec X n → idx (S n) → vinsert'_in n.
-
-  Definition is_vinsert'_in m (w : vec _ m) n (i : vinsert'_in n) :=
-    match i with c_vinsert'_in x v p => v ⊲p] x ⇝ w end.
-
-  Local Fact vinsert'_surj_rec m (w : vec X m) : ∀ n (e : m = S n) p, { v | v ⊲p↺e] w⦃p⦄ ⇝ w }.
+  Local Fact vinsert_surj_rec m (w : vec X m) : ∀ n (e : m = S n) p, { v | v ⊲p↺e] w⦃p⦄ ⇝ w }.
   Proof.
     induction w as [ | x m v IHv ]; intros n e p; [ easy | ].
     inversion e; subst n; eq refl; idx invert p.
@@ -163,11 +114,11 @@ Section vinsert.
       destruct (IHv _ eq_refl p) as (w & Hw).
       exists (x##w); auto. 
   Qed.
-  
-  Fact vinsert'_surj n (w : vec X (S n)) : ∀p, { v | v ⊲p] w⦃p⦄ ⇝ w }.
-  Proof. apply vinsert'_surj_rec with (e := eq_refl). Qed.
 
-  Fact is_vinsert'_in_nil_iff n (i : vinsert'_in n) : is_vinsert'_in ∅ i ↔ False.
+  Fact vinsert_surj n (w : vec X (S n)) : ∀p, { v | v ⊲p] w⦃p⦄ ⇝ w }.
+  Proof. apply vinsert_surj_rec with (e := eq_refl). Qed.
+
+  Local Fact is_vinsert_in_nil_iff n (i : vinsert_in n) : is_vinsert_in ∅ i ↔ False.
   Proof.
     split; try easy.
     destruct i as [ x v p ]; simpl; intros H.
@@ -176,15 +127,15 @@ Section vinsert.
     + destruct n; simpl in H; auto.
   Qed.
 
-  Fact is_vinsert'_in_cons_eq_iff m y (w : vec _ m) (i : vinsert'_in m) :
-          is_vinsert'_in (y##w) i
-        ↔ c_vinsert'_in y w 𝕆 = i
-        ∨ match m return vec _ m -> vinsert'_in m -> _ with 
+  Local Fact is_vinsert_in_cons_eq_iff m y (w : vec _ m) (i : vinsert_in m) :
+          is_vinsert_in (y##w) i
+        ↔ c_vinsert_in y w 𝕆 = i
+        ∨ match m return vec _ m -> vinsert_in m -> _ with 
           | 0   => fun _ _ => False 
           | S n => fun w i => ∃i', match i' with
-               | @c_vinsert'_in _ x v p => c_vinsert'_in x (y##v) (𝕊 p)
+               | @c_vinsert_in _ x v p => c_vinsert_in x (y##v) (𝕊 p)
                end = i
-             ∧ is_vinsert'_in w i'
+             ∧ is_vinsert_in w i'
           end w i.
   Proof.
     split.
@@ -194,46 +145,44 @@ Section vinsert.
         apply vec_cons_inj in H as (-> & ->); auto.
       * destruct v as [ | z n v ]; try easy; simpl in H.
         destruct H as [ H -> ]; right.
-        exists (c_vinsert'_in x v p); split; auto.
-    + intros [ <- | H ]; simpl; eauto.
-      destruct m as [ | n ]; [ easy | ].
-      destruct H as ([x v p] & H1 & H2); subst; simpl in *; auto.
+        exists (c_vinsert_in x v p); split; auto.
+    + intros [ <- | Hm ]; simpl; eauto.
+      destruct m; [ easy | ].
+      destruct Hm as ([] & []); subst; simpl in *; auto.
   Qed.
 
-  Fact is_vinsert'_in_cons_neq_iff m y (w : vec _ m) n (D : m <> n) (i : vinsert'_in n) :
-        is_vinsert'_in (y##w) i <-> False.
+  Local Fact is_vinsert_in_cons_neq_iff m y (w : vec _ m) n (D : m <> n) (i : vinsert_in n) :
+        is_vinsert_in (y##w) i ↔ False.
   Proof.
-    split; try tauto.
-    intros H.
-    destruct i as [x v p]; simpl in H.
-    apply vinsert_length in H; lia.
+    split; try easy.
+    destruct i; intros ?%vinsert_length; lia.
   Qed.
 
-  Fact vinsert'_fin m w n : fin (@is_vinsert'_in m w n).
+  Fact vinsert_fin m w n : fin (@is_vinsert_in m w n).
   Proof.
     induction w as [ | y m w IHw ] in n |- *.
-    + finite eq (@is_vinsert'_in_nil_iff n).
+    + finite eq (@is_vinsert_in_nil_iff n).
     + destruct (eq_nat_dec m n) as [ <- | D ].
-      * finite eq (is_vinsert'_in_cons_eq_iff _ _).
+      * finite eq (is_vinsert_in_cons_eq_iff _ _).
         finite union; destruct w; fin auto.
-      * finite eq (@is_vinsert'_in_cons_neq_iff _ y w _ D).
+      * finite eq (@is_vinsert_in_cons_neq_iff _ y w _ D).
   Qed.
 
-  Hint Resolve vinsert'_fin : core.
+  Hint Resolve vinsert_fin : core.
 
-  (** This is fin_choice but with tripple quantification on u p x *)
-  Fact vinsert_choice j (v : vec X j) n (P Q : vec _ n → _ → _ → Prop) :
+  (** This is fin_choice but with triple fin. quantification on u, p, x *)
+  Corollary vinsert_choice j (v : vec _ j) n (P Q : vec _ n → _) :
          (∀ u p x, u ⊲p] x ⇝ v → P u p x ∨ Q u p x)
        → (∀ u p x, u ⊲p] x ⇝ v → P u p x)
        ∨ (∃ u p x, u ⊲p] x ⇝ v ∧ Q u p x).
   Proof.
     intros H.
-    assert (forall d, is_vinsert'_in v d
-                   -> match d with c_vinsert'_in x u p => P u p x end
-                   \/ match d with c_vinsert'_in x u p => Q u p x end) as H'.
+    assert (∀d, is_vinsert_in v d
+              → match d with c_vinsert_in x u p => P u p x end
+              ∨ match d with c_vinsert_in x u p => Q u p x end) as G.
     1: intros []; simpl; auto.
-    apply fin_choice in H' as [ H' | ([] & []) ]; simpl in *; eauto; [ left | right ]; eauto.
-    intros u p x; exact (H' (c_vinsert'_in x u p)).
+    apply fin_choice in G as [ G | ([] & []) ]; simpl in *; eauto; [ left | right ]; eauto.
+    intros u p x; exact (G (c_vinsert_in x u p)).
   Qed.
 
   Fact vinsert_fall (P : X → Prop) x n (v : vec _ n) p m (w : vec _ m) :
@@ -330,9 +279,8 @@ End vinsert_idx.
 Fact vinsert_surjective X n (v : vec X (S n)) (p : idx (S n)) :
      { u : vec _ n | u ⊲p] v⦃p⦄ ⇝ v ∧ ∀q, u⦃q⦄ = v⦃vinsert_idx p q⦄ }.
 Proof.
-  destruct (vinsert_surj v p) as (i & w & e & H).
-  inversion e; subst; eq refl.
-  exists w; split; auto.
+  destruct (vinsert_surj v p) as (u & H).
+  exists u; split; auto.
   rewrite vinsert_idx_eq in H; tauto.
 Qed.
 
@@ -387,9 +335,8 @@ Section vec_insert_fall2.
         (∀ w q x, w ⊲q] x ⇝ v → R u⦃q⦄ x) → u =[R]= v.
   Proof.
     intros H p.
-    destruct (vinsert_surj v p) as (i & v' & e & Hv').
-    inversion e; subst i; eq refl.
-    apply H with (1 := Hv').
+    destruct (vinsert_surj v p) as (w & Hw).
+    apply H with (1 := Hw).
   Qed.
 
   Theorem vec_fall2_any_vinsert :

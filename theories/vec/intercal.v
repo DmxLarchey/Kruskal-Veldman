@@ -125,7 +125,7 @@ Section vintercal_graph.
   Definition is_vintercal_in j r n (m : vintercal_in n) :=
     match m with c_vinter_in v w => @vintercal_graph X n v w j r end.
 
-  Fact is_vintercal_in_iff j r n m :
+  Local Fact is_vintercal_in_iff j r n m :
        @is_vintercal_in j r n m
      ↔ ∃ c : vapp_in _,
          match c with
@@ -147,7 +147,7 @@ Section vintercal_graph.
       constructor 1 with (1 := H2); auto.
   Qed.
 
-  Fact vintercal_fin j r n : fin (@is_vintercal_in j r n).
+  Lemma vintercal_fin j r n : fin (@is_vintercal_in j r n).
   Proof.
     finite eq (@is_vintercal_in_iff _ _ _).
     finite compose.
@@ -157,18 +157,18 @@ Section vintercal_graph.
   Hint Resolve vintercal_fin : core.
 
   (** This is fin_choice but with double quantification on u w *)
-  Fact vintercal_choice j (v : vec X j) n (P Q : vec _ n → _ → Prop) :
+  Corollary vintercal_choice j (v : vec X j) n (P Q : vec _ n → _) :
          (∀ u w, u⧓w ⇝ v → P u w ∨ Q u w)
        → (∀ u w, u⧓w ⇝ v → P u w)
        ∨ (∃ u w, u⧓w ⇝ v ∧ Q u w).
   Proof.
     intros H.
-    assert (forall d, is_vintercal_in v d
-                   -> match d with c_vinter_in u w => P u w end
-                   \/ match d with c_vinter_in u w => Q u w end) as H'.
+    assert (∀d, is_vintercal_in v d
+              → match d with c_vinter_in u w => P u w end
+              ∨ match d with c_vinter_in u w => Q u w end) as G.
     1: intros []; simpl; auto.
-    apply fin_choice in H' as [ H' | ([] & []) ]; eauto.
-    left; intros u w; exact (H' (c_vinter_in u w)).
+    apply fin_choice in G as [ G | ([] & []) ]; eauto.
+    left; intros u w; exact (G (c_vinter_in u w)).
   Qed.
 
   Fact vintercal_fall (P : rel₁ X) n u w m r :

@@ -140,7 +140,7 @@ Section vmix_graph.
 
   Arguments is_vmix_in {_} _ n _.
 
-  Fact is_vmix_in_nil_iff j r m :
+  Local Fact is_vmix_in_nil_iff j r m :
          @is_vmix_in j r 0 m
        ↔ j = 0 ∧ c_vmix_in ∅ ∅ = m.
   Proof.
@@ -151,23 +151,7 @@ Section vmix_graph.
     + intros (-> & <-); vec invert r; constructor.
   Qed.
 
-  Fact is_vmix_in_nil_iff' n m :
-         @is_vmix_in _ ∅ n m
-       ↔ match n return vmix_in n → _ with
-         | 0   => λ m, c_vmix_in ∅ ∅ = m
-         | S n => ⊥₁
-         end m.
-  Proof.
-    split.
-    + destruct m as [ v w ]; simpl; intros H.
-      apply vmix_inv in H.
-      destruct v; try easy.
-      destruct H; subst; auto.
-    + destruct n; try easy.
-      intros <-; constructor.
-  Qed.
-
-  Fact is_vmix_in_cons_iff j (r : vec _ j) n m :
+  Local Fact is_vmix_in_cons_iff j (r : vec _ j) n m :
         is_vmix_in r (S n) m
       ↔ match r with
         | ∅    => False
@@ -194,35 +178,9 @@ Section vmix_graph.
      constructor 2 with (1 := H2); auto.
   Qed.
 
-  Fact is_vmix_in_cons_iff' j x (r : vec _ j) n (m : vmix_in n) :
-        is_vmix_in (x##r) n m
-      ↔ match n return vmix_in n → _ with
-        | 0   => ⊥₁
-        | S n => λ m,
-          ∃ a, match a with
-               | @c_vapp_in _ i u j v =>
-                 ∃ c : vmix_in n,
-                   match c with
-                   | c_vmix_in v' w => @c_vmix_in (S n) (x##v') (⦑i,u⦒##w)
-                   end = m ∧ is_vmix_in v n c
-               end ∧ is_vapp_in r a
-        end m.
-  Proof.
-    split.
-    + destruct m as [ v w ]; simpl; intros H; apply vmix_inv in H.
-      destruct v as [ | y n v ]; try easy.
-      vec invert w as [i a] w; simpl in H.
-      destruct H as (-> & m' & r' & H1 & H2).
-      exists (c_vapp_in a r'); split; auto.
-      exists (c_vmix_in v w); auto.
-    + destruct n as [ | n ]; try easy.
-      intros ([i u k v] & ([v' w] & <- & H2) & H3); simpl.
-      constructor 2 with (1 := H2); auto.
-  Qed.
-
   Hint Resolve eq_nat_dec : core.
 
-  Fact vmix_fin j (r : vec _ j) n : fin (is_vmix_in r n).
+  Lemma vmix_fin j (r : vec _ j) n : fin (is_vmix_in r n).
   Proof.
     revert j r; induction n as [ | n IHn ]; intros j r.
     + finite eq (is_vmix_in_nil_iff _).

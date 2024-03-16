@@ -456,9 +456,9 @@ Section veldman_afs_nodes_lt.
 
     Let shape c t' j x (v : vec _ j) :=
                (j = i ∧ X i x ∧ ∃v', ⟨⦉x⦊₁|v'⟩ = t' ∧ v' =[c]=> v)
-             ∨ (j = S i ∧ X (S i) x ∧ ∃vin,
-                    match vin with @c_vinsert_in _ a n u p
-                      => wft X a ∧ n = i ∧ ∃v', ⟨⦉x,p,a⦊₂|v'⟩ = t' ∧ v' =[c]=> u
+             ∨ (j = S i ∧ X (S i) x ∧ ∃vin : vinsert_in _ i,
+                    match vin with c_vinsert_in a u p
+                      => wft X a ∧ ∃v', ⟨⦉x,p,a⦊₂|v'⟩ = t' ∧ v' =[c]=> u
                     end ∧ is_vinsert_in v vin)
              ∨ (j ≠ i ∧ j ≠ S i ∧ X j x ∧ ∃v', ⟨x|v'⟩ = t' ∧ v' =[c]=> v)
              ∨ (c = ◩ ∧ j = S i ∧ X (S i) x ∧ ∃v', ⟨x|v'⟩ = t' ∧ v' =[◩]=> v).
@@ -483,7 +483,7 @@ Section veldman_afs_nodes_lt.
       split.
       + apply hev_graph_inv_right.
       + intros [ (-> & ? & ? & <- & ?)
-             | [ (-> & ? & [] & (? & -> & ? & <- & ?) & ?)
+             | [ (-> & ? & [] & (? & ? & <- & ?) & ?)
              | [ (? & ? & ? & ? & <- & ?)
                | (-> & -> & ? & ? & <- & ?)  ] ] ]; simpl in *; eauto.
     Qed.
@@ -516,14 +516,13 @@ Section veldman_afs_nodes_lt.
       2: now finite as (fun _ => False).
       repeat finite dec left.
       finite compose.
-      intros [ a n u p ] H; simpl in *.
+      intros [ a u p ] H; simpl in *.
       apply (vinsert_fall _ H) in H2 as [H2 H3].
       repeat finite dec left.
       finite compose.
       finite as (vec_fall2 (ana c) u).
       1: split; apply vec_fall2_swap.
       apply fin_vec_fall2.
-      generalize (vinsert_length H); injection 1; intro; subst n.
       apply vinsert_idx_eq in H as (? & H).
       intro; rewrite H; auto.
     + repeat finite dec left.

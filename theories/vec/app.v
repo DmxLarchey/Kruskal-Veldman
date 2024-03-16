@@ -133,14 +133,14 @@ Section props.
   Definition is_vapp_in k (w : vec _ k) i :=
     match i with @c_vapp_in n u m v => u ⊞ v ⇝ w end.
 
-  Fact is_vapp_in_nil_iff a : is_vapp_in ∅ a ↔ c_vapp_in ∅ ∅ = a.
+  Local Fact is_vapp_in_nil_iff a : is_vapp_in ∅ a ↔ c_vapp_in ∅ ∅ = a.
   Proof.
     split.
     + destruct a; simpl; intros; vapp inv all; auto.
     + intros <-; simpl; constructor.
   Qed.
 
-  Fact is_vapp_in_cons_iff k x (w : vec _ k) a :
+  Local Fact is_vapp_in_cons_iff k x (w : vec _ k) a :
            is_vapp_in (x##w) a
         ↔  c_vapp_in ∅ (x##w) = a
          ∨ ∃a', match a' with
@@ -153,7 +153,7 @@ Section props.
     + intros [ <- | ([] & <- & H2) ]; constructor; auto.
   Qed.
 
-  Fact vapp_fin k w : fin (@is_vapp_in k w).
+  Lemma vapp_fin k w : fin (@is_vapp_in k w).
   Proof.
     induction w as [ | k y w IH ].
     + finite eq is_vapp_in_nil_iff.
