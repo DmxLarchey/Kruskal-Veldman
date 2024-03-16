@@ -313,7 +313,7 @@ from [`Kruskal-Higman`](https://github.com/DmxLarchey/Kruskal-Higman), which we 
 should rather be understood first before switching to those two more complicated variations.
 
 To be fair, these two files `veldman_{higman,kruskal}.v` rely heavily on a library for 
-the [_insertion_](theories/vec/insert.v) and [_intercalation_](theories/vec/intercalate.v) 
+the [_insertion_](theories/vec/insert.v) and [_intercalation_](theories/vec/intercal.v) 
 of dependent vectors, critically viewed as _dependent inductive relations_, 
 and __not__ dependent functions, to avoid the worst setoid hell I ever contemplated.
 
