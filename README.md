@@ -225,9 +225,9 @@ overall sketch but the details differ:
 - [`veldman_higman.v`](theories/universe/veldman_higman.v) describes the case `0 < n < k`;
 - [`veldman_kruskal.v`](theories/universe/veldman_kruskal.v) describes the case `k ≤ n`.
 
-In both cases we build a new sequence of relations `R'₀/X'₀,...,R'ₚ/X'ₚ`
+In both cases we build a new sequence of relations `R'₀⇓X'₀,...,R'ₚ⇓X'ₚ`
 where possibly `p` might differ from `k`; it can even be larger. 
-However, this new sequence is built smaller than `R₀/X₀,...,Rₖ/Xₖ` 
+However, this new sequence is built smaller than `R₀⇓X₀,...,Rₖ⇓Xₖ` 
 in the lexicographic order mentionned above. Hence, the first induction hypothesis gives us 
 `afs X' (vtree_upto_embed p R')` and we transfer the AF property
 via
@@ -240,7 +240,7 @@ between trees in `wft X'` and trees in `wft X`. Which concludes the proof sketch
 ## Some key issues that must be refined
 
 Some _key properties_ are not discussed in the above sketch: 
-1. to be able to build the new sequence `R'₀/X'₀,...,R'ₚ/X'ₚ`, the type `A` needs 
+1. to be able to build the new sequence `R'₀⇓X'₀,...,R'ₚ⇓X'ₚ`, the type `A` needs 
   to be equipped with some structure allowing eg. to nest (trees of) itself 
   from within, a bit like universes in set theory. Of course, an arbitrary type
   `A` does not have this property. 
