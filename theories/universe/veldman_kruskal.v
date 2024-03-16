@@ -758,6 +758,32 @@ Section veldman_afs_nodes_ge.
           in H4; eauto.
     Qed.
 
+    (* we replace ∀ u w st. u⧓w ⇝ v into
+       a quantification on d st. is_vintercal_in v d
+       because then we can use the fin_choice tool *)
+    Local Fact Rαx_choice_embed j x (v : vec _ j) : 
+             i < j
+           → R k α x
+           → (∀ (u : vec _ i) w,
+                  u⧓w ⇝ v
+                → (∃ p q, γ⦃p⦄ ≤[k,R] (lvec_vec w⦃p⦄)⦃q⦄)
+                ∨ ⟨α|γ⟩ ≤[k,R] ⟨x|v⟩)
+           → ⟨α|γ⟩ ≤[k,R] ⟨x|v⟩.
+    Proof.
+      intros H1 H2 H3. 
+      assert (∀d, is_vintercal_in v d
+                → (∃p,
+                   match d with
+                   | c_vinter_in _ w => ∃ q : idx (lvec_len w⦃p⦄), γ⦃p⦄ ≤[k,R] (lvec_vec w⦃p⦄)⦃q⦄
+                   end)
+                ∨ ⟨α|γ⟩ ≤[k,R] ⟨x|v⟩) as G.
+      + intros []; simpl; eauto.
+      + apply fin_choice in G as [ G | (_ & _ & ?) ]; auto.
+        constructor 3; auto.
+        apply vintercal_any_vec_embed; auto.
+        intros u w H; apply (G (c_vinter_in u w) H).
+    Qed.
+
     Local Lemma E_embed c (Hc : s k = Some c) t :
           wft X t → E c t → ⟨α|γ⟩ ≤[k,R] t.
     Proof.
@@ -768,46 +794,34 @@ Section veldman_afs_nodes_ge.
         destruct (hereditary _ x v) as [ [] | (v' & H3 & H4) ]; eauto with vtree_db.
         apply disapointing_length in H4; lia.
       + (* case j = i *)
-      destruct (hereditary _ ⦉x⦊₁ v) as [ [] | (v' & H3 & H4) ]; eauto with vtree_db.
-      apply disapointing_inv_1 in H4 as [].
+        destruct (hereditary _ ⦉x⦊₁ v) as [ [] | (v' & H3 & H4) ]; eauto with vtree_db.
+        apply disapointing_inv_1 in H4 as [].
       + (* case i < j and c = ◩ *)
         destruct (hereditary _ x v) as [ [] | (v' & H3 & H4) ]; eauto with vtree_db.
         apply disapointing_inv_lt in H4; auto.
         (* Same proof as below *** FACTORIZE ?? *)
-        assert (forall d : vintercal_in _ i, is_vintercal_in v d
-            -> (exists p, match d with c_vinter_in _ w => exists q, γ⦃p⦄ ≤[k,R] (lvec_vec w⦃p⦄)⦃q⦄ end)
-            \/ ⟨α|γ⟩ ≤[k,R] ⟨x|v⟩) as G.
-        1:{ intros [u w]; simpl; intros H.
-            generalize Hv0; intros H1; apply vintercal_fall with (1 := H) in H1 as [ H1 H2 ].
-            destruct (hereditary _ ⦉x,w⦊₂ u) as [ (p & Hp) | (v1 & G1 & G2) ]; eauto.
-            + destruct (vintercal_idx_left H) as (f & Hf).
-              right; constructor 1 with (f p).
-              apply IHv; rewrite <- Hf; auto.
-            + apply disapointing_inv_2 in G2 as (p & q & Hpq); eauto. }
-        apply fin_choice in G as [ G | (_ & _ & G) ]; auto.
-        constructor 3; auto.
-        apply vintercal_any_vec_embed; auto.
-        intros u w H0; apply (G (c_vinter_in u w) H0).
+        apply Rαx_choice_embed; auto.
+        intros u w H.
+        destruct (proj2 (vintercal_fall _ H) Hv0) as [H1 H2].
+        destruct (hereditary _ ⦉x,w⦊₂ u) as [ (p & Hp) | (v1 & G1 & G2) ]; eauto.
+        * destruct (vintercal_idx_left H) as (f & Hf).
+          right; constructor 1 with (f p).
+          apply IHv; rewrite <- Hf; auto.
+        * apply disapointing_inv_2 in G2; auto.
       + (* case i < j and c = ▣ *)
         assert (R k α x) as Hαx.
         1:{ specialize (HXR k); rewrite Hc in HXR; simpl in HXR.
             apply HXR; auto.
             rewrite HXk in Hx; auto; tlia. }
         (* Same proof here as above *** FACTORIZE ?? *)
-        assert (forall d : vintercal_in _ i, is_vintercal_in v d
-            -> (exists p, match d with c_vinter_in _ w => exists q, γ⦃p⦄ ≤[k,R] (lvec_vec w⦃p⦄)⦃q⦄ end)
-            \/ ⟨α|γ⟩ ≤[k,R] ⟨x|v⟩) as G.
-        1:{ intros [u w]; simpl; intros H.
-            generalize Hv0; intros H1; apply vintercal_fall with (1 := H) in H1 as [ H1 H2 ].
-            destruct (hereditary _ ⦉x,w⦊₂ u) as [ (p & Hp) | (v1 & G1 & G2) ]; eauto.
-            + destruct (vintercal_idx_left H) as (f & Hf).
-              right; constructor 1 with (f p).
-              apply IHv; rewrite <- Hf; auto.
-            + apply disapointing_inv_2 in G2 as (p & q & Hpq); eauto. }
-        apply fin_choice in G as [ G | (_ & _ & G) ]; auto.
-        constructor 3; auto.
-        apply vintercal_any_vec_embed; auto.
-        intros u w H; apply (G (c_vinter_in u w) H).
+        apply Rαx_choice_embed; auto.
+        intros u w H.
+        destruct (proj2 (vintercal_fall _ H) Hv0) as [H1 H2].
+        destruct (hereditary _ ⦉x,w⦊₂ u) as [ (p & Hp) | (v1 & G1 & G2) ]; eauto.
+        * destruct (vintercal_idx_left H) as (f & Hf).
+          right; constructor 1 with (f p).
+          apply IHv; rewrite <- Hf; auto.
+        * apply disapointing_inv_2 in G2; auto.
       Qed.
 
   End exceptional_vs_embedding.

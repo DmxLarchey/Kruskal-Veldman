@@ -732,6 +732,14 @@ Section veldman_afs_nodes_lt.
           apply sub_dtree_inv_rt in H4 as [ -> | [] ]; eauto.
       + apply fin_vec_fall2_find with (R := ana _) in H; auto.
     Qed.
+
+    Local Fact Rαx_choice_embed x v :
+             R (S i) α x
+           → (∀q,  γ⦃q⦄ ≤[k,R] v⦃q⦄
+               ∨ ⟨α|γ⟩ ≤[k,R] ⟨x|v⟩)
+           → ⟨α|γ⟩ ≤[k,R] ⟨x|v⟩.
+    Proof. intros ? [ | (_ & ?)]%finite_choice; auto with vtree_db; fin auto. Qed.
+
     Local Lemma E_embed c (Hc : s (S i) = Some c) t :
           wft X t → E c t → ⟨α|γ⟩ ≤[k,R] t.
     Proof.
@@ -748,8 +756,7 @@ Section veldman_afs_nodes_lt.
         destruct (hereditary _ x v) as [ [] | (v' & H3 & H4) ]; eauto with vtree_db.
         apply disapointing_inv_lt in H4.
         (* Same proof here as below *** FACTORIZE ?? *)
-        assert (forall q, γ⦃q⦄ ≤[k,R] v⦃q⦄ \/ ⟨α|γ⟩ ≤[k,R] ⟨x|v⟩) as H5.
-        2: apply finite_choice in H5 as [ | (_ & ?) ]; auto with vtree_db; fin auto.
+        apply Rαx_choice_embed; trivial.
         intros q.
         destruct (vinsert_surjective v q) as (u & Hu & Hu').
         destruct (hereditary _ ⦉x,q,v⦃q⦄⦊₂ u)
@@ -764,8 +771,7 @@ Section veldman_afs_nodes_lt.
             rewrite Hc in HXR; simpl in HXR.
             apply HXR; auto. }
         (* Same proof here as above *** FACTORIZE ?? *)
-        assert (forall q, γ⦃q⦄ ≤[k,R] v⦃q⦄ \/ ⟨α|γ⟩ ≤[k,R] ⟨x|v⟩) as H5.
-        2: apply finite_choice in H5 as [ | (_ & H5) ]; auto with vtree_db; fin auto.
+        apply Rαx_choice_embed; trivial.
         intros q.
         destruct (vinsert_surjective v q) as (u & Hu & Hu').
         destruct (hereditary _ ⦉x,q,v⦃q⦄⦊₂ u)
