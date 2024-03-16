@@ -30,7 +30,6 @@ Set Implicit Arguments.
 
 Inductive vintercal_graph X : ∀n, vec X n → hvec X (S n) → ∀m, vec X m → Prop :=
   | vintercal_0 n (v : vec _ n) i (u : vec _ i) (w : hvec _ n) m (a : vec _ m) k (b : vec _ k) :
-
                 v⧒w ⇝ a
               → u⊞a ⇝ b
               → v ⧓ ⦑i,u⦒##w ⇝ b
@@ -153,6 +152,23 @@ Section vintercal_graph.
     finite eq (@is_vintercal_in_iff _ _ _).
     finite compose.
     intros [] ?; finite compose; auto with vec_db.
+  Qed.
+
+  Hint Resolve vintercal_fin : core.
+
+  (** This is fin_choice but with double quantification on u w *)
+  Fact vintercal_choice j (v : vec X j) n (P Q : vec _ n → _ → Prop) :
+         (∀ u w, u⧓w ⇝ v → P u w ∨ Q u w)
+       → (∀ u w, u⧓w ⇝ v → P u w)
+       ∨ (∃ u w, u⧓w ⇝ v ∧ Q u w).
+  Proof.
+    intros H.
+    assert (forall d, is_vintercal_in v d
+                   -> match d with c_vinter_in u w => P u w end
+                   \/ match d with c_vinter_in u w => Q u w end) as H'.
+    1: intros []; simpl; auto.
+    apply fin_choice in H' as [ H' | ([] & []) ]; eauto.
+    left; intros u w; exact (H' (c_vinter_in u w)).
   Qed.
 
   Fact vintercal_fall (P : rel₁ X) n u w m r :

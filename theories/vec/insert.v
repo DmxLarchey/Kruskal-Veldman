@@ -14,7 +14,7 @@ From KruskalTrees
   Require Import idx vec.
 
 From KruskalFinite
-  Require Import finite.
+  Require Import finite choice.
 
 Require Import base notations tactics app.
 
@@ -146,6 +146,94 @@ Section vinsert.
     induction w as [ | y m w IHw ].
     + finite eq is_vinsert_in_nil_iff.
     + finite eq (is_vinsert_in_cons_iff _ _).
+  Qed.
+
+  Inductive vinsert'_in n : Type :=
+    | c_vinsert'_in (_ : X) : vec X n → idx (S n) → vinsert'_in n.
+
+  Definition is_vinsert'_in m (w : vec _ m) n (i : vinsert'_in n) :=
+    match i with c_vinsert'_in x v p => v ⊲p] x ⇝ w end.
+
+  Local Fact vinsert'_surj_rec m (w : vec X m) : ∀ n (e : m = S n) p, { v | v ⊲p↺e] w⦃p⦄ ⇝ w }.
+  Proof.
+    induction w as [ | x m v IHv ]; intros n e p; [ easy | ].
+    inversion e; subst n; eq refl; idx invert p.
+    + exists v; auto.
+    + destruct m as [ | n ]; [ idx invert all | ].
+      destruct (IHv _ eq_refl p) as (w & Hw).
+      exists (x##w); auto. 
+  Qed.
+  
+  Fact vinsert'_surj n (w : vec X (S n)) : ∀p, { v | v ⊲p] w⦃p⦄ ⇝ w }.
+  Proof. apply vinsert'_surj_rec with (e := eq_refl). Qed.
+
+  Fact is_vinsert'_in_nil_iff n (i : vinsert'_in n) : is_vinsert'_in ∅ i ↔ False.
+  Proof.
+    split; try easy.
+    destruct i as [ x v p ]; simpl; intros H.
+    apply vinsert_inv in H; idx invert p; simpl in H.
+    + destruct H as (e & _); lia.
+    + destruct n; simpl in H; auto.
+  Qed.
+
+  Fact is_vinsert'_in_cons_eq_iff m y (w : vec _ m) (i : vinsert'_in m) :
+          is_vinsert'_in (y##w) i
+        ↔ c_vinsert'_in y w 𝕆 = i
+        ∨ match m return vec _ m -> vinsert'_in m -> _ with 
+          | 0   => fun _ _ => False 
+          | S n => fun w i => ∃i', match i' with
+               | @c_vinsert'_in _ x v p => c_vinsert'_in x (y##v) (𝕊 p)
+               end = i
+             ∧ is_vinsert'_in w i'
+          end w i.
+  Proof.
+    split.
+    + destruct i as [ x v p ]; simpl; intros H.
+      apply vinsert_inv in H; idx invert p; simpl in H.
+      * destruct H as (e & H); inversion e; subst; eq refl.
+        apply vec_cons_inj in H as (-> & ->); auto.
+      * destruct v as [ | z n v ]; try easy; simpl in H.
+        destruct H as [ H -> ]; right.
+        exists (c_vinsert'_in x v p); split; auto.
+    + intros [ <- | H ]; simpl; eauto.
+      destruct m as [ | n ]; [ easy | ].
+      destruct H as ([x v p] & H1 & H2); subst; simpl in *; auto.
+  Qed.
+
+  Fact is_vinsert'_in_cons_neq_iff m y (w : vec _ m) n (D : m <> n) (i : vinsert'_in n) :
+        is_vinsert'_in (y##w) i <-> False.
+  Proof.
+    split; try tauto.
+    intros H.
+    destruct i as [x v p]; simpl in H.
+    apply vinsert_length in H; lia.
+  Qed.
+
+  Fact vinsert'_fin m w n : fin (@is_vinsert'_in m w n).
+  Proof.
+    induction w as [ | y m w IHw ] in n |- *.
+    + finite eq (@is_vinsert'_in_nil_iff n).
+    + destruct (eq_nat_dec m n) as [ <- | D ].
+      * finite eq (is_vinsert'_in_cons_eq_iff _ _).
+        finite union; destruct w; fin auto.
+      * finite eq (@is_vinsert'_in_cons_neq_iff _ y w _ D).
+  Qed.
+
+  Hint Resolve vinsert'_fin : core.
+
+  (** This is fin_choice but with tripple quantification on u p x *)
+  Fact vinsert_choice j (v : vec X j) n (P Q : vec _ n → _ → _ → Prop) :
+         (∀ u p x, u ⊲p] x ⇝ v → P u p x ∨ Q u p x)
+       → (∀ u p x, u ⊲p] x ⇝ v → P u p x)
+       ∨ (∃ u p x, u ⊲p] x ⇝ v ∧ Q u p x).
+  Proof.
+    intros H.
+    assert (forall d, is_vinsert'_in v d
+                   -> match d with c_vinsert'_in x u p => P u p x end
+                   \/ match d with c_vinsert'_in x u p => Q u p x end) as H'.
+    1: intros []; simpl; auto.
+    apply fin_choice in H' as [ H' | ([] & []) ]; simpl in *; eauto; [ left | right ]; eauto.
+    intros u p x; exact (H' (c_vinsert'_in x u p)).
   Qed.
 
   Fact vinsert_fall (P : X → Prop) x n (v : vec _ n) p m (w : vec _ m) :

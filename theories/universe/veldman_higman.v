@@ -733,12 +733,18 @@ Section veldman_afs_nodes_lt.
       + apply fin_vec_fall2_find with (R := ana _) in H; auto.
     Qed.
 
-    Local Fact Rαx_choice_embed x v :
+    Local Fact Rαx_choice_embed x (v : vec _ (S i)) :
              R (S i) α x
-           → (∀q,  γ⦃q⦄ ≤[k,R] v⦃q⦄
+           → (∀ u q y, 
+                 u ⊲q] y ⇝ v 
+               →   γ⦃q⦄ ≤[k,R] y
                ∨ ⟨α|γ⟩ ≤[k,R] ⟨x|v⟩)
            → ⟨α|γ⟩ ≤[k,R] ⟨x|v⟩.
-    Proof. intros ? [ | (_ & ?)]%finite_choice; auto with vtree_db; fin auto. Qed.
+    Proof. 
+      intros H [ H3 | (_ & _ & _ & _ & ?) ]%vinsert_choice; auto.
+      constructor 2; auto.
+      apply vinsert_any_vec_fall2; auto.
+    Qed.
 
     Local Lemma E_embed c (Hc : s (S i) = Some c) t :
           wft X t → E c t → ⟨α|γ⟩ ≤[k,R] t.
@@ -757,13 +763,14 @@ Section veldman_afs_nodes_lt.
         apply disapointing_inv_lt in H4.
         (* Same proof here as below *** FACTORIZE ?? *)
         apply Rαx_choice_embed; trivial.
-        intros q.
-        destruct (vinsert_surjective v q) as (u & Hu & Hu').
-        destruct (hereditary _ ⦉x,q,v⦃q⦄⦊₂ u)
+        intros u q y Hu.
+        destruct (hereditary _ ⦉x,q,y⦊₂ u)
           as [ (p & Hp) | (v'' & H5 & H6) ]; eauto.
         * apply vinsert_fall with (1 := Hu); auto.
-        * right; constructor 1 with (vinsert_idx q p).
-          apply IHv; rewrite <- Hu'; assumption.
+        * destruct (vinsert_eq Hu); eauto.
+        * apply vinsert_idx_eq, proj2 in Hu.
+          right; constructor 1 with (vinsert_idx q p).
+          apply IHv; rewrite <- Hu; auto.
         * apply disapointing_inv_2 in H6; auto.
       + (* case j = S i and c = ▣ *)
         assert (R (S i) α x) as Hαx.
@@ -772,13 +779,14 @@ Section veldman_afs_nodes_lt.
             apply HXR; auto. }
         (* Same proof here as above *** FACTORIZE ?? *)
         apply Rαx_choice_embed; trivial.
-        intros q.
-        destruct (vinsert_surjective v q) as (u & Hu & Hu').
-        destruct (hereditary _ ⦉x,q,v⦃q⦄⦊₂ u)
+        intros u q y Hu.
+        destruct (hereditary _ ⦉x,q,y⦊₂ u)
           as [ (p & Hp) | (v'' & H5 & H6) ]; eauto.
-        * apply vinsert_fall with (1 := Hu). auto.
-        * right; constructor 1 with (vinsert_idx q p).
-          apply IHv; rewrite <- Hu'; assumption.
+        * apply vinsert_fall with (1 := Hu); auto.
+        * destruct (vinsert_eq Hu); eauto.
+        * apply vinsert_idx_eq, proj2 in Hu.
+          right; constructor 1 with (vinsert_idx q p).
+          apply IHv; rewrite <- Hu; auto.
         * apply disapointing_inv_2 in H6; auto.
     Qed.
 

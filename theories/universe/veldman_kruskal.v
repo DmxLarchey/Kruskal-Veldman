@@ -770,18 +770,9 @@ Section veldman_afs_nodes_ge.
                 ∨ ⟨α|γ⟩ ≤[k,R] ⟨x|v⟩)
            → ⟨α|γ⟩ ≤[k,R] ⟨x|v⟩.
     Proof.
-      intros H1 H2 H3. 
-      assert (∀d, is_vintercal_in v d
-                → (∃p,
-                   match d with
-                   | c_vinter_in _ w => ∃ q : idx (lvec_len w⦃p⦄), γ⦃p⦄ ≤[k,R] (lvec_vec w⦃p⦄)⦃q⦄
-                   end)
-                ∨ ⟨α|γ⟩ ≤[k,R] ⟨x|v⟩) as G.
-      + intros []; simpl; eauto.
-      + apply fin_choice in G as [ G | (_ & _ & ?) ]; auto.
-        constructor 3; auto.
-        apply vintercal_any_vec_embed; auto.
-        intros u w H; apply (G (c_vinter_in u w) H).
+      intros H1 H2 [ H3 | (_ & _ & _ & ?) ]%vintercal_choice; eauto.
+      constructor 3; auto.
+      apply vintercal_any_vec_embed; auto.
     Qed.
 
     Local Lemma E_embed c (Hc : s k = Some c) t :
