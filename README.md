@@ -245,9 +245,9 @@ between trees in `wft X'` and trees in `wft X`. Which concludes the proof sketch
 
 Some _key properties_ are not discussed in the above sketch: 
 1. to be able to build the new sequence `R'₀⇓X'₀,...,R'ₚ⇓X'ₚ`, the type `A` needs 
-  to be equipped with some structure allowing eg. to nest (trees of) itself 
-  from within, a bit like universes in set theory. Of course, an arbitrary type
-  `A` does not have this property. 
+   to be equipped with some structure allowing eg. to nest (trees of) itself 
+   from within, a bit like universes in set theory. Of course, an arbitrary type
+   `A` does not have this property. 
     - in \[1\], the choice is made for `A` to be `nat`, which is
       the natural choice for intuitionistic set theory, but this also limits the main 
       result to `nat`, or to types that must be first embedded into `nat`; 
@@ -261,11 +261,11 @@ Some _key properties_ are not discussed in the above sketch:
       the result for `U := universe A` back to the arbitrary type `A` by a 
       simple surjective morphism, a trivial projection since `U` extends `A`;
 2. the lexicographic induction needs extra information about the proof of `afs Xₙ Rₙ`
-  to be able to make a case distinction when `Rₙ` is a full relation on `Xₙ`, and
-  also when `Xₙ` is an empty sub-type. None of these conditions can be decided. 
-  In \[1\], _stumps_ are used for this tasks. But while stumps can be computed
-  from `afs Xₙ Rₙ` in the `Type`-bounded case, on the contrary they
-  cannot be computed in the `Prop`-bounded case:
+   to be able to make a case distinction when `Rₙ` is a full relation on `Xₙ`, and
+   also when `Xₙ` is an empty sub-type. None of these conditions can be decided. 
+   In \[1\], _stumps_ are used for this tasks. But while stumps can be computed
+   from `afs Xₙ Rₙ` in the `Type`-bounded case, on the contrary they
+   cannot be computed in the `Prop`-bounded case:
     - in \[1\], _Church thesis_ is used specifically for this purpose, but
       the price is of an _assumed axiom_;
     - in here, we _circumvent_ Church thesis by using the (new ?) notion 
@@ -273,12 +273,12 @@ Some _key properties_ are not discussed in the above sketch:
       the above information (fullness of `Rₙ` or emptiness of `Xₙ`) 
       in the internals of the recursive proof as soon as the output type does not 
       state properties about this (hidden) information;
-3. the construction of quasi-morphism is somewhat natural but not trivial at all
-  and its properties can be difficult to establish, depending on which framework
-  is used to implement it (eg `list` or `vec` based rose trees). The 
-  [`Kruskal-Finite`](https://github.com/DmxLarchey/Kruskal-Finite) library tools
-  where specifically designed to allow for manageable proofs that those
-  quasi-morphisms have finite inverse images.
+3. the construction of the "well-chosen quasi-morphism" is somewhat natural but 
+   not trivial at all and its properties can be difficult to establish, 
+   depending on which framework is used to implement it (eg `list` or `vec` 
+   based rose trees). The [`Kruskal-Finite`](https://github.com/DmxLarchey/Kruskal-Finite) library tools
+   where specifically designed to allow for manageable proofs that those
+   well-chosen quasi-morphisms have finite inverse images.
 
 # How to enter the recursive proof in more details
 
