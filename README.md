@@ -20,8 +20,8 @@ of Wim Veldman's intuitionistic proofs of a variant of Kruskal's tree theorems \
 Actually the result is [a mixture of Higman's and Kruskal's theorems](#What-is-the-main-result).
 
 From this result, one can easily derive, via simple surjective relational morphisms,
- various forms of Higman's and Kruskal's tree theorems, depending on the actual implementation 
-of rose trees using lists, vectors etc. This tasks is devoted to the upcoming project `Kruskal-Theorems`, 
+ various forms of Higman's and Kruskal's tree theorems, adapted to the actual implementation 
+of rose trees using either lists, or vectors etc. This tasks is devoted to the upcoming project `Kruskal-Theorems`, 
 to be published as a follow-up on short notice.
 
 \[1\] [_An intuitionistic proof of Kruskal's theorem_](https://link.springer.com/article/10.1007/s00153-003-0207-x), Wim Veldman, 2004
