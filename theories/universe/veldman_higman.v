@@ -31,6 +31,54 @@ Import idx_notations vec_notations
 
 Set Implicit Arguments.
 
+Section combi_trees.
+
+  Variables (A' A : Type) (X' : nat → rel₁ A') (X : nat → rel₁ A)
+            (gev : vtree A' → vtree A → Prop)
+            (D' : rel₁ (vtree A')).
+
+  Notation ana := (λ t t', gev t' t).
+  Notation vana := (vec_fall2 ana).
+  Notation E' := (λ t, ∃s, s ≤st t ∧ D' s).
+
+  (* We assume the analysis of well formed trees
+     are finitely many *)
+  Hypothesis fin_ana : ∀t, wft X t → fin (ana t).
+
+  (* This abstract nicely E_hereditary as a combinatorial
+     principle on trees, for properties E'/exceptional
+     defined as "contains a disapointing sub-tree". 
+
+     It x' is an analysis label and v vector of
+     wf evaluations and t an evaluation st. 
+     - t is exceptional (the analyses of t are exceptional)
+     - for any analysis v' of v, ⟨x'|v'⟩ analyses t
+     Then 
+     - either v contains an exceptional component
+     - or there is analysis v' of v st  ⟨x'|v'⟩ is disapointing. *)
+  Local Lemma combi_trees n x' (v : vec _ n) t :
+            vec_fall (wft X) v
+          → ana t ⊆₁ E'
+          → (∀v', vana v v' → ana t ⟨x'|v'⟩)
+          → (∃p,   ana v⦃p⦄ ⊆₁ E')
+          ∨ (∃v', vana v v' ∧ D' ⟨x'|v'⟩).
+  Proof.
+    intros Hv Ht1 Ht2.
+    assert ((∀v', vana v v' → ∃p, E' v'⦃p⦄)
+          ∨ (∃v', vana v v' ∧ D' ⟨x'|v'⟩)) 
+      as [H|]; eauto.
+    + apply fin_choice; auto.
+      * apply fin_vec_fall2; auto.
+      * intros v' Hv'.
+        destruct (Ht1 ⟨x'|v'⟩) as (t' & H' & ?); auto.
+        apply sub_dtree_inv_rt in H' as [ -> | [] ]; eauto.
+    + apply fin_vec_fall2_find 
+        with (R := ana) (P := fun x => ∃s, s ≤st x ∧ D' s)
+        in H; auto.
+  Qed.
+
+End combi_trees.
+
 Section veldman_afs_nodes_lt.
 
   Variables (A : Type).
@@ -545,11 +593,13 @@ Section veldman_afs_nodes_lt.
 
   Hint Resolve fin_ana : core.
 
+(*
   Local Corollary fin_vana n c (v : vec _ n) : vec_fall (wft X) v → fin (vana c v).
   Proof. intro; apply fin_vec_fall2 with (R := ana c); eauto. Qed.
 
-  Hint Resolve fin_vana : core.
 
+  Hint Resolve fin_vana : core.
+*)
   (** An analysis on (X',R') is disapointing if either
         - its root node is above "α" wrt to R at arity 1+i
         - its root node has arity i and is of shape ⦉p,x,t⦊₂ and t embeds γ⦃p⦄
@@ -737,14 +787,11 @@ Section veldman_afs_nodes_lt.
           → Esub_or_D' c v x'.
     Proof.
       intros Hv Ht1 Ht2; red.
-      assert ((∀v', vana c v v' → ∃p, E' v'⦃p⦄)
-            ∨ (∃v', vana c v v' ∧ D' ⟨x'|v'⟩)) 
-        as [H| (? & _ & ?)]; eauto.
-      + apply fin_choice; auto.
-        intros v' Hv'.
-        destruct (Ht1 ⟨x'|v'⟩) as (t' & H' & ?); auto.
-        apply sub_dtree_inv_rt in H' as [ -> | [] ]; eauto.
-      + apply fin_vec_fall2_find with (R := ana _) in H; auto.
+      destruct combi_trees
+        with (1 := fin_ana c)
+             (2 := Hv)
+             (3 := Ht1)
+             (4 := Ht2) as [ | (? & _ & ?)]; eauto.
     Qed.
 
     Local Fact Rαx_choice_embed x (v : vec _ (S i)) :
