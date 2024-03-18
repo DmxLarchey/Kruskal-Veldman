@@ -548,11 +548,6 @@ Section veldman_afs_nodes_ge.
 
   Hint Resolve fin_ana : core.
 
-  Local Corollary fin_vana n c (v : vec _ n) : vec_fall (wft X) v → fin (vana c v).
-  Proof. intro; apply fin_vec_fall2 with (R := ana c); eauto. Qed.
-
-  Hint Resolve fin_vana : core.
-
   (** An analysis is disapointing if either
         - its root node is above "α" wrt to R j (= R k) at arity j > i
         - its root node has arity i and is of shape ⦉x,w⦊₂
@@ -628,7 +623,7 @@ Section veldman_afs_nodes_ge.
     induction 1 as [ t j x' v' p _ IH
                    | j x1' v1' x2' v2' H0 H1 _ IH
                    | j x1' v1' m x2' v2' H0 H1 _ IH ]; intros t1 t2 E1 E3.
-    + specialize (fun t => IH _ t E1); clear E1.
+    + specialize (λ t3, IH _ t3 E1); clear E1.
       apply kev_graph_inv_left in E3
         as [ (<- & E3) | [ (H1 & H2 & v & E3 & <-) | (H1 & H2 & -> & v & E3 & <-) ] ].
       (* cases i ≠ j *)
@@ -647,7 +642,7 @@ Section veldman_afs_nodes_ge.
         rewrite kruskal_lift_rel_lt in H1; auto.
         apply kev_graph_lt_inv in E3 as (E3 & v2 & E4 & <-); auto.
         apply kev_graph_lt_inv in E1 as (E1 & v1 & E2 & <-); auto.
-        specialize (fun i => IH i _ _ (E2 _) (E4 _)).
+        specialize (λ p, IH p _ _ (E2 _) (E4 _)).
         apply finite_choice in IH as [ IH | [] ]; fin eauto.
         left; destruct (le_lt_dec k j); auto with vtree_db.
         rewrite HRk in H1; auto with vtree_db.
@@ -656,22 +651,22 @@ Section veldman_afs_nodes_ge.
         destruct H1 as [ x1 x2 G1 | x1 x2 w1 w2 G1 G2 ].
         - apply kev_graph_eq_1_inv in E3 as (E3 & v2 & E4 & <-).
           apply kev_graph_eq_1_inv in E1 as (E1 & v1 & E2 & <-).
-          specialize (fun i => IH i _ _ (E2 _) (E4 _)).
+          specialize (λ p, IH p _ _ (E2 _) (E4 _)).
           apply finite_choice in IH as [ IH | [] ]; fin eauto.
           left.
-          assert (k = S i \/ k <= i) as [ | Hi ] by lia.
+          assert (k = S i ∨ k ≤ i) as [ | Hi ] by lia.
           ++ constructor 2; auto; lia.
-          ++ rewrite HRk with (1 := Hi) in G1.  (* i <= k -> R i = R k *)
+          ++ rewrite HRk with (1 := Hi) in G1.  (* k ≤ i then R i = R k *)
              constructor 3; auto; lia.
         - apply kev_graph_eq_2_inv in E3 as (u2 & E4 & j2 & v2 & G5 & E3 & G4 & <-).
           apply kev_graph_eq_2_inv in E1 as (u1 & E2 & j1 & v1 & G6 & E1 & G3 & <-).
           unfold rel_lift in G2.
-          assert (  (forall p, lvec_embed (vtree_upto_embed k R) w1⦃p⦄ w2⦃p⦄)
-                 \/ (exists p q, vtree_upto_embed k R γ⦃p⦄ (lvec_vec w1⦃p⦄)⦃q⦄))
+          assert (  (∀p, lvec_embed (vtree_upto_embed k R) w1⦃p⦄ w2⦃p⦄)
+                  ∨ (∃ p q, vtree_upto_embed k R γ⦃p⦄ (lvec_vec w1⦃p⦄)⦃q⦄))
             as [ H | (p & q & Hpq) ].
           1:{ apply finite_choice; fin auto.
-              intro p; apply vec_embed_rel_lift_inv; eauto. }
-          ++ specialize (fun i => IH i _ _ (E2 _) (E4 _)).
+              intro; apply vec_embed_rel_lift_inv; eauto. }
+          ++ specialize (λ p, IH p _ _ (E2 _) (E4 _)).
              apply finite_choice in IH as [ IH | [] ]; fin eauto.
              left; constructor 3; auto; tlia.
              revert IH H; apply vintercal_embed; auto.
@@ -687,7 +682,7 @@ Section veldman_afs_nodes_ge.
       apply vec_embed_sub_vec_fall2 in IH as (v3' & IH & H3).
       destruct (vec_embed_fall2_inv H3 E4) as (? & <-%vec_prj_ext & G2).
       apply vec_embed_sub_vec_fall2 in G2 as (v3 & E5 & G3).
-      specialize (fun i => IH i _ _ (E2 _) (E5 _)).
+      specialize (λ p, IH p _ _ (E2 _) (E5 _)).
       apply finite_choice in IH as [ IH | [] ]; fin eauto.
       left; constructor 3; auto; tlia.
       apply vec_embed_sub_vec_fall2; eauto.
@@ -750,23 +745,18 @@ Section veldman_afs_nodes_ge.
     Let Esub_or_D' c n (v : vec _ n) x' :=
       (∃p, E c v⦃p⦄) ∨ (∃v' : vec _ n, D' ⟨x'|v'⟩).
 
-    Local Fact E_hereditary c n x' (v : vec _ n) t :
-           vec_fall (wft X) v
-         → E c t
-         → (∀v', vana c v v' → ana c t ⟨x'|v'⟩)
-         → Esub_or_D' c v x'.
+    Local Lemma E_hereditary c n x' (v : vec _ n) t :
+            vec_fall (wft X) v
+          → E c t
+          → (∀v', vana c v v' → ana c t ⟨x'|v'⟩)
+          → Esub_or_D' c v x'.
     Proof.
-      intros H1 H2 H3; red.
-      assert ((∀v', vana c v v' → ∃p, E' v'⦃p⦄)
-            ∨ (∃v', vana c v v' ∧ D' ⟨x'|v'⟩)) 
-        as [ H4 | (? & _ & ?) ]; eauto.
-      + apply fin_choice; auto.
-        intros v' Hv'.
-        destruct (H2 ⟨x'|v'⟩) as (t' & H4 & ?); auto.
-        apply sub_dtree_inv_rt in H4 as [ -> | (p & ?) ]; auto.
-        left; exists p, t'; auto.
-      + left.
-        apply fin_vec_fall2_find with (R := ana _) in H4; eauto.
+      intros Hv Ht1 Ht2; red.
+      destruct vtree_combi_analysis
+        with (1 := fin_ana c)
+             (2 := Hv)
+             (3 := Ht1)
+             (4 := Ht2) as [ | (? & _ & ?)]; eauto.
     Qed.
 
     Local Fact Rαx_choice_embed j x (v : vec _ j) : 

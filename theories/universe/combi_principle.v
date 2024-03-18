@@ -11,20 +11,21 @@ From Coq
   Require Import List Utf8.
 
 From KruskalTrees
-  Require Import notations idx vec.
+  Require Import notations idx vec vtree.
 
 From KruskalFinite
   Require Import finite choice.
 
-Require Import base notations.
+Require Import base notations vtree_embed.
 
-Import idx_notations vec_notations.
+Import idx_notations vec_notations
+       vtree_notations vtree_embeddings_notations.
 
 Set Implicit Arguments.
 
 #[local] Notation FAN w := (λ c, vec_fall2 (λ x l, x ∈ l) c w).
 
-Fact fin_FAN X n (w : vec (list X) n) : fin (FAN w).
+Local Fact fin_FAN X n (w : vec (list X) n) : fin (FAN w).
 Proof. apply fin_vec_fall2 with (R := λ l x, x ∈ l); fin auto. Qed.
 
 (** Similar to list_combi_principle in Kruskal-Higman but for vectors 
@@ -40,7 +41,7 @@ Proof.
   + assert (H: ∀x, x ∈ l → B x ∨ ∀c, FAN w c → P (x##c) ∨ ∃i, B c⦃i⦄).
     1:{ intros x Hx.
         apply fin_choice_cst_left.
-        + apply fin_FAN.
+        + apply fin_vec_fall2 with (R := λ l x, x ∈ l); fin auto.
         + intros c Hc.
           destruct (HPB (x##c)) as [ | [] ]; eauto with vec_db.
           idx invert all; simpl in *; eauto. }
@@ -65,4 +66,48 @@ Proof.
     intro; apply Hw, Hc.
   + exists i; intros ? ?%Hw; auto.
 Qed.
+
+Section combi_trees.
+
+  Variables (A A' : Type) (X : nat → rel₁ A)
+            (ana : vtree A → vtree A' → Prop)
+            (fin_ana : ∀t, wft X t → fin (ana t))  (* finite analysis on well formed trees *)
+            (D' : rel₁ (vtree A')).
+
+  Notation vana := (vec_fall2 ana).
+  Notation E' := (λ t, ∃s, s ≤st t ∧ D' s).
+
+
+  (* This abstract nicely E_hereditary as a combinatorial
+     principle on trees, for properties E'/exceptional
+     defined as "contains a disapointing sub-tree". 
+
+     It x' is an analysis label and v vector of
+     wf evaluations and t an evaluation st. 
+     - t is exceptional (the analyses of t are exceptional)
+     - for any analysis v' of v, ⟨x'|v'⟩ analyses t
+     Then 
+     - either v contains an exceptional component
+     - or there is analysis v' of v st  ⟨x'|v'⟩ is disapointing. *)
+  Lemma vtree_combi_analysis n x' (v : vec _ n) t :
+            vec_fall (wft X) v
+          → ana t ⊆₁ E'
+          → (∀v', vana v v' → ana t ⟨x'|v'⟩)
+          → (∃p,   ana v⦃p⦄ ⊆₁ E')
+          ∨ (∃v', vana v v' ∧ D' ⟨x'|v'⟩).
+  Proof.
+    intros Hv Ht1 Ht2.
+    assert ((∀v', vana v v' → ∃p, E' v'⦃p⦄)
+          ∨ (∃v', vana v v' ∧ D' ⟨x'|v'⟩)) 
+      as [H|]; eauto.
+    + apply fin_choice; auto.
+      * apply fin_vec_fall2; auto.
+      * intros v' Hv'.
+        destruct (Ht1 ⟨x'|v'⟩) as (t' & H' & ?); auto.
+        apply sub_dtree_inv_rt in H' as [ -> | [] ]; eauto.
+    + apply fin_vec_fall2_find with (P := E') in H; auto.
+  Qed.
+
+End combi_trees.
+
 
