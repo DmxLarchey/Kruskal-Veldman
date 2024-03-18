@@ -238,7 +238,7 @@ via
 ```coq
 afs (wft X') (vtree_upto_embed p R') → afs (wft X) (vtree_upto_embed k R)↑⟨α|γ⟩
 ```
-using a well chosen _quasi morphism_ based on an _analysis/evaluation relation_
+using a well chosen [_quasi morphism_](https://github.com/DmxLarchey/Quasi-Morphisms) based on an _analysis/evaluation relation_
 between trees in `wft X'` and trees in `wft X`. Which concludes the proof sketch.
 
 ## Some key issues that must be refined
