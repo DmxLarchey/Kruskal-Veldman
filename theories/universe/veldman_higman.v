@@ -72,9 +72,7 @@ Section combi_trees.
       * intros v' Hv'.
         destruct (Ht1 ⟨x'|v'⟩) as (t' & H' & ?); auto.
         apply sub_dtree_inv_rt in H' as [ -> | [] ]; eauto.
-    + apply fin_vec_fall2_find 
-        with (R := ana) (P := fun x => ∃s, s ≤st x ∧ D' s)
-        in H; auto.
+    + apply fin_vec_fall2_find with (P := E') in H; auto.
   Qed.
 
 End combi_trees.
