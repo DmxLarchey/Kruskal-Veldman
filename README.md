@@ -201,7 +201,7 @@ but this is not exactly well-founded induction. It would be more accurate to
 say that we proceed by induction on the sequence of proofs `afs X₀ R₀,...,afs Xₖ Rₖ`
 but we avoid the details at this stage. Also, we skip the description of the order
 used for this first induction. We just call it _lexicographic order_ on `afs` predicates.
-This gives use our first (informally stated) induction hypothesis as:
+This gives us our first (informally stated) induction hypothesis as:
 ```
 for any R'₀⇓X'₀,...,R'ₚ⇓X'ₚ st (∀n, afs X'ₙ R'ₙ) 
     and which is lex.-smaller that R₀⇓X₀,...,Rₖ⇓Xₖ, 
@@ -259,7 +259,7 @@ Some _key properties_ are not discussed in the above sketch:
      [`veldman_universe.v`](theories/universe/veldman_universe.v);
     - then, after the recursive proof, we project in [`veldman_theorem.v`](theories/universe/veldman_theorem.v)
       the result for `U := universe A` back to the arbitrary type `A` by a 
-      simple surjective morphism, a trivial projection since `U` extends `A`;
+      simple surjective morphism, a trivial projection since `U` extends `A`.
 2. the lexicographic induction needs extra information about the proof of `afs Xₙ Rₙ`
    to be able to make a case distinction when `Rₙ` is a full relation on `Xₙ`, and
    also when `Xₙ` is an empty sub-type. None of these conditions can be decided. 
@@ -272,7 +272,7 @@ Some _key properties_ are not discussed in the above sketch:
       of _well-foundness up to a projection_ which allows us to access 
       the above information (fullness of `Rₙ` or emptiness of `Xₙ`) 
       in the internals of the recursive proof as soon as the output type does not 
-      state properties about this (hidden) information;
+      state properties about this (hidden) information.
 3. the construction of the "well-chosen quasi-morphism" is somewhat natural but 
    not trivial at all and its properties can be difficult to establish, 
    depending on which framework is used to implement it (eg `list` or `vec` 
