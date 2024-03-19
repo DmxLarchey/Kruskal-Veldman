@@ -378,7 +378,7 @@ Section veldman_afs_nodes_lt.
                → v' =[◩]=> v
                → ⟨x|v'⟩ -[◩]-> ⟨x|v⟩
 
-  where "x -[ b ]-> y" := (hev_graph b x y)
+  where "x -[ c ]-> y" := (hev_graph c x y)
    and  "u =[ c ]=> v" := (vec_fall2 (hev_graph c) u v).
 
   Hint Constructors hev_graph : core.
