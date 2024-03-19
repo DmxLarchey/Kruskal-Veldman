@@ -22,7 +22,7 @@ Import vec_notations vtree_notations af_notations.
 
 Set Implicit Arguments.
 
-Section kruskal_afs_leave_full.
+Section veldman_afs_leave_full.
 
   Variables (A : Type) (k : nat)
             (X : nat → rel₁ A)
@@ -30,7 +30,7 @@ Section kruskal_afs_leave_full.
             (HR : ∀ x y, X 0 x → X 0 y → R 0 x y)
             (α : A) (Hα : X 0 α).
 
-  Lemma kruskal_afs_leave_full : afs (wft X) (vtree_upto_embed k R)↑⟨α|∅⟩.
+  Lemma veldman_afs_leave_full : afs (wft X) (vtree_upto_embed k R)↑⟨α|∅⟩.
   Proof.
     constructor 1; intros t y Ht Hy.
     right; clear y Hy.
@@ -45,9 +45,9 @@ Section kruskal_afs_leave_full.
       constructor 1 with idx_fst; auto.
   Qed.
 
-End kruskal_afs_leave_full.
+End veldman_afs_leave_full.
 
-Section kruskal_afs_leaves_lift.
+Section veldman_afs_leaves_lift.
 
   Variables (A : Type) (k : nat)
             (X : nat → rel₁ A)
@@ -67,7 +67,7 @@ Section kruskal_afs_leaves_lift.
 
   Hypotheses (HR' : afs (wft X) (vtree_upto_embed k R')).
 
-  Lemma kruskal_afs_leaves_lift : afs (wft X) (vtree_upto_embed k R)↑⟨α|∅⟩.
+  Lemma veldman_afs_leaves_lift : afs (wft X) (vtree_upto_embed k R)↑⟨α|∅⟩.
   Proof.
     revert HR'; apply afs_mono; auto.
     intros x y _ _.
@@ -95,4 +95,4 @@ Section kruskal_afs_leaves_lift.
             ( (left; eauto with vtree_db; fail) || (right; eauto with vtree_db)).
   Qed.
 
-End kruskal_afs_leaves_lift.
+End veldman_afs_leaves_lift.

@@ -31,52 +31,6 @@ Import idx_notations vec_notations
 
 Set Implicit Arguments.
 
-Section combi_trees.
-
-  Variables (A' A : Type) (X' : nat → rel₁ A') (X : nat → rel₁ A)
-            (gev : vtree A' → vtree A → Prop)
-            (D' : rel₁ (vtree A')).
-
-  Notation ana := (λ t t', gev t' t).
-  Notation vana := (vec_fall2 ana).
-  Notation E' := (λ t, ∃s, s ≤st t ∧ D' s).
-
-  (* We assume the analysis of well formed trees
-     are finitely many *)
-  Hypothesis fin_ana : ∀t, wft X t → fin (ana t).
-
-  (* This abstract nicely E_hereditary as a combinatorial
-     principle on trees, for properties E'/exceptional
-     defined as "contains a disapointing sub-tree". 
-
-     It x' is an analysis label and v vector of
-     wf evaluations and t an evaluation st. 
-     - t is exceptional (the analyses of t are exceptional)
-     - for any analysis v' of v, ⟨x'|v'⟩ analyses t
-     Then 
-     - either v contains an exceptional component
-     - or there is analysis v' of v st  ⟨x'|v'⟩ is disapointing. *)
-  Local Lemma combi_trees n x' (v : vec _ n) t :
-            vec_fall (wft X) v
-          → ana t ⊆₁ E'
-          → (∀v', vana v v' → ana t ⟨x'|v'⟩)
-          → (∃p,   ana v⦃p⦄ ⊆₁ E')
-          ∨ (∃v', vana v v' ∧ D' ⟨x'|v'⟩).
-  Proof.
-    intros Hv Ht1 Ht2.
-    assert ((∀v', vana v v' → ∃p, E' v'⦃p⦄)
-          ∨ (∃v', vana v v' ∧ D' ⟨x'|v'⟩)) 
-      as [H|]; eauto.
-    + apply fin_choice; auto.
-      * apply fin_vec_fall2; auto.
-      * intros v' Hv'.
-        destruct (Ht1 ⟨x'|v'⟩) as (t' & H' & ?); auto.
-        apply sub_dtree_inv_rt in H' as [ -> | [] ]; eauto.
-    + apply fin_vec_fall2_find with (P := E') in H; auto.
-  Qed.
-
-End combi_trees.
-
 Section veldman_afs_nodes_lt.
 
   Variables (A : Type).
@@ -669,7 +623,7 @@ Section veldman_afs_nodes_lt.
     induction 1 as [ t j x' v' p _ IH
                    | j x1' v1' x2' v2' H0 H1 _ IH
                    | j x1' v1' m x2' v2' H0 H1 _ IH ]; intros t1 t2 E1 E3.
-    + specialize (fun t => IH _ t E1); clear E1.
+    + specialize (λ t, IH _ t E1); clear E1.
       apply hev_graph_inv_left in E3
         as [ (<- & E3) | [ (H1 & H2 & H3 & v & E3 & <-) | (H1 & H2 & -> & v & E3 & <-) ] ].
       (* cases i ≠ j *)
@@ -685,22 +639,22 @@ Section veldman_afs_nodes_lt.
     + (* j < S i, so either j < i or j = i *)
       destruct (higman_lift_cases c j) as [ c j Hj1 Hj2 | c | | ].
       * (* j ≠ i and j ≠ S i *)
-         rewrite higman_lift_rel_neq in H1; auto.
+        rewrite higman_lift_rel_neq in H1; auto.
         apply hev_graph_neq_inv in E3 as (E3 & v2 & E4 & <-); auto.
         apply hev_graph_neq_inv in E1 as (E1 & v1 & E2 & <-); auto.
-        specialize (fun p => IH p _ _ (E2 _) (E4 _)).
-        apply finite_choice in IH as [ IH | [] ]; fin auto; eauto with vtree_db.
+        specialize (λ p, IH p _ _ (E2 _) (E4 _)).
+        apply finite_choice in IH as [ | [] ]; fin auto; eauto with vtree_db.
       * (* j = i *)
         rewrite higman_lift_rel_eq_i in H1; auto.
         destruct H1 as [ x1 x2 G1 | p x1 r1 x2 r2 G1 G2 ].
         - apply hev_graph_eq_1_inv in E3 as (E3 & v2 & E4 & <-).
           apply hev_graph_eq_1_inv in E1 as (E1 & v1 & E2 & <-).
-          specialize (fun p => IH p _ _ (E2 _) (E4 _)).
-          apply finite_choice in IH as [ IH | [] ]; fin auto; eauto with vtree_db.
+          specialize (λ p, IH p _ _ (E2 _) (E4 _)).
+          apply finite_choice in IH as [ | [] ]; fin auto; eauto with vtree_db.
         - apply hev_graph_eq_2_inv in E3 as (u2 & E4 & G5 & v2 & G4 & <-).
           apply hev_graph_eq_2_inv in E1 as (u1 & E2 & G6 & v1 & G3 & <-).
           destruct G2 as [ G2 | ]; auto.
-          specialize (fun p => IH p _ _ (E2 _) (E4 _)).
+          specialize (λ p, IH p _ _ (E2 _) (E4 _)).
           apply finite_choice in IH as [ IH | [] ]; fin eauto.
           left; constructor 2; auto; tlia.
           apply (vinsert_fall2 _ G3 G4); split; auto.
@@ -708,7 +662,7 @@ Section veldman_afs_nodes_lt.
         rewrite higman_lift_rel_eq_Si_l in H1; auto.
         apply hev_graph_eq_Si_inv in E1 as (E1 & v1 & E2 & <-).
         apply hev_graph_eq_Si_inv in E3 as (E3 & v2 & E4 & <-).
-        specialize (fun p => IH p _ _ (E2 _) (E4 _)).
+        specialize (λ p, IH p _ _ (E2 _) (E4 _)).
         apply finite_choice in IH as [ IH | [] ]; fin eauto.
         destruct H1; eauto with vtree_db.
       * (* j = S i and c = ▣ *)
@@ -721,7 +675,7 @@ Section veldman_afs_nodes_lt.
       apply vec_embed_sub_vec_fall2 in IH as (v3' & IH & H3).
       destruct (vec_embed_fall2_inv H3 E4) as (? & <-%vec_prj_ext & G2).
       apply vec_embed_sub_vec_fall2 in G2 as (v3 & E5 & G3).
-      specialize (fun p => IH p _ _ (E2 _) (E5 _)).
+      specialize (λ p, IH p _ _ (E2 _) (E5 _)).
       apply finite_choice in IH as [ IH | [] ]; fin eauto.
       left; constructor 3; auto; tlia.
       apply vec_embed_sub_vec_fall2; eauto.
@@ -785,7 +739,7 @@ Section veldman_afs_nodes_lt.
           → Esub_or_D' c v x'.
     Proof.
       intros Hv Ht1 Ht2; red.
-      destruct combi_trees
+      destruct vtree_combi_analysis
         with (1 := fin_ana c)
              (2 := Hv)
              (3 := Ht1)

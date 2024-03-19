@@ -20,8 +20,8 @@ of Wim Veldman's intuitionistic proofs of a variant of Kruskal's tree theorems \
 Actually the result is [a mixture of Higman's and Kruskal's theorems](#What-is-the-main-result).
 
 From this result, one can easily derive, via simple surjective relational morphisms,
- various forms of Higman's and Kruskal's tree theorems, depending on the actual implementation 
-of rose trees using lists, vectors etc. This tasks is devoted to the upcoming project `Kruskal-Theorems`, 
+ various forms of Higman's and Kruskal's tree theorems, adapted to the actual implementation 
+of rose trees using either lists, or vectors etc. This tasks is devoted to the upcoming project `Kruskal-Theorems`, 
 to be published as a follow-up on short notice.
 
 \[1\] [_An intuitionistic proof of Kruskal's theorem_](https://link.springer.com/article/10.1007/s00153-003-0207-x), Wim Veldman, 2004
@@ -35,7 +35,7 @@ to be imported.
 On the other hand, `Kruskal-Veldman`, in addition of being an intermediate step, was specifically __designed 
 to be read/studied__ by those readers who wish to _understand the internal details_ of this difficult
 proof. It comes from a major refactoring effort of a [former monolithic Coq proof](https://members.loria.fr/DLarchey/files/Kruskal) 
-of the theorem, a project that as been since split into several sub-libraries, initiated after some requests have been formulated 
+of the theorem, a project that has been since split into several sub-libraries, initiated after some requests have been formulated 
 to access parts of that project specifically. Here is the current split:
 - [`Kruskal-Trees`](https://github.com/DmxLarchey/Kruskal-Trees), extra library for lists, vectors, and rose trees; 
 - [`Kruskal-Finite`](https://github.com/DmxLarchey/Kruskal-Finite), library to manage finiteness (listability);
@@ -63,8 +63,8 @@ From KruskalVeldmanProp Require Import vtree_embed veldman_theorem.
 
 When the intention is to review the code base of `Kruskal-Veldman` with the help of an IDE for the Coq proof assistant, 
 the procedure is a bit different. Then it is advised to download the current code base, either via
-the [release](https://github.com/DmxLarchey/Kruskal-Veldman/releases), or cloning the `main` branch
-here, and unpack it in say the `Kruskal-Veldman` directory.
+the [latest release](https://github.com/DmxLarchey/Kruskal-Veldman/releases), or cloning the `main` branch
+here, and unpacking it in say the `Kruskal-Veldman` directory.
 ```console
 git clone https://github.com/DmxLarchey/Kruskal-Veldman.git
 cd Kruskal-Veldman
@@ -88,7 +88,7 @@ introduction on the proof implemented here.
 
 # What is the main result
 
-The main result established here can be stated as follows:
+The main result established here in [`veldman_theorem.v`](theories/universe/veldman_theorem.v) can be stated as follows:
 ```coq
 Variables (A : Type) (k : nat) (X : nat → rel₁ A) (R : nat → rel₂ A).
 
@@ -109,17 +109,23 @@ where
 as defined in [`Kruskal-Trees/../vtree.v`](https://github.com/DmxLarchey/Kruskal-Trees/blob/main/theories/tree/vtree.v);
 - `afs` is the specialisation of the `af` predicate to sub-types,
 as defined in [`Kruskal-AlmostFull/../af.v`](https://github.com/DmxLarchey/Kruskal-AlmostFull/blob/main/theories/af/af.v);
-- and [`wft X : vtree A → Prop`](https://github.com/DmxLarchey/Kruskal-Trees/blob/main/theories/tree/vtree.v) 
-  is the sub-type of _w(ell) f(ormed) t(rees)_ `t : vtree A` such that each sub-tree `⟨x|v⟩` of `t`
+- and [`wft X : vtree A → Prop`](https://github.com/DmxLarchey/Kruskal-Trees/blob/main/theories/tree/vtree.v#L38) 
+  is the sub-type of _w(ell) f(ormed) t(rees)_ consisting in those `t : vtree A` such that each sub-tree `⟨x|v⟩` of `t`
   satisfies `X n x` where `n` is the arity, ie the length of `v`. So `X` restricts which labels in `A` can be
   used, not uniformly, but instead, depending on the arity. This variability is critical in the inductive proof;
 - also the relation `R` varies according to the arity but this is discussed in more details below.
 
 The nested inductive relation `vtree_upto_embed k R`, also denoted `≤ₖ` for short, is intermediate between
-the nested product (cf. `vec_fall2`) embedding of Higman's theorem (which is only AF for trees of bounded breadth),
-and the homeomorphic (cf. `vec_embed`) embedding of Kruskal's theorem. The greater the parameter `k`, the closer
-`≤ₖ` over approximates the product embedding, while `≤ₖ` also lower approximates the homeomorphic embedding.
-But when `k = 0`, then `≤ₖ = ≤₀` is exactly the homeomorphic embedding.
+- the product embedding for vectors (cf. [`vec_fall2`](https://github.com/DmxLarchey/Kruskal-Trees/blob/main/theories/vec/vec.v#L481))
+used in a nested way in Higman's theorem;
+- and the homeomorphic embedding for vectors (cf. [`vec_embed`](https://github.com/DmxLarchey/Kruskal-Higman/blob/main/theories/embeddings/vec_embed.v#L102)) 
+used in a nested way in Kruskal's theorem.
+
+The greater the parameter `k`, the closer `≤ₖ` over approximates the product embedding,
+while `≤ₖ` also lower approximates the homeomorphic embedding. But when `k = 0`, then `≤ₖ = ≤₀` is exactly the 
+homeomorphic embedding.  We recall that the nested product embedding alone is only AF for finitary trees when
+their breadth is bounded by constant (here `k`), which explain why it is extended in `≤ₖ` using the homeomorphic
+embedding at arities above `k`;
 
 Let us analyze the relation `⟨x|v⟩ ≤ₖ ⟨y|w⟩` in a more procedural way (in contrast with its inductive definition):
 1. the first possibility is that `⟨x|v⟩` already `≤ₖ`-embeds into one of the sub-trees `w⦃_⦄` of `⟨y|w⟩`, irrelevant
@@ -154,8 +160,8 @@ That former mechanization however was based on _several sub-optimal design choic
 (for instance rose trees as nested lists instead of nested vectors) 
 or a lack of some abstractions, leading to quite a lot code duplication. 
 It gave a Coq-checkable proof script for a nice statement of the tree theorem 
-and presented undeniable improvements over the pen&paper proof:
-- compared to \[1\], it lifts the proof to a type theoretic settings with
+and presented undeniable improvements over the pen&paper proof \[1\]:
+- it lifted the proof to a type theoretic settings with
   an inductive formulation of almost full relations;
 - it circumvented (and hence solved) the issue of _Church thesis_, 
   which is an axiom used in \[1\] to recovered a _stump_ from a proof 
@@ -169,7 +175,8 @@ account of Kruskal's theorem \[1\]:
 - too many edge cases, retrospectively due to bad design choices for 
   the Coq implementation of analysis/evaluation;
 - as a consequence, too strong hypotheses for the statement of 
-  eg. `afs_vtree_upto_embed` where:
+  eg. what has now become [`veldman_afs_universe`](theories/universe/veldman_universe.v#L111),
+  where, in that former work of ours:
     - we required the decidability of `X : nat → rel₁ A`, but not of `R : nat → rel₂ A` !!
     - we had to carry that extra assumption all along the inductive steps of the proof
       with significant overhead;
@@ -193,19 +200,19 @@ before this sketch can be turn into a type-checkable Coq proof.
 
 Assuming `k` and relations `R₀⇓X₀,...,Rₖ⇓Xₖ` on sub-types of `A`, of which
 neither `k` nor the `Rₙ⇓Xₙ` are fixed, and for which we assume AF
-by `afs Xₙ Rₙ` (ie `af Rₙ⇓Xₙ`), we want to show `afs (wft X) (vtree_upto_embed k R)`,
-where the `_ ⇓ _` notation represents the _restriction_ of a relation to a sub-type.
+by `afs Xₙ Rₙ` (ie `af Rₙ⇓Xₙ`), we want to show `afs (wft X) (vtree_upto_embed k R)`.
+Recall that the `_ ⇓ _` notation denotes the _restriction_ of a relation to a sub-type.
 
 The first step is to proceed by "induction" on the sequence `R₀⇓X₀,...,Rₖ⇓Xₖ`,
 but this is not exactly well-founded induction. It would be more accurate to
 say that we proceed by induction on the sequence of proofs `afs X₀ R₀,...,afs Xₖ Rₖ`
 but we avoid the details at this stage. Also, we skip the description of the order
 used for this first induction. We just call it _lexicographic order_ on `afs` predicates.
-This gives use our first (informally stated) induction hypothesis as:
+This gives us our first (informally stated) induction hypothesis as:
 ```
-for any R'₀⇓X'₀,...,R'ₚ⇓X'ₚ st (∀n, afs X'ₙ R'ₙ) 
-    and which is lex.-smaller that R₀⇓X₀,...,Rₖ⇓Xₖ, 
-we have afs (wft X') (vtree_upto_embed p R')
+[IH1]: for any R'₀⇓X'₀,...,R'ₚ⇓X'ₚ st (∀n, afs X'ₙ R'ₙ) 
+          and which is lex.-smaller that R₀⇓X₀,...,Rₖ⇓Xₖ,
+       we have afs (wft X') (vtree_upto_embed p R')
 ```
 Then, having this first induction hypothesis at our disposal, we want to show 
 ```coq
@@ -219,7 +226,7 @@ We then proceed, in a second (nested) induction, structurally on `t₀`.
 Assuming `t₀ = ⟨α|γ⟩` is of arity `n`, we have new induction hypotheses, 
 namely:
 ```coq
-∀i∈{1,...,n}, afs (wft X) (vtree_upto_embed k R)↑γ⦃i⦄
+[IH2]: ∀i∈{1,...,n}, afs (wft X) (vtree_upto_embed k R)↑γ⦃i⦄
 ```
 
 Now there is a case distinction between `n = 0`, `0 < n < k` and `k ≤ n`. When
@@ -232,13 +239,18 @@ overall sketch but the details differ:
 In both cases we build a new sequence of AF relations `R'₀⇓X'₀,...,R'ₚ⇓X'ₚ`
 where possibly `p` might differ from `k`; it can even be larger. 
 However, this new sequence is built smaller than `R₀⇓X₀,...,Rₖ⇓Xₖ` 
-in the lexicographic order mentioned above. Hence, the first induction hypothesis gives us 
+in the lexicographic order mentioned above. These `R'ₙ⇓X'ₙ` are proved
+AF using the second induction hypotheses `[IH2]` and consequences of (Coquand's
+formulation of) Ramsey's theorem, ie. closure of AF under binary intersections,
+and also, when `k ≤ n`, Higman's lemma for `vec_embed`.
+
+Hence, the first induction hypothesis `[IH1]` gives us 
 `afs X' (vtree_upto_embed p R')` and we transfer the AF property
 via
 ```coq
 afs (wft X') (vtree_upto_embed p R') → afs (wft X) (vtree_upto_embed k R)↑⟨α|γ⟩
 ```
-using a well chosen _quasi morphism_ based on an _analysis/evaluation relation_
+using a well chosen [_quasi morphism_](https://github.com/DmxLarchey/Quasi-Morphisms) based on an _analysis/evaluation relation_
 between trees in `wft X'` and trees in `wft X`. Which concludes the proof sketch.
 
 ## Some key issues that must be refined
@@ -259,7 +271,7 @@ Some _key properties_ are not discussed in the above sketch:
      [`veldman_universe.v`](theories/universe/veldman_universe.v);
     - then, after the recursive proof, we project in [`veldman_theorem.v`](theories/universe/veldman_theorem.v)
       the result for `U := universe A` back to the arbitrary type `A` by a 
-      simple surjective morphism, a trivial projection since `U` extends `A`;
+      simple surjective morphism, a trivial projection since `U` extends `A`.
 2. the lexicographic induction needs extra information about the proof of `afs Xₙ Rₙ`
    to be able to make a case distinction when `Rₙ` is a full relation on `Xₙ`, and
    also when `Xₙ` is an empty sub-type. None of these conditions can be decided. 
@@ -272,7 +284,7 @@ Some _key properties_ are not discussed in the above sketch:
       of _well-foundness up to a projection_ which allows us to access 
       the above information (fullness of `Rₙ` or emptiness of `Xₙ`) 
       in the internals of the recursive proof as soon as the output type does not 
-      state properties about this (hidden) information;
+      state properties about this (hidden) information.
 3. the construction of the "well-chosen quasi-morphism" is somewhat natural but 
    not trivial at all and its properties can be difficult to establish, 
    depending on which framework is used to implement it (eg `list` or `vec` 

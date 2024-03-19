@@ -129,33 +129,33 @@ Section veldman_afs_universe.
 
         * s n = ▢ is an absurd case because no node exists at arity n
 
-        * s 0 = ▣ is dealt directly with kruskal_afs_leave_full (arity 0 is for leaves)
-        * s 0 = ◩ is dealt by lifting the leave, see kruskal_afs_leaves_lift
+        * s 0 = ▣ is dealt with veldman_afs_leave_full (arity 0 is for leaves)
+        * s 0 = ◩ is dealt by lifting the leave, see veldman_afs_leaves_lift
 
-        * s (1+i) = ▣ or ◩ is dealt with kruskal_afs_nodes
-      *)
+        * s (1+i) = ▣ or ◩ and 1+i < k is dealt with veldman_afs_nodes_lt
+          s (1+i) = ▣ or ◩ and k <= 1+i is dealt with veldman_afs_nodes_ge *)
 
     (* First we lift by a tree t and proceed by induction on t *)
-    constructor 2; induction 1 as [ i a w Ha Hw IHw ] using wft_rect.
+    constructor 2; induction 1 as [ i α γ Hα Hγ IHγ ] using wft_rect.
 
     (* We exclude the case where X i is empty because the root belongs to X i,
        ie s i = ▢ contradicts X i a *)
-    case_eq (s i); [ | specialize (@HXR i); intros E; rewrite E in HXR; destruct (HXR _ Ha) ].
+    case_eq (s i); [ | specialize (@HXR i); intros E; rewrite E in HXR; destruct (HXR _ Hα) ].
 
    (* We distinguish leaves from internal nodes, ie arity i is 0 or S _ *)
     destruct i as [ | i ].
 
     + (* arity i = 0, case of leaves *)
-      clear Hw IHw; vec invert w.
+      clear Hγ IHγ; vec invert γ.
       intros [] Hs0.
 
-      * (* arity i is 0 ans s 0 = ◩, lifted case, dealt with kruskal_afs_leaves_lift *)
-        apply kruskal_afs_leaves_lift.
-        apply IHXR with (s' := fun n =>
+      * (* arity i is 0 ans s 0 = ◩, lifted case, dealt with veldman_afs_leaves_lift *)
+        apply veldman_afs_leaves_lift.
+        apply IHXR with (s' := λ n,
            match n, k with
-             | 0, _ => ◩
-             | _, 0 => ◩
-             | _, _ => s n
+           | 0, _ => ◩
+           | _, 0 => ◩
+           | _, _ => s n
            end); auto.
         - intros []; simpl; auto.
           ++ generalize (@HXR 0); rewrite Hs0.
@@ -170,9 +170,9 @@ Section veldman_afs_universe.
           ++ constructor 2 with 0; auto; tlia.
              ** rewrite Hs0; constructor; auto.
              ** intros [] ?; auto; lia.
-      * (* arity i is 0 ans s 0 = ▣, full case, dealt with kruskal_afs_leave_full *)
+      * (* arity i is 0 ans s 0 = ▣, full case, dealt with veldman_afs_leave_full *)
         specialize (@HXR 0); rewrite Hs0 in HXR; red in HXR.
-        apply kruskal_afs_leave_full; auto.
+        apply veldman_afs_leave_full; auto.
 
     + (* We distinguish S i < k and k ≤ S i *)
       destruct (le_lt_dec k (S i)) as [ Hik | Hik ].
@@ -181,21 +181,22 @@ Section veldman_afs_universe.
         intros _ _.
         case_eq (s k).
         - intros c Hc.
-          apply veldman_afs_nodes_ge with s; eauto; try (intros E; rewrite E in Hc; easy).
-          apply wft_fix; auto.
-        - intros Hsk; exfalso.
-          rewrite HXk in Ha; auto.
+          apply veldman_afs_nodes_ge with s; (intro E; now rewrite E in Hc) || eauto.
+          now apply wft_fix.
+        - (* s k = ▢ contradicts X k α = X (S i) α *)
+          intros Hsk; exfalso.
+          rewrite HXk in Hα; auto.
           generalize (HXR k).
           rewrite Hsk; simpl; eauto.
       * (* case S i < k *)
         intros c Hc.
-        apply veldman_afs_nodes_lt with s; eauto; try (intros E; rewrite E in Hc; easy).
+        apply veldman_afs_nodes_lt with s; (intros E; now rewrite E in Hc) || eauto.
         - intros s' X' R' H1 H2 H3.
           apply IHXR with (1 := H1); auto.
-          ++ destruct H3 as [ j Hj _ E _ ]; intros; rewrite !E; auto; lia.
-          ++ destruct H3 as [ j Hj _ _ E ]; intros; rewrite !E; auto; lia.
+          ++ destruct H3 as [ ? ? _ E _ ]; intros; rewrite !E; auto; lia.
+          ++ destruct H3 as [ ? ? _ _ E ]; intros; rewrite !E; auto; lia.
           ++ revert H2 H3; apply easier_more_facile.
-        - apply wft_fix; auto.
+        - now apply wft_fix.
   Qed.
 
 End veldman_afs_universe.
