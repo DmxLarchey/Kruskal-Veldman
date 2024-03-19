@@ -35,7 +35,7 @@ to be imported.
 On the other hand, `Kruskal-Veldman`, in addition of being an intermediate step, was specifically __designed 
 to be read/studied__ by those readers who wish to _understand the internal details_ of this difficult
 proof. It comes from a major refactoring effort of a [former monolithic Coq proof](https://members.loria.fr/DLarchey/files/Kruskal) 
-of the theorem, a project that as been since split into several sub-libraries, initiated after some requests have been formulated 
+of the theorem, a project that has been since split into several sub-libraries, initiated after some requests have been formulated 
 to access parts of that project specifically. Here is the current split:
 - [`Kruskal-Trees`](https://github.com/DmxLarchey/Kruskal-Trees), extra library for lists, vectors, and rose trees; 
 - [`Kruskal-Finite`](https://github.com/DmxLarchey/Kruskal-Finite), library to manage finiteness (listability);
@@ -63,8 +63,8 @@ From KruskalVeldmanProp Require Import vtree_embed veldman_theorem.
 
 When the intention is to review the code base of `Kruskal-Veldman` with the help of an IDE for the Coq proof assistant, 
 the procedure is a bit different. Then it is advised to download the current code base, either via
-the [release](https://github.com/DmxLarchey/Kruskal-Veldman/releases), or cloning the `main` branch
-here, and unpack it in say the `Kruskal-Veldman` directory.
+the [latest release](https://github.com/DmxLarchey/Kruskal-Veldman/releases), or cloning the `main` branch
+here, and unpacking it in say the `Kruskal-Veldman` directory.
 ```console
 git clone https://github.com/DmxLarchey/Kruskal-Veldman.git
 cd Kruskal-Veldman
@@ -88,7 +88,7 @@ introduction on the proof implemented here.
 
 # What is the main result
 
-The main result established here can be stated as follows:
+The main result established here in [`veldman_theorem.v`](theories/universe/veldman_theorem.v) can be stated as follows:
 ```coq
 Variables (A : Type) (k : nat) (X : nat → rel₁ A) (R : nat → rel₂ A).
 
@@ -110,16 +110,22 @@ as defined in [`Kruskal-Trees/../vtree.v`](https://github.com/DmxLarchey/Kruskal
 - `afs` is the specialisation of the `af` predicate to sub-types,
 as defined in [`Kruskal-AlmostFull/../af.v`](https://github.com/DmxLarchey/Kruskal-AlmostFull/blob/main/theories/af/af.v);
 - and [`wft X : vtree A → Prop`](https://github.com/DmxLarchey/Kruskal-Trees/blob/main/theories/tree/vtree.v) 
-  is the sub-type of _w(ell) f(ormed) t(rees)_ `t : vtree A` such that each sub-tree `⟨x|v⟩` of `t`
+  is the sub-type of _w(ell) f(ormed) t(rees)_ consisting in those `t : vtree A` such that each sub-tree `⟨x|v⟩` of `t`
   satisfies `X n x` where `n` is the arity, ie the length of `v`. So `X` restricts which labels in `A` can be
   used, not uniformly, but instead, depending on the arity. This variability is critical in the inductive proof;
 - also the relation `R` varies according to the arity but this is discussed in more details below.
 
 The nested inductive relation `vtree_upto_embed k R`, also denoted `≤ₖ` for short, is intermediate between
-the nested product (cf. `vec_fall2`) embedding of Higman's theorem (which is only AF for trees of bounded breadth),
-and the homeomorphic (cf. `vec_embed`) embedding of Kruskal's theorem. The greater the parameter `k`, the closer
-`≤ₖ` over approximates the product embedding, while `≤ₖ` also lower approximates the homeomorphic embedding.
-But when `k = 0`, then `≤ₖ = ≤₀` is exactly the homeomorphic embedding.
+- the product embedding for vectors (cf. [`vec_fall2`](https://github.com/DmxLarchey/Kruskal-Trees/blob/main/theories/tree/vtree.v))
+used in a nested way in Higman's theorem;
+- and the homeomorphic embedding for vectors (cf. [`vec_embed`](https://github.com/DmxLarchey/Kruskal-Higman/blob/main/theories/embeddings/vec_embed.v)) 
+used in a nested way in Kruskal's theorem.
+
+The greater the parameter `k`, the closer `≤ₖ` over approximates the product embedding,
+while `≤ₖ` also lower approximates the homeomorphic embedding. But when `k = 0`, then `≤ₖ = ≤₀` is exactly the 
+homeomorphic embedding.  We recall that the nested product embedding alone is only AF for finitary trees when
+their breadth is bounded by constant (here `k`), which explain why it is extended in `≤ₖ` using the homeomorphic
+embedding at arities above `k`;
 
 Let us analyze the relation `⟨x|v⟩ ≤ₖ ⟨y|w⟩` in a more procedural way (in contrast with its inductive definition):
 1. the first possibility is that `⟨x|v⟩` already `≤ₖ`-embeds into one of the sub-trees `w⦃_⦄` of `⟨y|w⟩`, irrelevant
