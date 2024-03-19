@@ -8,7 +8,6 @@ vec/app.v
 vec/insert.v
 vec/mix.v
 vec/intercal.v
-vec/combi_principle.v
 
 embeddings/dtree_embed.v
 embeddings/vtree_embed.v
@@ -19,6 +18,7 @@ af/afs_quasi_morphism.v
 af/afs_lex.v
 
 universe/universe.v
+universe/combi_principle.v
 universe/veldman_leaves.v
 universe/veldman_higman.v
 universe/veldman_kruskal.v
