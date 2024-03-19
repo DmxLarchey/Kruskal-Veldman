@@ -109,16 +109,16 @@ where
 as defined in [`Kruskal-Trees/../vtree.v`](https://github.com/DmxLarchey/Kruskal-Trees/blob/main/theories/tree/vtree.v);
 - `afs` is the specialisation of the `af` predicate to sub-types,
 as defined in [`Kruskal-AlmostFull/../af.v`](https://github.com/DmxLarchey/Kruskal-AlmostFull/blob/main/theories/af/af.v);
-- and [`wft X : vtree A → Prop`](https://github.com/DmxLarchey/Kruskal-Trees/blob/main/theories/tree/vtree.v) 
+- and [`wft X : vtree A → Prop`](https://github.com/DmxLarchey/Kruskal-Trees/blob/main/theories/tree/vtree.v#L38) 
   is the sub-type of _w(ell) f(ormed) t(rees)_ consisting in those `t : vtree A` such that each sub-tree `⟨x|v⟩` of `t`
   satisfies `X n x` where `n` is the arity, ie the length of `v`. So `X` restricts which labels in `A` can be
   used, not uniformly, but instead, depending on the arity. This variability is critical in the inductive proof;
 - also the relation `R` varies according to the arity but this is discussed in more details below.
 
 The nested inductive relation `vtree_upto_embed k R`, also denoted `≤ₖ` for short, is intermediate between
-- the product embedding for vectors (cf. [`vec_fall2`](https://github.com/DmxLarchey/Kruskal-Trees/blob/main/theories/tree/vtree.v))
+- the product embedding for vectors (cf. [`vec_fall2`](https://github.com/DmxLarchey/Kruskal-Trees/blob/main/theories/vec/vec.v#L481))
 used in a nested way in Higman's theorem;
-- and the homeomorphic embedding for vectors (cf. [`vec_embed`](https://github.com/DmxLarchey/Kruskal-Higman/blob/main/theories/embeddings/vec_embed.v)) 
+- and the homeomorphic embedding for vectors (cf. [`vec_embed`](https://github.com/DmxLarchey/Kruskal-Higman/blob/main/theories/embeddings/vec_embed.v#L102)) 
 used in a nested way in Kruskal's theorem.
 
 The greater the parameter `k`, the closer `≤ₖ` over approximates the product embedding,
@@ -160,8 +160,8 @@ That former mechanization however was based on _several sub-optimal design choic
 (for instance rose trees as nested lists instead of nested vectors) 
 or a lack of some abstractions, leading to quite a lot code duplication. 
 It gave a Coq-checkable proof script for a nice statement of the tree theorem 
-and presented undeniable improvements over the pen&paper proof:
-- compared to \[1\], it lifts the proof to a type theoretic settings with
+and presented undeniable improvements over the pen&paper proof \[1\]:
+- it lifted the proof to a type theoretic settings with
   an inductive formulation of almost full relations;
 - it circumvented (and hence solved) the issue of _Church thesis_, 
   which is an axiom used in \[1\] to recovered a _stump_ from a proof 
@@ -175,7 +175,8 @@ account of Kruskal's theorem \[1\]:
 - too many edge cases, retrospectively due to bad design choices for 
   the Coq implementation of analysis/evaluation;
 - as a consequence, too strong hypotheses for the statement of 
-  eg. `afs_vtree_upto_embed` where:
+  eg. what has now become [`veldman_afs_universe`](theories/universe/veldman_universe.v#L111),
+  where, in that former work of ours:
     - we required the decidability of `X : nat → rel₁ A`, but not of `R : nat → rel₂ A` !!
     - we had to carry that extra assumption all along the inductive steps of the proof
       with significant overhead;
@@ -199,8 +200,8 @@ before this sketch can be turn into a type-checkable Coq proof.
 
 Assuming `k` and relations `R₀⇓X₀,...,Rₖ⇓Xₖ` on sub-types of `A`, of which
 neither `k` nor the `Rₙ⇓Xₙ` are fixed, and for which we assume AF
-by `afs Xₙ Rₙ` (ie `af Rₙ⇓Xₙ`), we want to show `afs (wft X) (vtree_upto_embed k R)`,
-where the `_ ⇓ _` notation represents the _restriction_ of a relation to a sub-type.
+by `afs Xₙ Rₙ` (ie `af Rₙ⇓Xₙ`), we want to show `afs (wft X) (vtree_upto_embed k R)`.
+Recall that the `_ ⇓ _` notation denotes the _restriction_ of a relation to a sub-type.
 
 The first step is to proceed by "induction" on the sequence `R₀⇓X₀,...,Rₖ⇓Xₖ`,
 but this is not exactly well-founded induction. It would be more accurate to
@@ -209,9 +210,9 @@ but we avoid the details at this stage. Also, we skip the description of the ord
 used for this first induction. We just call it _lexicographic order_ on `afs` predicates.
 This gives us our first (informally stated) induction hypothesis as:
 ```
-for any R'₀⇓X'₀,...,R'ₚ⇓X'ₚ st (∀n, afs X'ₙ R'ₙ) 
-    and which is lex.-smaller that R₀⇓X₀,...,Rₖ⇓Xₖ, 
-we have afs (wft X') (vtree_upto_embed p R')
+[IH1]: for any R'₀⇓X'₀,...,R'ₚ⇓X'ₚ st (∀n, afs X'ₙ R'ₙ) 
+          and which is lex.-smaller that R₀⇓X₀,...,Rₖ⇓Xₖ,
+       we have afs (wft X') (vtree_upto_embed p R')
 ```
 Then, having this first induction hypothesis at our disposal, we want to show 
 ```coq
@@ -225,7 +226,7 @@ We then proceed, in a second (nested) induction, structurally on `t₀`.
 Assuming `t₀ = ⟨α|γ⟩` is of arity `n`, we have new induction hypotheses, 
 namely:
 ```coq
-∀i∈{1,...,n}, afs (wft X) (vtree_upto_embed k R)↑γ⦃i⦄
+[IH2]: ∀i∈{1,...,n}, afs (wft X) (vtree_upto_embed k R)↑γ⦃i⦄
 ```
 
 Now there is a case distinction between `n = 0`, `0 < n < k` and `k ≤ n`. When
@@ -238,7 +239,12 @@ overall sketch but the details differ:
 In both cases we build a new sequence of AF relations `R'₀⇓X'₀,...,R'ₚ⇓X'ₚ`
 where possibly `p` might differ from `k`; it can even be larger. 
 However, this new sequence is built smaller than `R₀⇓X₀,...,Rₖ⇓Xₖ` 
-in the lexicographic order mentioned above. Hence, the first induction hypothesis gives us 
+in the lexicographic order mentioned above. These `R'ₙ⇓X'ₙ` are proved
+AF using the second induction hypotheses `[IH2]` and consequences of (Coquand's
+formulation of) Ramsey's theorem, ie. closure of AF under binary intersections,
+and also, when `k ≤ n`, Higman's lemma for `vec_embed`.
+
+Hence, the first induction hypothesis `[IH1]` gives us 
 `afs X' (vtree_upto_embed p R')` and we transfer the AF property
 via
 ```coq
