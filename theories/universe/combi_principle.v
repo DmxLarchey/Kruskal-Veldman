@@ -25,9 +25,6 @@ Set Implicit Arguments.
 
 #[local] Notation FAN w := (λ c, vec_fall2 (λ x l, x ∈ l) c w).
 
-Local Fact fin_FAN X n (w : vec (list X) n) : fin (FAN w).
-Proof. apply fin_vec_fall2 with (R := λ l x, x ∈ l); fin auto. Qed.
-
 (** Similar to list_combi_principle in Kruskal-Higman but for vectors 
     in place of lists. *)
 Theorem vec_combi_principle X n w (P : rel₁ (vec X n)) (B : rel₁ X) :
@@ -77,7 +74,6 @@ Section combi_trees.
   Notation vana := (vec_fall2 ana).
   Notation E' := (λ t, ∃s, s ≤st t ∧ D' s).
 
-
   (* This abstract nicely E_hereditary as a combinatorial
      principle on trees, for properties E'/exceptional
      defined as "contains a disapointing sub-tree". 
@@ -89,6 +85,7 @@ Section combi_trees.
      Then 
      - either v contains an exceptional component
      - or there is analysis v' of v st  ⟨x'|v'⟩ is disapointing. *)
+
   Lemma vtree_combi_analysis n x' (v : vec _ n) t :
             vec_fall (wft X) v
           → ana t ⊆₁ E'
