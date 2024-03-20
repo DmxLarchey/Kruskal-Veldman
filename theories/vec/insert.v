@@ -24,12 +24,12 @@ Set Implicit Arguments.
 
 (* 𝕆𝕊 λ ∀∃ → ↔ ∧ ∨ *)
 
-#[global] Reserved Notation "v '⊲' p ']' x '⇝' w" (at level 70, x at level 200, no associativity, format "v ⊲ p ] x  ⇝  w").
+#[global] Reserved Notation "v '⊲' p ']' x '⇒' w" (at level 70, x at level 200, no associativity, format "v ⊲ p ] x  ⇒  w").
 
 Inductive vinsert_graph X x : ∀ n (_ : vec X n) (_ : idx (S n)) m (_ : vec X m), Prop :=
-  | in_vec_insert_gr_0 n (v : vec _ n) : v ⊲𝕆] x ⇝ x##v
-  | in_vec_insert_gr_1 n y (v : vec _ n) p m (w : vec _ m) : v ⊲p] x ⇝ w -> y##v ⊲𝕊 p] x ⇝ y##w
-where "v ⊲ p ] x ⇝ w" := (@vinsert_graph _ x _ v p _ w).
+  | in_vec_insert_gr_0 n (v : vec _ n) : v ⊲𝕆] x ⇒ x##v
+  | in_vec_insert_gr_1 n y (v : vec _ n) p m (w : vec _ m) : v ⊲p] x ⇒ w -> y##v ⊲𝕊 p] x ⇒ y##w
+where "v ⊲ p ] x ⇒ w" := (@vinsert_graph _ x _ v p _ w).
 
 #[global] Hint Constructors vinsert_graph : core.
 
@@ -39,11 +39,11 @@ Section vinsert.
 
   Implicit Types (x : X).
 
-  Fact vinsert_length x n (v : vec _ n) p m (w : vec _ m) : v ⊲p] x ⇝ w → m = S n.
+  Fact vinsert_length x n (v : vec _ n) p m (w : vec _ m) : v ⊲p] x ⇒ w → m = S n.
   Proof. induction 1; auto. Qed.
 
   Fact vinsert_inv x n (v : vec _ n) p m (w : vec _ m) :
-          v ⊲p] x ⇝ w
+          v ⊲p] x ⇒ w
         → match idx_S_inv p with
           | None   => ∃e, w↺e = x##v
           | Some q =>
@@ -52,28 +52,25 @@ Section vinsert.
             | S n => λ v q,
               match w with
               | ∅    => False
-              | y##w => vec_tail v ⊲q] x ⇝ w ∧ vec_head v = y
+              | y##w => vec_tail v ⊲q] x ⇒ w ∧ vec_head v = y
               end
             end v q
           end.
   Proof. induction 1; simpl; eauto; exists eq_refl; auto. Qed.
 
-  Fact vinsert_left_inv_0 x n (v : vec _ n) (w : vec _ (S n)) : v ⊲𝕆] x ⇝ w → w = x##v.
-  Proof.
-    intros H.
-    apply vinsert_inv in H as (e & H); eq refl; auto.
-  Qed.
+  Fact vinsert_left_inv_0 x n (v : vec _ n) (w : vec _ (S n)) : v ⊲𝕆] x ⇒ w → w = x##v.
+  Proof. intros []%vinsert_inv; eq refl; auto. Qed.
 
   Fact vinsert_left_inv_1 x n y (v : vec _ n) p m (w : vec _ m) :
-         y##v ⊲𝕊 p] x ⇝ w
+         y##v ⊲𝕊 p] x ⇒ w
        → match w with
          | ∅    => False
-         | z##w => v ⊲p] x ⇝ w ∧ y = z
+         | z##w => v ⊲p] x ⇒ w ∧ y = z
          end.
-  Proof. intros H; now apply vinsert_inv in H; simpl in H. Qed.
+  Proof. now intros ?%vinsert_inv. Qed.
 
   Fact vinsert_fun x n (v : vec _ n) p m₁ (w₁ : vec _ m₁) m₂ (w₂ : vec _ m₂) :
-          v ⊲p] x ⇝ w₁ → v ⊲p] x ⇝ w₂ → ∃e, w₁↺e = w₂.
+          v ⊲p] x ⇒ w₁ → v ⊲p] x ⇒ w₂ → ∃e, w₁↺e = w₂.
   Proof.
     intros H; revert H m₂ w₂.
     induction 1 as [ n v | n y v p m1 w1 H1 IH1 ]; intros m2 w2 H2; apply vinsert_inv in H2; simpl in H2.
@@ -85,8 +82,8 @@ Section vinsert.
   Local Fact vinsert_surj_full m (w : vec X m) :
      match m return vec _ m → Type with
      | 0   => λ _, True
-     | S n => λ w, ∀p, { v | v ⊲p] w⦃p⦄ ⇝ w }
-      end w.
+     | S n => λ w, ∀p, { v | v ⊲p] w⦃p⦄ ⇒ w }
+     end w.
   Proof.
     induction w as [ | x m v IHv ].
     + exact I.
@@ -98,14 +95,14 @@ Section vinsert.
           exists (x##u); auto.
   Qed.
 
-  Fact vinsert_surj n (w : vec X (S n)) : ∀p, { v | v ⊲p] w⦃p⦄ ⇝ w }.
+  Fact vinsert_surj n (w : vec X (S n)) : ∀p, { v | v ⊲p] w⦃p⦄ ⇒ w }.
   Proof. exact (vinsert_surj_full w). Qed.
 
   Inductive vinsert_out : Type :=
     | c_vinsert_out m : vec X m → vinsert_out.
 
   Definition is_vinsert_out x n (v : vec _ n) p o :=
-    match o with c_vinsert_out w => v ⊲p] x ⇝ w end.
+    match o with c_vinsert_out w => v ⊲p] x ⇒ w end.
 
   Fact vinsert_total x n v p : {o | @is_vinsert_out x n v p o}.
   Proof.
@@ -121,7 +118,7 @@ Section vinsert.
     | c_vinsert_in : X → vec X n → idx (S n) → vinsert_in n.
 
   Definition is_vinsert_in m (w : vec _ m) n (i : vinsert_in n) :=
-    match i with c_vinsert_in x v p => v ⊲p] x ⇝ w end.
+    match i with c_vinsert_in x v p => v ⊲p] x ⇒ w end.
 
   Local Fact is_vinsert_in_nil_iff n (i : vinsert_in n) :
           is_vinsert_in ∅ i
@@ -180,9 +177,9 @@ Section vinsert.
 
   (** This is finite choice but with triple fin. quantification on u, p, x *)
   Corollary vinsert_choice j (v : vec _ j) n (P Q : vec _ n → _) :
-         (∀ u p x, u ⊲p] x ⇝ v → P u p x ∨ Q u p x)
-       → (∀ u p x, u ⊲p] x ⇝ v → P u p x)
-       ∨ (∃ u p x, u ⊲p] x ⇝ v ∧ Q u p x).
+         (∀ u p x, u ⊲p] x ⇒ v → P u p x ∨ Q u p x)
+       → (∀ u p x, u ⊲p] x ⇒ v → P u p x)
+       ∨ (∃ u p x, u ⊲p] x ⇒ v ∧ Q u p x).
   Proof.
     intros H.
     assert (∀d, is_vinsert_in v d
@@ -194,7 +191,7 @@ Section vinsert.
   Qed.
 
   Fact vinsert_fall (P : X → Prop) x n (v : vec _ n) p m (w : vec _ m) :
-         v ⊲p] x ⇝ w → P x ∧ vec_fall P v ↔ vec_fall P w.
+         v ⊲p] x ⇒ w → P x ∧ vec_fall P v ↔ vec_fall P w.
   Proof. induction 1; rewrite !vec_fall_cons_iff; tauto. Qed.
 
 End vinsert.
@@ -235,18 +232,18 @@ Section vinsert_idx.
   Variables (X : Type) (x : X).
 
   Local Fact vinsert_eq_rec n (v : vec _ n) p m (w : vec _ m) :
-        v ⊲p] x ⇝ w → ∀ (e : m = S n), (w↺e)⦃p⦄ = x.
+        v ⊲p] x ⇒ w → ∀e : m = S n, (w↺e)⦃p⦄ = x.
   Proof.
     induction 1 as [ n v | n y v p m w H1 IH1 ]; intro e; eq refl; auto.
     inversion e; subst; eq refl.
     apply (IH1 eq_refl).
   Qed.
 
-  Fact vinsert_eq n (v : vec _ n) p w : v ⊲p] x ⇝ w → w⦃p⦄ = x.
+  Fact vinsert_eq n (v : vec _ n) p w : v ⊲p] x ⇒ w → w⦃p⦄ = x.
   Proof. intros H; apply vinsert_eq_rec with (1 := H) (e := eq_refl). Qed.
 
   Local Lemma vins_idx_spec n (v : vec _ n) p m (w : vec _ m) :
-      v ⊲p] x ⇝ w → ∀ (e : m = S n) q, v⦃q⦄ = (w↺e)⦃vins_idx q p⦄.
+      v ⊲p] x ⇒ w → ∀ (e : m = S n) q, v⦃q⦄ = (w↺e)⦃vins_idx q p⦄.
   Proof.
     induction 1 as [ n v | n y v p m w H1 IH1 ]; intros e q.
     + destruct q; eq refl; simpl; auto.
@@ -255,7 +252,7 @@ Section vinsert_idx.
   Qed.
 
   Theorem vinsert_idx_eq n (v : vec _ n) p w :
-         v ⊲p] x ⇝ w ↔ w⦃p⦄ = x ∧ ∀q, v⦃q⦄ = w⦃vinsert_idx p q⦄.
+         v ⊲p] x ⇒ w ↔ w⦃p⦄ = x ∧ ∀q, v⦃q⦄ = w⦃vinsert_idx p q⦄.
   Proof.
     split.
     + intros H; split.
@@ -273,7 +270,7 @@ Section vinsert_idx.
   Qed.
 
   Fact vinsert_prj n (v : vec _ n) p w :
-         v ⊲p] x ⇝ w → ∀i, (i = p ∧ w⦃i⦄ = x) ∨ (∃j, w⦃i⦄ = v⦃j⦄).
+         v ⊲p] x ⇒ w → ∀i, (i = p ∧ w⦃i⦄ = x) ∨ (∃j, w⦃i⦄ = v⦃j⦄).
   Proof.
     intros (H1 & H2)%vinsert_idx_eq i.
     destruct (vinsert_idx_surj p i) as [ (q & ->) | -> ].
@@ -284,7 +281,7 @@ Section vinsert_idx.
 End vinsert_idx.
 
 Fact vinsert_surjective X n (v : vec X (S n)) (p : idx (S n)) :
-     { u | u ⊲p] v⦃p⦄ ⇝ v ∧ ∀q, u⦃q⦄ = v⦃vinsert_idx p q⦄ }.
+     { u | u ⊲p] v⦃p⦄ ⇒ v ∧ ∀q, u⦃q⦄ = v⦃vinsert_idx p q⦄ }.
 Proof.
   destruct (vinsert_surj v p) as (u & H).
   exists u; split; auto.
@@ -298,8 +295,8 @@ Section vinsert_fall2.
   Variables (X Y : Type) (R : X → Y → Prop).
 
   Fact vinsert_fall2 x y n (v v' : vec _ n) p m (w w' : vec _ m) :
-        v ⊲p]x ⇝ w
-      → v'⊲p]y ⇝ w'
+        v ⊲p]x ⇒ w
+      → v'⊲p]y ⇒ w'
       → w =[R]= w' ↔ R x y ∧ v =[R]= v'.
   Proof.
     intros H1 H2.
@@ -315,10 +312,10 @@ Section vinsert_fall2.
   Qed.
 
   Fact vinsert_fall2_inv x n (v : vec _ n) p m (w w' : vec _ m) :
-         v⊲p]x ⇝ w
+         v⊲p]x ⇒ w
        → w =[R]= w'
        → { y : _ &
-         { v' : _ | v'⊲p]y ⇝ w'
+         { v' : _ | v'⊲p]y ⇒ w'
                   ∧ R x y
                   ∧ v =[R]= v' } }.
   Proof.
@@ -339,7 +336,7 @@ Section vec_insert_fall2.
             (u : vec X (S n)) (v : vec Y (S n)).
 
   Theorem vinsert_any_vec_fall2 :
-        (∀ w q x, w ⊲q] x ⇝ v → R u⦃q⦄ x) → u =[R]= v.
+        (∀ w q x, w ⊲q] x ⇒ v → R u⦃q⦄ x) → u =[R]= v.
   Proof.
     intros H p.
     destruct (vinsert_surj v p) as (w & Hw).
@@ -347,7 +344,7 @@ Section vec_insert_fall2.
   Qed.
 
   Theorem vec_fall2_any_vinsert :
-       u =[R]= v → ∀ w q x, w ⊲q] x ⇝ v → R u⦃q⦄ x.
+       u =[R]= v → ∀ w q x, w ⊲q] x ⇒ v → R u⦃q⦄ x.
   Proof. intros ? ? ? ? (<- & _)%vinsert_idx_eq; auto. Qed.
 
   (** This is a charaterization of vec_fall2 in terms of
@@ -359,7 +356,7 @@ Section vec_insert_fall2.
       See also vec_embed_iff_vintercal in vec_rel/rel/intercal.v *)
 
   Theorem vec_fall2_iff_vinsert : 
-       u =[R]= v ↔ ∀ w q x, w ⊲q] x ⇝ v → R u⦃q⦄ x.
+       u =[R]= v ↔ ∀ w q x, w ⊲q] x ⇒ v → R u⦃q⦄ x.
   Proof.
     split.
     + apply vec_fall2_any_vinsert.

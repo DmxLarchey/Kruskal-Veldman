@@ -26,16 +26,16 @@ Set Implicit Arguments.
 
       [x1,...,xn] mix [v1,...,vn] -> [x1]++v1++[x2]++v2++...++[xn]++vn *)
 
-#[global] Reserved Notation "v '⧒' m '⇝' w" (at level 70, no associativity, format "v ⧒ m  ⇝  w").
+#[global] Reserved Notation "v '⧒' m '⇒' w" (at level 70, no associativity, format "v ⧒ m  ⇒  w").
 
 Inductive vmix_graph X : ∀ n (_ : vec X n) (_ : hvec X n) m (_ : vec X m), Prop :=
     | vmix_0 :
-                ∅ ⧒ ∅ ⇝ ∅
+                ∅ ⧒ ∅ ⇒ ∅
     | vmix_1 n x (v : vec _ n) i a (w : vec _ n) m (r : vec _ m) m' (r' : vec _ m') :
-                v ⧒ w ⇝ r
-           →    a ⊞ r ⇝ r' 
-           → x##v ⧒ ⦑i,a⦒##w ⇝ x##r'
-where "v ⧒ m ⇝ w" := (vmix_graph v m w).
+                v ⧒ w ⇒ r
+           →    a ⊞ r ⇒ r' 
+           → x##v ⧒ ⦑i,a⦒##w ⇒ x##r'
+where "v ⧒ m ⇒ w" := (vmix_graph v m w).
 
 #[global] Hint Constructors vmix_graph : vec_db.
 
@@ -44,13 +44,13 @@ Section vmix_graph.
   Variable X : Type.
 
   Fact vmix_length n (v : vec X n) w m (r : vec _ m) :
-         v ⧒ w ⇝ r → m = hvec_size w.
+         v ⧒ w ⇒ r → m = hvec_size w.
   Proof.
     induction 1 as [ | ? ? ? ? ? ? ? ? ? ? ? ? H ]; simpl; f_equal; auto.
     apply vapp_length in H; tlia.
   Qed.
 
-  Fact vmix_nil_r n (v : vec X n) w : (∀p, lvec_len w⦃p⦄ = 0) → v ⧒ w ⇝ v.
+  Fact vmix_nil_r n (v : vec X n) w : (∀p, lvec_len w⦃p⦄ = 0) → v ⧒ w ⇒ v.
   Proof.
     revert w; induction v as [ | n x v IHv ]; intros w.
     + vec invert w; auto with vec_db.
@@ -68,8 +68,8 @@ Section vmix_graph.
          match r with
          | ∅ => False
          | y##r => x = y ∧ ∃ m' (r' : vec _ m'),
-                             v ⧒ vec_tail w ⇝ r'
-                           ∧ lvec_vec (vec_head w) ⊞ r' ⇝ r
+                             v ⧒ vec_tail w ⇒ r'
+                           ∧ lvec_vec (vec_head w) ⊞ r' ⇒ r
          end
        end w.
   Proof. intros []; simpl; eauto. Qed.
@@ -91,7 +91,7 @@ Section vmix_graph.
     | c_vmix_out m : vec X m → vmix_out.
 
   Definition is_vmix_out n (v : vec _ n) w o :=
-    match o with c_vmix_out r => v ⧒ w ⇝ r end.
+    match o with c_vmix_out r => v ⧒ w ⇒ r end.
 
   Definition vmix_total n v w : {o | @is_vmix_out n v w o}.
   Proof.
@@ -103,25 +103,25 @@ Section vmix_graph.
       exists (c_vmix_out (x##r')); constructor 2 with (1 := Hr); auto.
   Qed.
 
-  Fact vmix_rinv_nil n (v : vec X n) w : v ⧒ w ⇝ ∅ → { e : n = 0 | v↺e = ∅ /\ w↺e = ∅}.
+  Fact vmix_rinv_nil n (v : vec X n) w : v ⧒ w ⇒ ∅ → { e : n = 0 | v↺e = ∅ /\ w↺e = ∅}.
   Proof.
     revert v w; intros [] w H; apply vmix_inv in H; try easy.
     destruct H as (-> & _); exists eq_refl; auto.
   Qed.
 
-  Fact vmix_rinv_c_n n x (u : vec X n) w : x##u ⧒ w ⇝ ∅ → False.
+  Fact vmix_rinv_c_n n x (u : vec X n) w : x##u ⧒ w ⇒ ∅ → False.
   Proof. now intros H; apply vmix_inv in H. Qed.
 
-  Fact vmix_rinv_nil_cons (v : vec X 0) w m x (r : vec _ m) : v ⧒ w ⇝ x##r → False.
+  Fact vmix_rinv_nil_cons (v : vec X 0) w m x (r : vec _ m) : v ⧒ w ⇒ x##r → False.
   Proof. now intros H; apply vmix_inv in H; vec invert v. Qed.
 
   Fact vmix_rinv_cons n x (u : vec X n) a w m y (r : vec _ m) :
-         x##u ⧒ a##w ⇝ y##r
+         x##u ⧒ a##w ⇒ y##r
        →  (  (x = y)
            * { j : _
            & { r' : vec _ j
-             | u ⧒ w ⇝ r'
-             ∧ lvec_vec a ⊞ r' ⇝ r }}
+             | u ⧒ w ⇒ r'
+             ∧ lvec_vec a ⊞ r' ⇒ r }}
           )%type.
   Proof.
     intros (<- & H)%vmix_inv; split; auto.
@@ -135,7 +135,7 @@ Section vmix_graph.
     | c_vmix_in : vec X n → hvec X n → vmix_in n.
 
   Definition is_vmix_in j (r : vec X j) n (m : vmix_in n) :=
-    match m with c_vmix_in v w => v ⧒ w ⇝ r end.
+    match m with c_vmix_in v w => v ⧒ w ⇒ r end.
 
   Arguments is_vmix_in {_} _ n _.
 
@@ -190,7 +190,7 @@ Section vmix_graph.
   Qed.
 
   Fact vmix_fall (P : X -> Prop) n (u : vec _ n) w m (r : vec _ m) :
-        u ⧒ w ⇝ r →  (vec_fall P u ∧ ∀p, vec_fall P (lvec_vec w⦃p⦄))
+        u ⧒ w ⇒ r →  (vec_fall P u ∧ ∀p, vec_fall P (lvec_vec w⦃p⦄))
                     ↔ vec_fall P r.
   Proof.
     induction 1 as [ | n x v i a w m r m' r' H1 IH1 H2 ].
@@ -306,8 +306,8 @@ Section vec_embed_mix.
   Infix "≤ₑ" := (vec_embed R).
 
   Fact vmix_embed n (v1 v2 : vec _ n) w1 w2 k1 (r1 : vec _ k1) k2 (r2 : vec _ k2) :
-           v1⧒w1 ⇝ r1
-         → v2⧒w2 ⇝ r2
+           v1⧒w1 ⇒ r1
+         → v2⧒w2 ⇒ r2
          → v1 =[R]= v2
          → w1 =[lvec_embed R]= w2
          → r1 ≤ₑ r2.

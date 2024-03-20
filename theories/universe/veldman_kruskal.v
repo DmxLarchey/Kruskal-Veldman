@@ -300,15 +300,13 @@ Section veldman_afs_nodes_ge.
   Reserved Notation "x '-[' c ']->' y" (at level 70, no associativity, format "x  -[ c ]->  y").
   Reserved Notation "x '=[' c ']=>' y" (at level 70, no associativity, format "x  =[ c ]=>  y").
 
-  Notation "v '⧓' m '⇝' w" := (@vintercal_graph _ _ v m _ w) (at level 70, no associativity, format "v ⧓ m  ⇝  w").
-
     (* As rules
 
                 v' =[c]=> v
         ------------------------ X i x
           ⟨⦉x⦊₁|v'⟩ -[c]-> ⟨x|v⟩
 
-         v' =[c]=> u     u⧓w ⇝ v
+         v' =[c]=> u     u⧓w ⇒ v
         ------------------------- X j x and wft X (projT2 w⦃_⦄)⦃_⦄
          ⟨⦉x,w⦊₂|v'⟩ -[c]-> ⟨x|v⟩
 
@@ -331,7 +329,7 @@ Section veldman_afs_nodes_ge.
     | kev_graph_eq_i2 c x (v' : vec _ i) u w m (v : vec _ m) :
 
             i < m → X m x → (∀ p q, wft X (lvec_vec w⦃p⦄)⦃q⦄)
-          → v' =[c]=> u → u⧓w ⇝ v → ⟨⦉x,w⦊₂|v'⟩ -[c]-> ⟨x|v⟩
+          → v' =[c]=> u → u⧓w ⇒ v → ⟨⦉x,w⦊₂|v'⟩ -[c]-> ⟨x|v⟩
 
     | kev_graph_lt_i c j x (v' : vec _ j) v :
 
@@ -403,7 +401,7 @@ Section veldman_afs_nodes_ge.
     Let shape c t j x' (v' : vec _ j) :=
         i = j ∧ match x' with
         | ⦉x⦊₁   => X i x ∧ ∃v, v' =[c]=> v ∧ ⟨x|v⟩ = t
-        | ⦉x,w⦊₂ => ∃u, v' =[c]=> u ∧ ∃ e k (v : vec _ k), i < k ∧ X k x ∧ u⧓w↺e ⇝ v ∧ ⟨x|v⟩ = t
+        | ⦉x,w⦊₂ => ∃u, v' =[c]=> u ∧ ∃ e k (v : vec _ k), i < k ∧ X k x ∧ u⧓w↺e ⇒ v ∧ ⟨x|v⟩ = t
         | _     => False
         end
       ∨ (j < i ∧ X j x' ∧ ∃v, v' =[c]=> v ∧ ⟨x'|v⟩ = t)
@@ -425,7 +423,7 @@ Section veldman_afs_nodes_ge.
     Proof. intros [ | [ [] | [] ] ]%kev_graph_inv_left; tlia; tauto. Qed.
 
     Local Fact kev_graph_eq_2_inv c x w (v' : vec _ i) t :
-       ⟨⦉x,w⦊₂|v'⟩ -[c]-> t → ∃u, v' =[c]=> u ∧ ∃j (v : vec _ j), i < j ∧ X j x ∧ u⧓w ⇝ v ∧ ⟨x|v⟩ = t.
+       ⟨⦉x,w⦊₂|v'⟩ -[c]-> t → ∃u, v' =[c]=> u ∧ ∃j (v : vec _ j), i < j ∧ X j x ∧ u⧓w ⇒ v ∧ ⟨x|v⟩ = t.
     Proof.
       intros [ (_ & v & ? & ? & ? & ? & ? & ? & ?) | [ [] | [] ] ]%kev_graph_inv_left; tlia.
       eq refl; exists v; split; eauto.
@@ -763,7 +761,7 @@ Section veldman_afs_nodes_ge.
              i < j
            → R k α x
            → (∀ (u : vec _ i) w,
-                  u⧓w ⇝ v
+                  u⧓w ⇒ v
                 → (∃ p q, γ⦃p⦄ ≤[k,R] (lvec_vec w⦃p⦄)⦃q⦄)
                 ∨ ⟨α|γ⟩ ≤[k,R] ⟨x|v⟩)
            → ⟨α|γ⟩ ≤[k,R] ⟨x|v⟩.
@@ -774,7 +772,7 @@ Section veldman_afs_nodes_ge.
     Qed.
 
     Local Lemma vintercal_choice_embed c j x (v : vec _ j) (u : vec _ i) w :
-             u⧓w ⇝ v
+             u⧓w ⇒ v
            → (∀p, E c v⦃p⦄ → ⟨α|γ⟩ ≤[k,R] v⦃p⦄)
            → Esub_or_D' c u ⦉x,w⦊₂
            → (∃ p q, γ⦃p⦄ ≤[k,R] (lvec_vec w⦃p⦄)⦃q⦄)

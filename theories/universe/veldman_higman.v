@@ -26,9 +26,6 @@ Import idx_notations vec_notations
        vtree_notations vtree_embeddings_notations
        af_notations afs_lex_notations.
 
-#[local] Reserved Notation "v '⊲' p ']' x '⇝' w" (at level 70, x at level 200, no associativity, format "v ⊲ p ] x  ⇝  w").
-#[local] Notation "v ⊲ p ] x ⇝ w" := (@vinsert_graph _ x _ v p _ w).
-
 Set Implicit Arguments.
 
 Section veldman_afs_nodes_lt.
@@ -283,14 +280,14 @@ Section veldman_afs_nodes_lt.
   Reserved Notation "x '-[' c ']->' y" (at level 70, no associativity, format "x  -[ c ]->  y").
   Reserved Notation "x '=[' c ']=>' y" (at level 70, no associativity, format "x  =[ c ]=>  y").
 
-   (* As rules
+    (* As rules
 
                 v' =[c]=> v
         ------------------------  X i x
           ⟨⦉x⦊₁|v'⟩ -[c]-> ⟨x|v⟩
 
 
-         v' =[c]=> u     u ⊲p] t ⇝ v
+         v' =[c]=> u     u ⊲p] t ⇒ v
         ----------------------------- X (1+i) x and wft X t
           ⟨⦉x,p,t⦊₂|v'⟩ -[c]-> ⟨x|v⟩
 
@@ -316,15 +313,14 @@ Section veldman_afs_nodes_lt.
     | hev_graph_eq_i2 c p x t (v' : vec _ i) u (v : vec _ (S i)) :
                  X (S i) x
                → wft X t
-               → v' =[c]=> u
-               → u ⊲p] t ⇝ v
+               → v' =[c]=> u → u ⊲p] t ⇒ v
                → ⟨⦉x,p,t⦊₂|v'⟩ -[c]-> ⟨x|v⟩
 
     | hev_graph_neq_i_Si c j x (v' : vec _ j) v :
                  i ≠ j
                → S i ≠ j
                → X j x
-               → v' =[c]=> v
+               →    v'  =[c]=>    v
                → ⟨x|v'⟩ -[c]-> ⟨x|v⟩
 
     | hev_graph_eq_Si x (v' : vec _ (S i)) v :
@@ -392,7 +388,7 @@ Section veldman_afs_nodes_lt.
     Let shape c t j x' (v' : vec _ j) :=
         i = j ∧ match x' with
         | ⦉x⦊₁ => X i x ∧ ∃v, v' =[c]=> v ∧ ⟨x|v⟩ = t
-        | ⦉x,p,a⦊₂ => ∃u, v' =[c]=> u ∧ X (S i) x ∧ ∃e (v : vec _ (S i)), u ⊲p↺e] a ⇝ v ∧ ⟨x|v⟩ = t
+        | ⦉x,p,a⦊₂ => ∃u, v' =[c]=> u ∧ X (S i) x ∧ ∃e (v : vec _ (S i)), u ⊲p↺e] a ⇒ v ∧ ⟨x|v⟩ = t
         | _ => False
         end
       ∨ (j ≠ i  ∧ j ≠ S i ∧ X j x' ∧ ∃v, v' =[c]=> v ∧ ⟨x'|v⟩ = t)
@@ -416,7 +412,7 @@ Section veldman_afs_nodes_lt.
     Proof. intros [ | [ [] | [] ] ]%hev_graph_inv_left; tlia; tauto. Qed.
 
     Local Fact hev_graph_eq_2_inv c p x a (v' : vec _ i) t :
-       ⟨⦉x,p,a⦊₂|v'⟩ -[c]-> t → ∃u, v' =[c]=> u ∧ X (S i) x ∧ ∃v : vec _ (S i), u ⊲p] a ⇝ v ∧ ⟨x|v⟩ = t.
+       ⟨⦉x,p,a⦊₂|v'⟩ -[c]-> t → ∃u, v' =[c]=> u ∧ X (S i) x ∧ ∃v : vec _ (S i), u ⊲p] a ⇒ v ∧ ⟨x|v⟩ = t.
     Proof.
       intros [ (_ & v & ? & ? & ? & ? & ? & ?) | [ [] | [] ] ]%hev_graph_inv_left; tlia.
       eq refl; exists v; eauto.
@@ -749,7 +745,7 @@ Section veldman_afs_nodes_lt.
     Local Fact Rαx_choice_embed x (v : vec _ (S i)) :
              R (S i) α x
            → (∀ u q y, 
-                 u ⊲q] y ⇝ v 
+                 u ⊲q] y ⇒ v 
                →   γ⦃q⦄ ≤[k,R] y
                ∨ ⟨α|γ⟩ ≤[k,R] ⟨x|v⟩)
            → ⟨α|γ⟩ ≤[k,R] ⟨x|v⟩.
@@ -760,7 +756,7 @@ Section veldman_afs_nodes_lt.
     Qed.
 
     Local Lemma vinsert_choice_embed c x (v : vec _ (S i)) u q y :
-             u ⊲q] y ⇝ v
+             u ⊲q] y ⇒ v
            → (∀p, E c v⦃p⦄ → ⟨α|γ⟩ ≤[k,R] v⦃p⦄)
            → Esub_or_D' c u ⦉x,q,y⦊₂
            →  γ⦃q⦄ ≤[k,R] y

@@ -22,23 +22,23 @@ Import idx_notations vec_notations.
 
 Set Implicit Arguments.
 
-#[global] Reserved Notation "v '⊞' m '⇝' w" (at level 70, no associativity, format "v ⊞ m  ⇝  w").
+#[global] Reserved Notation "v '⊞' m '⇒' w" (at level 70, no associativity, format "v ⊞ m  ⇒  w").
 
 Inductive vapp_graph {X} : ∀ n (_ : vec X n) m (_ : vec X m) k (_ : vec X k), Prop :=
-  | vapp_0 m (v : vec _ m) : ∅⊞v ⇝ v
-  | vapp_1 n x (u : vec _ n) m (v : vec _ m) k (w : vec _ k) : u ⊞ v ⇝ w → x##u ⊞ v ⇝ x##w
-where "u ⊞ v ⇝ w" := (@vapp_graph _ _ u _ v _ w).
+  | vapp_0 m (v : vec _ m) : ∅⊞v ⇒ v
+  | vapp_1 n x (u : vec _ n) m (v : vec _ m) k (w : vec _ k) : u⊞v ⇒ w → (x##u)⊞v ⇒ x##w
+where "u ⊞ v ⇒ w" := (@vapp_graph _ _ u _ v _ w).
 
 #[global] Hint Constructors vapp_graph : vec_db.
 
 Fact vapp_inv X n (u : vec X n) m (v : vec _ m) k (w : vec _ k) :
-        u ⊞ v ⇝ w
+        u⊞v ⇒ w
       → match u with
         | ∅ => ∃e, v↺e = w
         | x##u =>
           match w with
           | ∅ => False
-          | y##w => x = y ∧ u ⊞ v ⇝ w
+          | y##w => x = y ∧ u⊞v ⇒ w
           end
         end.
 Proof. intros []; auto; now exists eq_refl. Qed.
@@ -72,10 +72,10 @@ Tactic Notation "vapp" "inv" hyp(H) :=
 
 Tactic Notation "vapp" "inv" "all" :=
   repeat match goal with
-    | H: ∅    ⊞ _ ⇝ _    |- _ => vapp inv H
-    | H: _##_ ⊞ _ ⇝ _    |- _ => vapp inv H
-    | H:    _ ⊞ _ ⇝ ∅    |- _ => vapp inv H
-    | H:    _ ⊞ _ ⇝ _##_ |- _ => vapp inv H
+    | H: ∅    ⊞ _ ⇒ _    |- _ => vapp inv H
+    | H: _##_ ⊞ _ ⇒ _    |- _ => vapp inv H
+    | H:    _ ⊞ _ ⇒ ∅    |- _ => vapp inv H
+    | H:    _ ⊞ _ ⇒ _##_ |- _ => vapp inv H
     | v: vec _ 0         |- _ => vec invert v
   end.
 
@@ -88,11 +88,11 @@ Section props.
   Variable X : Type.
 
   Fact vapp_length n (u : vec X n) m (v : vec _ m) k (w : vec _ k) :
-          u ⊞ v ⇝ w → k = n+m.
+          u⊞v ⇒ w → k = n+m.
   Proof. induction 1; simpl; lia. Qed.
 
   Fact vapp_iff_vec_app n (u : vec X n) m (v : vec _ m) k (w : vec _ k) :
-          u ⊞ v ⇝ w ↔ ∃e, w↺e = vec_app u v.
+          u⊞v ⇒ w ↔ ∃e, w↺e = vec_app u v.
   Proof.
     split.
     + induction 1 as [ m v | n x u m v k w H1 (-> & H2) ]; simpl in *.
@@ -103,7 +103,7 @@ Section props.
   Qed.
 
   Fact vapp_fun n (u : vec X n) m (v : vec _ m) k₁ (w₁ : vec _ k₁) k₂ (w₂ : vec _ k₂) :
-      u ⊞ v ⇝ w₁ → u ⊞ v ⇝ w₂ → ∃e, w₁↺e = w₂.
+      u⊞v ⇒ w₁ → u⊞v ⇒ w₂ → ∃e, w₁↺e = w₂.
   Proof.
     induction 1 as [ m v | n x u m v k w H1 IH1 ] in k₂, w₂ |- *; intros H2.
     + vapp inv all; exists eq_refl; auto.
@@ -112,14 +112,14 @@ Section props.
       exists eq_refl; simpl; auto.
   Qed.
 
-  Fact vapp_nil_r n (u : vec X n) : u ⊞ ∅ ⇝ u.
+  Fact vapp_nil_r n (u : vec X n) : u⊞∅ ⇒ u.
   Proof. induction u; auto with vec_db. Qed.
 
   Inductive vapp_out : Type :=
     | c_vapp_out n : vec X n → vapp_out.
 
   Definition is_vapp_out n (u : vec _ n) m (v : vec _ m) o :=
-    match o with @c_vapp_out k w => u ⊞ v ⇝ w end.
+    match o with @c_vapp_out k w => u⊞v ⇒ w end.
 
   Definition vapp_total n u m v : {o | @is_vapp_out n u m v o}.
   Proof.
@@ -131,7 +131,7 @@ Section props.
     | c_vapp_in n m : vec X n → vec X m → vapp_in.
 
   Definition is_vapp_in k (w : vec _ k) i :=
-    match i with c_vapp_in u v => u ⊞ v ⇝ w end.
+    match i with c_vapp_in u v => u⊞v ⇒ w end.
 
   Local Fact is_vapp_in_nil_iff a : is_vapp_in ∅ a ↔ c_vapp_in ∅ ∅ = a.
   Proof.
@@ -163,15 +163,15 @@ Section props.
       intros []; fin auto.
   Qed.
 
-  Fact vapp_fall (P : X -> Prop) n (u : vec _ n) m (v : vec _ m) k (w : vec _ k) :
-         u ⊞ v ⇝ w → vec_fall P w ↔ vec_fall P u ∧ vec_fall P v.
+  Fact vapp_fall (P : rel₁ X) n (u : vec _ n) m (v : vec _ m) k (w : vec _ k) :
+         u⊞v ⇒ w → vec_fall P w ↔ vec_fall P u ∧ vec_fall P v.
   Proof.
     induction 1 as [ | n x u m v k w H IH ].
     + rewrite vec_fall_nil_iff; tauto.
     + rewrite !vec_fall_cons_iff, IH; tauto.
   Qed.
 
-  Fact vapp_split k (w : vec X k) n m : k = n + m → { u : vec _ n & { v : vec _ m | u ⊞ v ⇝ w } }.
+  Fact vapp_split k (w : vec X k) n m : k = n + m → { u : vec _ n & { v : vec _ m | u⊞v ⇒ w } }.
   Proof.
     revert n m; induction w as [ | x k w IH ].
     + intros [ | ] m; tlia; simpl; intros <-; exists ∅, ∅; constructor.
@@ -184,11 +184,11 @@ Section props.
   Qed.
 
   Fact vapp_sub_left n (u : vec X n) m (v : vec _ m) k (w : vec _ k) : 
-         u ⊞ v ⇝ w → u ≤sv w.
+         u⊞v ⇒ w → u ≤sv w.
   Proof. induction 1; eauto with vec_db. Qed.
 
   Fact vapp_sub_right n (u : vec X n) m (v : vec _ m) k (w : vec _ k) : 
-         u ⊞ v ⇝ w → v ≤sv w.
+         u⊞v ⇒ w → v ≤sv w.
   Proof. induction 1; eauto with vec_db. Qed.
 
   Section vapp_idx_left_right.
@@ -204,7 +204,7 @@ Section props.
       end.
 
     Local Fact vapp_idx_left_rec n (u : vec X n) m (v : vec _ m) k (w : vec _ k) :
-          u ⊞ v ⇝ w → ∀ (e : k = n+m) i, u⦃i⦄ = w⦃idx_left_cast _ e i⦄.
+          u⊞v ⇒ w → ∀ (e : k = n+m) i, u⦃i⦄ = w⦃idx_left_cast _ e i⦄.
     Proof.
       induction 1 as [ | n x u m v k w H IH ]; intros e p.
       + idx invert all.
@@ -214,11 +214,11 @@ Section props.
     Qed.
 
     Fact vapp_idx_left_eq n (u : vec X n) m (v : vec X m) (w : vec X (n+m)) :
-           u ⊞ v ⇝ w → ∀i, u⦃i⦄ = w⦃idx_left m i⦄.
+         u⊞v ⇒ w → ∀i, u⦃i⦄ = w⦃idx_left m i⦄.
     Proof. intros H; apply (vapp_idx_left_rec H eq_refl). Qed.
 
     Fact vapp_idx_left n (u : vec X n) m (v : vec X m) k (w : vec X k) :
-          u ⊞ v ⇝ w -> { f : idx n → idx k | ∀i, u⦃i⦄ = w⦃f i⦄ }.
+         u⊞v ⇒ w -> { f : idx n → idx k | ∀i, u⦃i⦄ = w⦃f i⦄ }.
     Proof.
       intros H.
       exists (idx_left_cast _ (vapp_length H)).
@@ -226,7 +226,7 @@ Section props.
     Qed.
 
     Local Fact vapp_idx_right_rec n (u : vec X n) m (v : vec X m) k (w : vec X k) :
-          u ⊞ v ⇝ w → ∀ (e : k = n+m) i, v⦃i⦄ = w⦃idx_right_cast _ e i⦄.
+          u⊞v ⇒ w → ∀ (e : k = n+m) i, v⦃i⦄ = w⦃idx_right_cast _ e i⦄.
     Proof.
       induction 1 as [ | n x u m v k w H IH ]; intros e p.
       + simpl in e; rewrite (eq_refl_nat e); auto.
@@ -236,11 +236,11 @@ Section props.
     Qed.
 
     Fact vapp_idx_right_eq n (u : vec X n) m (v : vec X m) (w : vec X (n+m)) :
-           u ⊞ v ⇝ w → ∀i, v⦃i⦄ = w⦃idx_right n i⦄.
+          u⊞v ⇒ w → ∀i, v⦃i⦄ = w⦃idx_right n i⦄.
     Proof. intros H; apply (vapp_idx_right_rec H eq_refl). Qed.
 
     Fact vapp_idx_right n (u : vec X n) m (v : vec _ m) k (w : vec _ k) :
-           u ⊞ v ⇝ w → { f : idx m → idx k |  ∀i, v⦃i⦄ = w⦃f i⦄ }.
+         u⊞v ⇒ w → { f : idx m → idx k |  ∀i, v⦃i⦄ = w⦃f i⦄ }.
     Proof.
       intros H.
       exists (idx_right_cast _ (vapp_length H)).
@@ -250,7 +250,7 @@ Section props.
   End vapp_idx_left_right.
 
   Fact vapp_prj n (u : vec X n) m (v : vec X m) k (w : vec X k) :
-       u ⊞ v ⇝ w → ∀i, (∃j, w⦃i⦄ = u⦃j⦄) ∨ (∃j, w⦃i⦄ = v⦃j⦄).
+       u⊞v ⇒ w → ∀i, (∃j, w⦃i⦄ = u⦃j⦄) ∨ (∃j, w⦃i⦄ = v⦃j⦄).
   Proof.
     induction 1 as [ | n x u m v k w H IH ]; intros i; eauto.
     idx invert i.
@@ -262,9 +262,9 @@ Section props.
 
   Fact vapp_assoc nu (u : vec X nu) nv (v : vec _ nv) nuv (uv : vec _ nuv) 
                   nw (w : vec _ nw) nr (r : vec _ nr) :
-           u ⊞ v ⇝ uv
-        → uv ⊞ w ⇝ r
-        → ∃ nvw (vw : vec _ nvw), u ⊞ vw ⇝ r ∧ v ⊞ w ⇝ vw.
+           u⊞v ⇒ uv
+        → uv⊞w ⇒ r
+        → ∃ nvw (vw : vec _ nvw), u⊞vw ⇒ r ∧ v⊞w ⇒ vw.
   Proof.
     induction 1 as [ | nu x u nv v nuv uv H IH ] in nw, w, nr, r |- *.
     + exists nr, r; split; auto; constructor.
@@ -276,9 +276,9 @@ Section props.
 
   Fact vapp_assoc_rev nu (u : vec X nu) nv (v : vec _ nv) nw (w : vec _ nw) 
                       nvw (vw : vec _ nvw) nr (r : vec _ nr) :
-          v ⊞ w  ⇝ vw
-        → u ⊞ vw ⇝ r
-        → ∃ nuv (uv : vec _ nuv), u ⊞ v ⇝ uv ∧ uv ⊞ w ⇝ r.
+          v⊞w  ⇒ vw
+        → u⊞vw ⇒ r
+        → ∃ nuv (uv : vec _ nuv), u⊞v ⇒ uv ∧ uv⊞w ⇒ r.
   Proof.
     induction u as [ | x nu u IH ] in nv, v, nw, w, nvw, vw, nr, r |- *.
     + intros ? []%vapp_inv; subst; exists nv, v; split; auto; constructor.
@@ -291,10 +291,10 @@ Section props.
   Qed.
 
   Fact vapp_cons_assoc n (u : vec X n) x m (v : vec _ m) k (w : vec _ k) :
-         u ⊞ (x##v) ⇝ w → ∃ nux (ux : vec _ nux), u ⊞ (x##∅) ⇝ ux ∧ ux ⊞ v ⇝ w.
+         u⊞(x##v) ⇒ w → ∃ nux (ux : vec _ nux), u⊞(x##∅) ⇒ ux ∧ ux⊞v ⇒ w.
   Proof. 
     intros H1.
-    assert ((x##∅) ⊞ v ⇝ x##v) as H2.
+    assert ((x##∅)⊞v ⇒ x##v) as H2.
     1: repeat constructor.
     apply (vapp_assoc_rev H2 H1).
   Qed.
@@ -312,8 +312,8 @@ Section fall2.
   Fact vapp_fall2 n (u₁ u₂ : vec _ n) m (v₁ v₂ : vec _ m) k (w₁ w₂ : vec _ k) :
            u₁ =[R]= u₂
          → v₁ =[R]= v₂
-         → u₁ ⊞ v₁ ⇝ w₁
-         → u₂ ⊞ v₂ ⇝ w₂
+         → u₁⊞v₁ ⇒ w₁
+         → u₂⊞v₂ ⇒ w₂
          → w₁ =[R]= w₂.
   Proof.
     intros H; revert H m v₁ v₂ k w₁ w₂.
@@ -322,9 +322,10 @@ Section fall2.
 
   Fact vapp_fall2_inv n (u₁ u₂ : vec _ n) m (v₁ v₂ : vec _ m) k (w₁ w₂ : vec _ k) :
            w₁ =[R]= w₂
-         → u₁ ⊞ v₁ ⇝ w₁
-         → u₂ ⊞ v₂ ⇝ w₂
-         → u₁ =[R]= u₂ ∧ v₁ =[R]= v₂.
+         → u₁⊞v₁ ⇒ w₁
+         → u₂⊞v₂ ⇒ w₂
+         → u₁ =[R]= u₂
+         ∧ v₁ =[R]= v₂.
   Proof.
     intros H; revert H n u₁ u₂ m v₁ v₂.
     induction 1 as [ | k x y w₁ w₂ H1 H2 IH2 ] using vec_fall2_rect; intros n u₁ u₂ m ? ? H3 H4.
@@ -336,9 +337,9 @@ Section fall2.
   Qed.
 
   Fact vapp_fall2_inv_left n (u₁ : vec _ n) m (v₁ : vec _ m) k (w₁ w₂ : vec _ k) :
-           u₁ ⊞ v₁ ⇝ w₁
+           u₁⊞v₁ ⇒ w₁
          → w₁ =[R]= w₂
-         → { u₂ : _ & { v₂ | u₂ ⊞ v₂ ⇝ w₂ ∧ u₁ =[R]= u₂ ∧ v₁ =[R]= v₂ } }.
+         → { u₂ : _ & { v₂ | u₂⊞v₂ ⇒ w₂ ∧ u₁ =[R]= u₂ ∧ v₁ =[R]= v₂ } }.
   Proof.
     intros H1 H2.
     destruct vapp_split with (w := w₂) (1 := vapp_length H1)
@@ -353,7 +354,7 @@ End fall2.
 
 Section embed.
 
-  Variables (X Y : Type) (R : X -> Y -> Prop).
+  Variables (X Y : Type) (R : X → Y → Prop).
 
   Infix "≤ₑ" := (vec_embed R).
 
@@ -362,7 +363,7 @@ Section embed.
         → match v with
           | ∅    => True
           | x##v => ∃ m₁ (w₁ : vec _ m₁) y m₂ (w₂ : vec _ m₂),
-                      w₁ ⊞ y##w₂ ⇝ w ∧ R x y ∧ v ≤ₑ w₂
+                      w₁⊞(y##w₂) ⇒ w ∧ R x y ∧ v ≤ₑ w₂
           end.
   Proof.
     induction 1 as [ | n x v m y w H1 H2 IH2
@@ -374,11 +375,11 @@ Section embed.
   Qed.
 
   Fact vec_embed_cons_inv x n (v : vec _ n) m (w : vec _ m) :
-          x##v ≤ₑ w → ∃ m₁ (w₁ : vec _ m₁) y m₂ (w₂ : vec _ m₂), w₁ ⊞ y##w₂ ⇝ w ∧ R x y ∧ v ≤ₑ w₂.
+       x##v ≤ₑ w → ∃ m₁ (w₁ : vec _ m₁) y m₂ (w₂ : vec _ m₂), w₁⊞(y##w₂) ⇒ w ∧ R x y ∧ v ≤ₑ w₂.
   Proof. apply vec_embed_inv. Qed.
 
   Fact vapp_vec_embed_skip n (u : vec _ n) m (v : vec _ m) k (w : vec _ k) p (r : vec _ p) :
-             u ⊞ v ⇝ w → r ≤ₑ v → r ≤ₑ w.
+       u⊞v ⇒ w → r ≤ₑ v → r ≤ₑ w.
   Proof.
     intros H1 H2. 
     apply vec_embed_sub_trans with (1 := H2),
@@ -392,8 +393,8 @@ Section embed.
   Fact vec_embed_vapp n (u : vec _ n) n' (u' : vec _ n')
                       m (v : vec _ m) m' (v' : vec _ m')
                       k (w : vec _ k) p  (r : vec _ p) :
-         u ⊞ u' ⇝ w
-       → v ⊞ v' ⇝ r
+         u⊞u' ⇒ w
+       → v⊞v' ⇒ r
        → u ≤ₑ v
        → u' ≤ₑ v'
        → w ≤ₑ r.
@@ -403,9 +404,9 @@ Section embed.
   Qed.
 
  Local Lemma vapp_embed_comm nc (c : vec X nc) nu (u : vec _ nu) nv (v : vec _ nv) nw (w : vec _ nw) :
-        u ⊞ v ⇝ w
+        u⊞v ⇒ w
       → c ≤ₑ w
-      → ∃ na (a : vec _ na) nb (b : vec _ nb), a ⊞ b ⇝ c ∧ a ≤ₑ u ∧ b ≤ₑ v.
+      → ∃ na (a : vec _ na) nb (b : vec _ nb), a⊞b ⇒ c ∧ a ≤ₑ u ∧ b ≤ₑ v.
   Proof.
     induction 1 as [ | nu x u nv v nw w H IH ] in nc, c |- *.
     + exists 0, ∅, nc, c; eauto with vec_db.
@@ -417,7 +418,7 @@ Section embed.
   Qed.
 
   Lemma vapp_embed_middle_choice x nu (u : vec X nu) y nv (v : vec _ nv) nw (w : vec _ nw) nr (r : vec _ nr) :
-       v ⊞ (y##w) ⇝ r
+       v⊞(y##w) ⇒ r
      → x##u ≤ₑ r
      → u ≤ₑ w 
      ∨ ∃i, R x v⦃i⦄.

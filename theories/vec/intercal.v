@@ -24,17 +24,16 @@ Set Implicit Arguments.
 
 (* Relation & inductive charaterization of vec_intercalate
 
-      [x1,...,xn] intercalate [v0,v1,...,vn] -> v0++[x1]++v1++[x2]++v2++...++[xn]++vn *)
+      [x1,...,xn] intercalate [v0,v1,...,vn] ⇒ v0++[x1]++v1++[x2]++v2++...++[xn]++vn *)
 
-#[global] Reserved Notation "v '⧓' m '⇝' w" (at level 70, no associativity, format "v ⧓ m  ⇝  w").
+#[global] Reserved Notation "v '⧓' m '⇒' w" (at level 70, no associativity, format "v ⧓ m  ⇒  w").
 
 Inductive vintercal_graph X : ∀ n (_ : vec X n) (_ : hvec X (S n)) m (_ : vec X m), Prop :=
   | vintercal_0 n (v : vec _ n) i (u : vec _ i) (w : hvec _ n) m (a : vec _ m) k (b : vec _ k) :
-                v⧒w ⇝ a
-              → u⊞a ⇝ b
-              → v ⧓ ⦑i,u⦒##w ⇝ b
-
-where "v ⧓ m ⇝ w" := (vintercal_graph v m w).
+                v ⧒ w ⇒ a
+              → u ⊞ a ⇒ b
+              → v ⧓ ⦑i,u⦒##w ⇒ b
+where "v ⧓ m ⇒ w" := (vintercal_graph v m w).
 
 Section vintercal_graph.
 
@@ -88,7 +87,7 @@ Section vintercal_graph.
   End vintercal_inv.
 
   Fact vintercal_cons_nil_l n v w m r :
-           @vintercal_graph X n v w m r → ∀x, x##v ⧓ ⦑_,∅⦒##w ⇝ x##r.
+           @vintercal_graph X n v w m r → ∀x, x##v ⧓ ⦑_,∅⦒##w ⇒ x##r.
   Proof.
     induction 1 as [ n v i u w k a m r H1 H2 ]; intros x.
     constructor 1 with (a := x##r); auto with vec_db.
@@ -158,9 +157,9 @@ Section vintercal_graph.
 
   (** This is finite left/right choice but with double quantification on u w *)
   Corollary vintercal_choice j (v : vec X j) n (P Q : vec _ n → _) :
-         (∀ u w, u⧓w ⇝ v → P u w ∨ Q u w)
-       → (∀ u w, u⧓w ⇝ v → P u w)
-       ∨ (∃ u w, u⧓w ⇝ v ∧ Q u w).
+         (∀ u w, u⧓w ⇒ v → P u w ∨ Q u w)
+       → (∀ u w, u⧓w ⇒ v → P u w)
+       ∨ (∃ u w, u⧓w ⇒ v ∧ Q u w).
   Proof.
     intros H.
     assert (∀d, is_vintercal_in v d
@@ -195,8 +194,8 @@ Section vintercal_graph.
   Qed.
 
   Fact vintercal_invert n x (v : vec _ n) i (l : vec X i) w m (r : vec _ m) :
-        (x##v) ⧓ ⦑i,l⦒##w ⇝ r 
-      → ∃ nu (u : vec _ nu), v ⧓ w ⇝ u ∧ l ⊞ (x ## u) ⇝ r. 
+        (x##v) ⧓ ⦑i,l⦒##w ⇒ r 
+      → ∃ nu (u : vec _ nu), v ⧓ w ⇒ u ∧ l ⊞ (x ## u) ⇒ r. 
   Proof.
     intros (na & a & H1 & H2)%vintercal_inv; simpl in H1, H2.
     vec invert w as q w.
@@ -227,10 +226,10 @@ End vintercal_graph.
 #[local] Notation "u '=[' R ']=' v" := (vec_fall2 R u v) (at level 70, format "u  =[ R ]=  v").
 
 Fact vintercal_fall2_inv X Y R n (u : vec X n) w m (r r' : vec _ m) :
-         u⧓w ⇝ r
+         u⧓w ⇒ r
        → r =[R]= r'
        → { u' : vec Y _ & 
-         { w' | u'⧓w' ⇝ r'
+         { w' | u'⧓w' ⇒ r'
               ∧ u =[R]= u'
               ∧ w =[λ s s', vec_forall2 R (lvec_vec s) (lvec_vec s')]= w' } }.
 Proof.
@@ -246,7 +245,7 @@ Qed.
 
 #[local] Infix "≤sv" := (vec_embed (@eq _)) (at level 70).
 
-Theorem subvec_iff_intercalate X n (u : vec X n) m (v : vec _ m) : u ≤sv v ↔ ∃w, u ⧓ w ⇝ v.
+Theorem subvec_iff_intercalate X n (u : vec X n) m (v : vec _ m) : u ≤sv v ↔ ∃w, u ⧓ w ⇒ v.
 Proof.
   split.
   + induction 1 as [ | n x u m ? v <- _ (w & Hw) | n u m x v _ (w & Hw) ].
@@ -275,8 +274,8 @@ Section vec_embed_intercalate.
   Infix "≤ₑ" := (vec_embed R).
 
   Fact vintercal_embed n (v1 v2 : vec _ n) w1 w2 k1 (r1 : vec _ k1) k2 (r2 : vec _ k2) :
-           v1⧓w1 ⇝ r1
-         → v2⧓w2 ⇝ r2
+           v1⧓w1 ⇒ r1
+         → v2⧓w2 ⇒ r2
          → v1 =[R]= v2
          → w1 =[lvec_embed R]= w2
          → r1 ≤ₑ r2.
@@ -290,7 +289,7 @@ Section vec_embed_intercalate.
   Qed.
 
   Theorem vec_embed_iff_fall2_intercalate n (u : vec _ n) m (v : vec _ m) :
-           u ≤ₑ v ↔ ∃ r w, u =[R]= r ∧ r ⧓ w ⇝ v.
+           u ≤ₑ v ↔ ∃ r w, u =[R]= r ∧ r ⧓ w ⇒ v.
   Proof.
     rewrite vec_embed_sub_vec_fall2.
     split; intros (r & Hr); exists r; revert Hr.
@@ -304,7 +303,7 @@ Section vec_embed_intercalate.
      R-related to some component of w, then u is R related to v *)
 
   Theorem vintercal_any_vec_fall2 n (u v : vec _ (S n)) :
-        (∀ v' w, v' ⧓ w ⇝ v → ∃ i j, R u⦃i⦄ (lvec_vec w⦃i⦄)⦃j⦄)
+        (∀ v' w, v' ⧓ w ⇒ v → ∃ i j, R u⦃i⦄ (lvec_vec w⦃i⦄)⦃j⦄)
       → u =[R]= v.
   Proof.
     revert u v; induction n as [ | n IHn ]; intros u v H; vec invert u as x u; vec invert v as y v.
@@ -339,7 +338,7 @@ Section vec_embed_intercalate.
 
   Theorem vintercal_any_vec_embed n (f : vec _ (S n)) m (g : vec _ m) :
         n < m
-      → (∀ v w, v ⧓ w ⇝ g → ∃ i j, R f⦃i⦄ (lvec_vec w⦃i⦄)⦃j⦄)
+      → (∀ v w, v ⧓ w ⇒ g → ∃ i j, R f⦃i⦄ (lvec_vec w⦃i⦄)⦃j⦄)
       → f ≤ₑ g.
   Proof.
     revert n f.
@@ -355,7 +354,7 @@ Section vec_embed_intercalate.
         idx invert q; eauto with vec_db.
         constructor 3.
         apply vec_sg_embed_prj; eauto.
-    + assert (H1: ∀ v' w, v'⧓w ⇝ v → (∃ p q, R (x##u)⦃p⦄ (lvec_vec w⦃p⦄)⦃q⦄) ∨ R x y).
+    + assert (H1: ∀ v' w, v'⧓w ⇒ v → (∃ p q, R (x##u)⦃p⦄ (lvec_vec w⦃p⦄)⦃q⦄) ∨ R x y).
       1:{ intros v' w  H1.
            vec invert w as [i a] w.
            destruct (H v' (⦑_,y##a⦒##w)) as (p & q & Hpq).
@@ -381,7 +380,7 @@ Section vec_embed_intercalate.
   Qed.
 
   Local Remark vintercal_any_vec_fall2' n (u v : vec _ (S n)) :
-        (∀ v' w, v' ⧓ w ⇝ v → ∃ i j, R u⦃i⦄ (lvec_vec w⦃i⦄)⦃j⦄)
+        (∀ v' w, v' ⧓ w ⇒ v → ∃ i j, R u⦃i⦄ (lvec_vec w⦃i⦄)⦃j⦄)
       → u =[R]= v.
   Proof.
     intros H%vintercal_any_vec_embed; auto.
@@ -390,7 +389,7 @@ Section vec_embed_intercalate.
 
   (* Much like the PHP, we need to generalize here and idx2nat *)
   Local Lemma vec_embed_any_vintercal_rec nf (f : vec _ nf) nv (v : vec _ nv) w ng (g : vec _ ng) :
-        v ⧓ w ⇝ g → f ≤ₑ g → nv < nf → ∃ i j k, R f⦃i⦄ (lvec_vec w⦃j⦄)⦃k⦄ ∧ idx2nat i = idx2nat j.
+        v ⧓ w ⇒ g → f ≤ₑ g → nv < nf → ∃ i j k, R f⦃i⦄ (lvec_vec w⦃j⦄)⦃k⦄ ∧ idx2nat i = idx2nat j.
   Proof.
     induction v as [ | x nv v IH ] in nf, f, w, ng, g |- *.
     + vec invert w as (i,l) w; vec invert w.
@@ -411,7 +410,7 @@ Section vec_embed_intercalate.
   Qed.
 
   Theorem vec_embed_any_vintercal n (u : vec _ (S n)) m (a : vec _ m) v w :
-        u ≤ₑ a → v ⧓ w ⇝ a → ∃ i j, R u⦃i⦄ (lvec_vec w⦃i⦄)⦃j⦄.
+        u ≤ₑ a → v ⧓ w ⇒ a → ∃ i j, R u⦃i⦄ (lvec_vec w⦃i⦄)⦃j⦄.
   Proof.
     intros H2 H1.
     destruct (vec_embed_any_vintercal_rec H1 H2) as (p & q & r & E1 & E2); tlia.
@@ -437,7 +436,7 @@ Section vec_embed_intercalate.
       See also vec_fall2_iff_vinsert in vec_rel/rel/insert.v *)
 
   Theorem vec_embed_iff_vintercal n (f : vec _ (S n)) m (g : vec _ m) :
-         f ≤ₑ g ↔ S n ≤ m ∧ ∀ v w, v ⧓ w ⇝ g → ∃ i j, R f⦃i⦄ (lvec_vec w⦃i⦄)⦃j⦄.
+         f ≤ₑ g ↔ S n ≤ m ∧ ∀ v w, v ⧓ w ⇒ g → ∃ i j, R f⦃i⦄ (lvec_vec w⦃i⦄)⦃j⦄.
   Proof.
     split.
     + intros H; split.
