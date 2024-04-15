@@ -21,16 +21,16 @@ Actually the result is [a mixture of Higman's and Kruskal's theorems](#What-is-t
 
 From this result, one can easily derive, via simple surjective relational morphisms,
  various forms of Higman's and Kruskal's tree theorems, adapted to the actual implementation 
-of rose trees using either lists, or vectors etc. This tasks is devoted to the upcoming project `Kruskal-Theorems`, 
-to be published as a follow-up on short notice.
+of rose trees using either lists, or vectors etc. This tasks is devoted to the 
+project [`Kruskal-Theorems`](https://github.com/DmxLarchey/Kruskal-Theorems).
 
 \[1\] [_An intuitionistic proof of Kruskal's theorem_](https://link.springer.com/article/10.1007/s00153-003-0207-x), Wim Veldman, 2004
 
 ## Target audience
 
 This library is not intended for direct usage, but it is possible to do so. 
-Rather, `Kruskal-Theorems` will contain the high-level theorems that are intended
-to be imported.
+Rather, [`Kruskal-Theorems`](https://github.com/DmxLarchey/Kruskal-Theorems) contains the high-level theorems 
+that are intended to be used directly.
 
 On the other hand, `Kruskal-Veldman`, in addition of being an intermediate step, was specifically __designed 
 to be read/studied__ by those readers who wish to _understand the internal details_ of this difficult
@@ -41,7 +41,8 @@ to access parts of that project specifically. Here is the current split:
 - [`Kruskal-Finite`](https://github.com/DmxLarchey/Kruskal-Finite), library to manage finiteness (listability);
 - [`Kruskal-AlmostFull`](https://github.com/DmxLarchey/Kruskal-AlmostFull), the basic tools for A(lmost) F(ull) relations (up to Coquand's Ramsey's theorem);
 - [`Kruskal-Higman`](https://github.com/DmxLarchey/Kruskal-Higman), the proof of Higman's lemma (or Higman's theorem for unary trees) (see below);
-- `Kruskal-Veldman` (in here) and `Kruskal-Theorems` (upcoming)
+- `Kruskal-Veldman` (in here)
+- [`Kruskal-Theorems`](https://github.com/DmxLarchey/Kruskal-Theorems), the proofs of Higman's and [Kruskal's tree theorems](https://en.wikipedia.org/wiki/Kruskal%27s_tree_theorem#:~:text=In%20mathematics%2C%20Kruskal's%20tree%20theorem,quasi%2Dordered%20under%20homeomorphic%20embedding.) for various implementations of bounded and rose trees, and of Vazsonyi's conjecture.
 
 ## Usage
 
