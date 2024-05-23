@@ -1,5 +1,4 @@
 opam-version: "2.0"
-version: "1.0"
 synopsis: "Wim Veldman's proof of Higman's and Kruskal tree theorems"
 description: """
    This library formalizes additional tools for AF relations, eg AF lexicographic induction 
@@ -20,11 +19,11 @@ install: [
 ]
 
 depends: [
-  "coq" {>= "8.14" & < "8.20~"}
   "coq-kruskal-trees"
   "coq-kruskal-finite"
   "coq-kruskal-almostfull"
   "coq-kruskal-higman" {>= "1.0"}
+  "coq-kruskal-fan" {>= "1.0"}
 ]
 
 tags: [

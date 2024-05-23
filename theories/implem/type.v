@@ -10,5 +10,8 @@
 From KruskalAfType
   Require Export base almost_full.
 
+From KruskalFanType
+  Require Export fan.
+
 From KruskalHigmanType
-  Require Export vec_embed utree_embed af_vec_embed combi_principle fan.
+  Require Export vec_embed utree_embed af_vec_embed combi_principle.
