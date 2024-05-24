@@ -22,8 +22,8 @@ depends: [
   "coq-kruskal-trees"
   "coq-kruskal-finite"
   "coq-kruskal-almostfull"
-  "coq-kruskal-higman" {>= "1.0"}
-  "coq-kruskal-fan" {>= "1.0"}
+  "coq-kruskal-fan"
+  "coq-kruskal-higman" {>= "1.1"}
 ]
 
 tags: [
