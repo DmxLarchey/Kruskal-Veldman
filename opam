@@ -1,5 +1,6 @@
 opam-version: "2.0"
 synopsis: "Wim Veldman's proof of Higman's and Kruskal tree theorems"
+version: "1.1"
 description: """
    This library formalizes additional tools for AF relations, eg AF lexicographic induction 
    and relational quasi morphisms applied to Wim Veldman's constructive proof of the tree theorem.
