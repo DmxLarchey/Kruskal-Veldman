@@ -17,30 +17,30 @@ Import lift_notations.
 Set Implicit Arguments.
 
 Reserved Notation "⟪ a , b , c ⟫ₐ"
-    (at level 70, no associativity, c at level 200, format "⟪ a , b , c ⟫ₐ").
+    (at level 0, no associativity, format "⟪ a , b , c ⟫ₐ").
 
 Reserved Notation "'⟪' a , b , c '⟫ₛ'"
-    (at level 70, no associativity, format "⟪ a , b , c ⟫ₛ").
+    (at level 0, no associativity, format "⟪ a , b , c ⟫ₛ").
 
 (* this is for the "simpler" relation between witnessed afs relations *)
 
 Reserved Notation "'⟪' a , b , c '⟫' '≺' '⟪' x , y , z '⟫'"
-    (at level 70, no associativity, format "⟪ a , b , c ⟫  ≺  ⟪ x , y , z ⟫").
+    (at level 0, no associativity, format "⟪ a , b , c ⟫  ≺  ⟪ x , y , z ⟫").
 
 (* this is for the "easier" relation between sequences of witnessed afs relations *)
 
 Reserved Notation "'⟪' a , b , c '⟫' '≺' k ']ₑ' '⟪' x , y , z '⟫'"
-    (at level 70, no associativity, format "⟪ a , b , c ⟫  ≺ k ]ₑ  ⟪ x , y , z ⟫").
+    (at level 0, no associativity, format "⟪ a , b , c ⟫  ≺ k ]ₑ  ⟪ x , y , z ⟫").
 
 (* this is for the "more facile" relation between sequences of witnessed afs relations *)
 
 Reserved Notation "'⟪' a , b , c , d '⟫' '≺ₘ' '⟪' v , x , y , z '⟫'"
-    (at level 70, no associativity, format "⟪ a , b , c , d ⟫  ≺ₘ  ⟪ v , x , y , z ⟫").
+    (at level 0, no associativity, format "⟪ a , b , c , d ⟫  ≺ₘ  ⟪ v , x , y , z ⟫").
 
 (* this is for the "easier" relation between pairs of witnessed af relations *)
 
 Reserved Notation "'⟪' a , b , c | a' , b' , c' '⟫' '≺₂' '⟪' x , y , z | x' , y' , z' '⟫'"
-    (at level 70, no associativity, format "⟪ a , b , c | a' , b' , c' ⟫  ≺₂  ⟪ x , y , z | x' , y' , z' ⟫").
+    (at level 0, no associativity, format "⟪ a , b , c | a' , b' , c' ⟫  ≺₂  ⟪ x , y , z | x' , y' , z' ⟫").
 
 (** The order is roughtly ▢ < ▣ < ◩ but see af[s]_lex.v
     for the precise meaning, ie we have
