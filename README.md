@@ -11,6 +11,8 @@
 
 # What is this library?
 
+This sub-project is part of the larger project `Coq-Kruskal` described here: https://github.com/DmxLarchey/Coq-Kruskal.
+
 ## Short Description
 
 This library `Kruskal-Veldman` is an extension of [`Kruskal-AlmostFull`](https://github.com/DmxLarchey/Kruskal-AlmostFull)
