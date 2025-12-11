@@ -9,7 +9,7 @@
 
 (** This file generalizes af_quasi_morph for Kruskal-Higman to relational quasi morphisms *)
 
-From Coq
+From Stdlib
   Require Import Arith List Lia Utf8.
 
 From KruskalTrees

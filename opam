@@ -23,12 +23,12 @@ depends: [
   "coq-kruskal-finite"
   "coq-kruskal-almostfull"
   "coq-kruskal-fan"
-  "coq-kruskal-higman" {>= "1.1"}
+  "coq-kruskal-higman" {>= "2.0"}
 ]
 
 tags: [
   "category:Computer Science/Data Types and Data Structures"
-  "date:2024-11-22"
+  "date:2025-12-11"
   "logpath:KruskalVeldmanProp"
   "logpath:KruskalVeldmanType"
 ]
