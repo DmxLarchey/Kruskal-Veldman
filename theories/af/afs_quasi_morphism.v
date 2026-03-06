@@ -168,8 +168,7 @@ Section afs_quasi_morph.
 
     + (* there is an evaluation of which all analyses are exceptional *)
       apply in_map_iff in H1 as (y & <- & H1%(in_map π₁)).
-      apply good_sub_rel; rewrite map_app; simpl; split; eauto.
-      2: apply Forall_app; auto. (* Why does the Hint fails ? *) 
+      apply good_sub_rel; rewrite map_app; simpl. 
       apply good_snoc with (1 := H1), excep_ana.
       * apply proj2_sig.
       * apply In_ana'_π₁, H2.
