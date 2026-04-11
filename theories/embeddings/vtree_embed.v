@@ -69,6 +69,8 @@ Section vtree_upto_embedding.
 
   End vtree_upto_embed_ind.
 
+  #[global] Register Scheme vtree_upto_embed_ind as ind_dep for vtree_upto_embed.
+
   Fact vtree_upto_embed_inv_right s t :
          s ≤ₖ t
        → match t with @dtree_cons _ m y w 

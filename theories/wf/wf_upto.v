@@ -15,7 +15,7 @@ Set Implicit Arguments.
 
 (* For self inverse functions, eg reverse *)
 
-#[local] Reserved Notation "⟲ f" (at level 0, right associativity, format "⟲ f").
+#[local] Reserved Notation "⟲ f" (at level 2, right associativity, format "⟲ f").
 
 (* nat indexed sequences implemented as maps *)
 
@@ -28,8 +28,8 @@ Set Implicit Arguments.
 Arguments cons {_} _ _ _/.
 
 #[local] Notation "a :: x" := (cons a x).
-#[local] Notation tl x := (λ n, x (S n)).
-#[local] Notation hd x := (x 0).
+#[local] Abbreviation tl x := (λ n, x (S n)).
+#[local] Abbreviation hd x := (x 0).
 
 Section wf_upto_ext.
 
@@ -81,7 +81,7 @@ End wf_upto_ext.
 
 Definition extensional {X Y} (Q : (X → Y) → Base) := ∀ f g, f ≡ g → Q f → Q g.
 
-#[local] Notation ext := extensional.
+#[local] Abbreviation ext := extensional.
 
 Local Fact ext_imp X Y (P Q : (X → Y) → Base) : ext P → ext Q → ext (λ x, P x → Q x).
 Proof.
@@ -311,7 +311,7 @@ Section wf_upto_lex_r_seq.
              ∧ₜ forall j, i < j < k
                        -> f (α j) = f (β j).
 
-  Notation bij := (rev k).
+  Abbreviation bij := (rev k).
   Notation "⟲ f" := (λ i, f (bij i)).
 
   Local Fact bij_lex_seq α β : lex_r_seq ⟲α ⟲β ⇄ₜ lex_seq f k R α β.
@@ -436,7 +436,7 @@ Section wf_upto_lex_nat_and_seq.
              ∧ₜ Rₑ (s₁ i) (s₂ i)
              ∧ₜ ∀j, j < i → f (s₁ j) = f (s₂ j).
 
-  Notation RDₑ := lex_nat_seq.
+  Abbreviation RDₑ := lex_nat_seq.
 
   Theorem wf_upto_lex_nat_and_seq : wf_upto_ext (λ Q, ∀k, ext (λ s, Q (k,s))) fd lex_nat_seq.
   Proof.
@@ -485,7 +485,7 @@ Section wf_upto_lex_seq_and_nat.
              ∧ₜ Rₑ (s₁ i) (s₂ i)
              ∧ₜ ∀j, i < j <= n₁ → f (s₁ j) = f (s₂ j).
 
-  Notation RAₑ := lex_seq_nat.
+  Abbreviation RAₑ := lex_seq_nat.
 
   Local Fact RAₑ_ext n : ∀p, ext (λ s, RAₑ (s,n) p).
   Proof.

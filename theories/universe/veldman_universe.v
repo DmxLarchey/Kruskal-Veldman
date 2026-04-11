@@ -99,7 +99,7 @@ Section veldman_afs_universe.
 
   Variables (A : Type).
 
-  Notation U := (universe A).
+  Abbreviation U := (universe A).
 
   Variables (k : nat)
             (X : nat → rel₁ U)

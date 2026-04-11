@@ -32,11 +32,11 @@ Section veldman_afs_nodes_lt.
 
   Variables (A : Type).
 
-  Notation U := (universe A).
-  Notation Utree := (vtree U).
+  Abbreviation U := (universe A).
+  Abbreviation Utree := (vtree U).
 
-  Notation "⦉ x ⦊₁" := (@univ_refl _ x) (at level 1, format "⦉ x ⦊₁").
-  Notation "⦉ x , p , t ⦊₂" := (@univ_nest_1 _ _ x p t) (at level 1, format "⦉ x , p , t ⦊₂").
+  Notation "⦉ x ⦊₁" := (@univ_refl _ x) (at level 0, format "⦉ x ⦊₁").
+  Notation "⦉ x , p , t ⦊₂" := (@univ_nest_1 _ _ x p t) (at level 0, format "⦉ x , p , t ⦊₂").
 
   Variables  (k : nat)
              (s : nat → af_status)
@@ -95,8 +95,8 @@ Section veldman_afs_nodes_lt.
 
   Set Elimination Schemes.
 
-  Notation X'i := higman_lift_pred_i.
-  Notation R'i := higman_lift_rel_i.
+  Abbreviation X'i := higman_lift_pred_i.
+  Abbreviation R'i := higman_lift_rel_i.
 
   Hint Constructors higman_lift_pred_i higman_lift_rel_i : core.
 
@@ -219,9 +219,9 @@ Section veldman_afs_nodes_lt.
     | higman_lift_case_4       => ⊥₂
     end.
 
-  Notation s' := higman_lift_status.
-  Notation X' := higman_lift_pred.
-  Notation R' := higman_lift_rel.
+  Abbreviation s' := higman_lift_status.
+  Abbreviation X' := higman_lift_pred.
+  Abbreviation R' := higman_lift_rel.
 
   Section higman_lift_eqs.
 
@@ -495,10 +495,10 @@ Section veldman_afs_nodes_lt.
   Hint Resolve vinsert_fin eq_nat_dec lt_dec le_dec neq_nat_dec : core.
 
   (* Ana(lysis) is the converse of evaluation *)
-  Notation ana c := (λ t t', t' -[c]-> t).
+  Abbreviation ana c := (λ t t', t' -[c]-> t).
 
   (* Vector/product analysis *)
-  Notation vana c := (λ v v', v' =[c]=> v).
+  Abbreviation vana c := (λ v v', v' =[c]=> v).
 
   (* hev has finite inverse image, ie ana(lisys) is finitary *)
   Local Theorem fin_ana c t : wft X t → fin (ana c t).
@@ -541,13 +541,9 @@ Section veldman_afs_nodes_lt.
 
   Hint Resolve fin_ana : core.
 
-(*
-  Local Corollary fin_vana n c (v : vec _ n) : vec_fall (wft X) v → fin (vana c v).
+  Local Remark fin_vana n c (v : vec _ n) : vec_fall (wft X) v → fin (vana c v).
   Proof. intro; apply fin_vec_fall2 with (R := ana c); eauto. Qed.
 
-
-  Hint Resolve fin_vana : core.
-*)
   (** An analysis on (X',R') is disapointing if either
         - its root node is above "α" wrt to R at arity 1+i
         - its root node has arity i and is of shape ⦉p,x,t⦊₂ and t embeds γ⦃p⦄
@@ -561,7 +557,7 @@ Section veldman_afs_nodes_lt.
 
   Set Elimination Schemes.
 
-  Notation D' := disapointing.
+  Abbreviation D' := disapointing.
 
   Hint Constructors sub_dtree disapointing : core.
 
@@ -595,7 +591,7 @@ Section veldman_afs_nodes_lt.
 
   (* An analysis is exceptional is one of its sub-trees in disapointing *)
   Local Definition has_disapointing t := ∃s, s ≤st t ∧ D' s.
-  Notation E' := has_disapointing.
+  Abbreviation E' := has_disapointing.
 
   Local Fact disap_has_disap : D' ⊆₁ E'.
   Proof. intros t; exists t; auto. Qed.
@@ -678,7 +674,7 @@ Section veldman_afs_nodes_lt.
   Qed.
 
   (** An evaluation is exceptional if each of its analysis is exceptional *)
-  Notation E c t := (ana c t ⊆₁ E').
+  Abbreviation E c t := (ana c t ⊆₁ E').
 
   Section exceptional_vs_embedding.
 
@@ -819,8 +815,8 @@ Section veldman_afs_nodes_lt.
 
   End af_choice.
 
-  Notation c₀ := af_choice_sT.
-  Notation Hc₀ := af_choice_sT_spec.
+  Abbreviation c₀ := af_choice_sT.
+  Abbreviation Hc₀ := af_choice_sT_spec.
 
   Hint Resolve higman_lift_correct higman_lift_lt Hc₀ : core.
 

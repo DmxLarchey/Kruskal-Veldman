@@ -149,7 +149,7 @@ Section afsw.
   (* Notation better than Definition because unification does not work well
      below otherwise and we would need to unfold many times *)
 
-  Notation afsw_forget := (fun w => snd (projT1 w)).
+  Abbreviation afsw_forget := (fun w => snd (projT1 w)).
 
   Local Definition lt_afsw (x y : afsw) :=
     match x, y with
@@ -249,8 +249,8 @@ End afsw.
 
 Local Notation "⟪ a , b , c ⟫ₐ" := (@afs_status_correct _ a b c).
 Local Notation "⟪ a , b , c ⟫ ≺ ⟪ x , y , z ⟫" := (@lt_afs_status _ a b c x y z).
-Local Notation afsw_witness := (fun w => fst (projT1 w)).
-Local Notation afsw_forget := (fun w => snd (projT1 w)).
+Local Abbreviation afsw_witness := (fun w => fst (projT1 w)).
+Local Abbreviation afsw_forget := (fun w => snd (projT1 w)).
 
 Section afs_status_ind.
 

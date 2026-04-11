@@ -3,7 +3,8 @@ synopsis: "Wim Veldman's proof of Higman's and Kruskal tree theorems"
 description: """
    This library formalizes additional tools for AF relations, eg AF lexicographic induction 
    and relational quasi morphisms applied to Wim Veldman's constructive proof of the tree theorem.
-"""  
+"""
+version: "2.2"
 maintainer: ["Dominique Larchey-Wendling (https://github.com/DmxLarchey)"] 
 authors: "Dominique Larchey-Wendling (https://github.com/DmxLarchey)"
 license: "MPL-2.0"
@@ -19,16 +20,16 @@ install: [
 ]
 
 depends: [
-  "coq-kruskal-trees"  {>= "2.0"}
-  "coq-kruskal-finite" {>= "2.0"}
-  "coq-kruskal-almostfull" {>= "2.1"}
-  "coq-kruskal-fan"    {>= "2.0"}
-  "coq-kruskal-higman" {>= "2.0"}
+  "coq-kruskal-trees"
+  "coq-kruskal-finite"
+  "coq-kruskal-almostfull" {>= "2.2"}
+  "coq-kruskal-fan"
+  "coq-kruskal-higman"
 ]
 
 tags: [
   "category:Computer Science/Data Types and Data Structures"
-  "date:2026-03-06"
+  "date:2026-04-11"
   "logpath:KruskalVeldmanProp"
   "logpath:KruskalVeldmanType"
 ]

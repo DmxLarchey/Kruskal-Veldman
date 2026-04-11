@@ -38,9 +38,9 @@ Section afs_vtree_upto_embed.
        4) we project back on A using a rel. morphism
     *)
 
-  Notation U := (universe A).
+  Abbreviation U := (universe A).
 
-  Notation "⦉ x ⦊₀" := (@univ_init _ x) (at level 1, format "⦉ x ⦊₀").
+  Notation "⦉ x ⦊₀" := (@univ_init _ x) (at level 0, format "⦉ x ⦊₀").
 
   (* embedding (X,R) into U *)
 

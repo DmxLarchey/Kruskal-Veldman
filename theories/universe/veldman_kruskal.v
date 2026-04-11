@@ -32,11 +32,11 @@ Section veldman_afs_nodes_ge.
 
   Variables (A : Type).
 
-  Notation U := (universe A).
-  Notation Utree := (vtree U).
+  Abbreviation U := (universe A).
+  Abbreviation Utree := (vtree U).
 
-  Notation "⦉ x ⦊₁" := (@univ_refl _ x) (at level 1, format "⦉ x ⦊₁").
-  Notation "⦉ x , v ⦊₂" := (@univ_nest_2 _ _ x v) (at level 1, format "⦉ x , v ⦊₂").
+  Notation "⦉ x ⦊₁" := (@univ_refl _ x) (at level 0, format "⦉ x ⦊₁").
+  Notation "⦉ x , v ⦊₂" := (@univ_nest_2 _ _ x v) (at level 0, format "⦉ x , v ⦊₂").
 
   Variables  (k : nat)
              (s : nat → af_status)
@@ -103,8 +103,8 @@ Section veldman_afs_nodes_ge.
 
   Set Elimination Schemes.
 
-  Notation X'i := kruskal_lift_pred_i.
-  Notation R'i := kruskal_lift_rel_i.
+  Abbreviation X'i := kruskal_lift_pred_i.
+  Abbreviation R'i := kruskal_lift_rel_i.
 
   Hint Constructors kruskal_lift_pred_i kruskal_lift_rel_i : core.
 
@@ -241,9 +241,9 @@ Section veldman_afs_nodes_ge.
     | kruskal_lift_case_4 _   => ⊥₂
     end.
 
-  Notation s' := kruskal_lift_status.
-  Notation X' := kruskal_lift_pred.
-  Notation R' := kruskal_lift_rel.
+  Abbreviation s' := kruskal_lift_status.
+  Abbreviation X' := kruskal_lift_pred.
+  Abbreviation R' := kruskal_lift_rel.
 
   Section kruskal_lift_eqs.
 
@@ -505,8 +505,8 @@ Section veldman_afs_nodes_ge.
   Hint Resolve vintercal_fin eq_nat_dec lt_dec le_dec : core.
 
   (* Ana(lysis) is the converse of evaluation *)
-  Notation ana c := (λ t t', t' -[c]-> t).
-  Notation vana c := (λ v v', v' =[c]=> v).
+  Abbreviation ana c := (λ t t', t' -[c]-> t).
+  Abbreviation vana c := (λ v v', v' =[c]=> v).
 
   (* kev has finite inverse image, ana(lysis) is finitary *)
   Local Theorem fin_ana c t : wft X t → fin (ana c t).
@@ -561,7 +561,7 @@ Section veldman_afs_nodes_ge.
 
   Set Elimination Schemes.
 
-  Notation D' := disapointing.
+  Abbreviation D' := disapointing.
 
   Hint Constructors sub_dtree disapointing : core.
 
@@ -598,7 +598,7 @@ Section veldman_afs_nodes_ge.
 
   (* An analysis is exceptional is one of its sub-trees in disapointing *)
   Local Definition has_disapointing t := ∃s, s ≤st t ∧ D' s.
-  Notation E' := has_disapointing.
+  Abbreviation E' := has_disapointing.
 
   Local Fact disap_has_disap : D' ⊆₁ E'.
   Proof. intros t; exists t; auto. Qed.
@@ -687,7 +687,7 @@ Section veldman_afs_nodes_ge.
   Qed.
 
   (** An evaluation is exceptional if each of its analysis is exceptional *)
-  Notation E c t := (ana c t ⊆₁ E').
+  Abbreviation E c t := (ana c t ⊆₁ E').
 
   Section exceptional_vs_embedding.
 
@@ -835,8 +835,8 @@ Section veldman_afs_nodes_ge.
 
   End af_choice.
 
-  Notation c₀ := af_choice_sk.
-  Notation Hc₀ := af_choice_sk_spec.
+  Abbreviation c₀ := af_choice_sk.
+  Abbreviation Hc₀ := af_choice_sk_spec.
 
   Hint Resolve kruskal_lift_correct
                kruskal_lift_lt Hc₀: core.

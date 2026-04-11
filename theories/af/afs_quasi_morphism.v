@@ -24,8 +24,8 @@ Import ListNotations lift_notations.
 
 Set Implicit Arguments.
 
-#[local] Notation π₁ := (@proj1_sig _ _).
-#[local] Notation FAN lw := (λ c, Forall2 (λ x l, x ∈ l) c lw).
+#[local] Abbreviation π₁ := (@proj1_sig _ _).
+#[local] Abbreviation FAN lw := (λ c, Forall2 (λ x l, x ∈ l) c lw).
 
 #[local] Fact sig_Forall X (P : X → Prop) (l : list (sig P)) : Forall P (map π₁ l).
 Proof. apply Forall_forall; now intros x ([] & <- & ?)%in_map_iff. Qed.
@@ -59,12 +59,12 @@ Section afs_quasi_morph.
 
              (HR : afs dom R).
 
-  Notation X' := (sig dom).
-  Notation Y' := (sig codom).
-  Notation R' := R⇓dom.
-  Notation T' := T⇓codom.
-  Notation E' := (λ x : X', E (π₁ x)).
-  Notation y'₀ := (exist codom y₀ H₀).
+  Abbreviation X' := (sig dom).
+  Abbreviation Y' := (sig codom).
+  Abbreviation R' := R⇓dom.
+  Abbreviation T' := T⇓codom.
+  Abbreviation E' := (λ x : X', E (π₁ x)).
+  Abbreviation y'₀ := (exist codom y₀ H₀).
 
   Notation "x ⇝' y" := ((π₁ x)⇝(π₁ y)) (at level 70, format "x ⇝' y").
 

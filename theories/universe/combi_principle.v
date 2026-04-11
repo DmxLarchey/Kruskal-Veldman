@@ -23,7 +23,7 @@ Import idx_notations vec_notations
 
 Set Implicit Arguments.
 
-#[local] Notation FAN w := (λ c, vec_fall2 (λ x l, x ∈ l) c w).
+#[local] Abbreviation FAN w := (λ c, vec_fall2 (λ x l, x ∈ l) c w).
 
 (** Similar to list_combi_principle in Kruskal-Higman but for vectors 
     in place of lists. *)
@@ -71,15 +71,15 @@ Section combi_trees.
             (fin_ana : ∀t, wft X t → fin (ana t))  (* finite analysis on well formed trees *)
             (D' : rel₁ (vtree A')).
 
-  Notation vana := (vec_fall2 ana).
-  Notation E' := (λ t, ∃s, s ≤st t ∧ D' s).
+  Abbreviation vana := (vec_fall2 ana).
+  Abbreviation E' := (λ t, ∃s, s ≤st t ∧ D' s).
 
   (* This abstract nicely E_hereditary as a combinatorial
      principle on trees, for properties E'/exceptional
      defined as "contains a disapointing sub-tree". 
 
      It x' is an analysis label and v vector of
-     wf evaluations and t an evaluation st. 
+     wf evaluations and t an evaluation st.
      - t is exceptional (the analyses of t are exceptional)
      - for any analysis v' of v, ⟨x'|v'⟩ analyses t
      Then 
