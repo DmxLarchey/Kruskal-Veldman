@@ -27,10 +27,3 @@ depends: [
   "coq-kruskal-higman"
 ]
 
-tags: [
-  "category:Computer Science/Data Types and Data Structures"
-  "date:2026-04-11"
-  "logpath:KruskalVeldmanProp"
-  "logpath:KruskalVeldmanType"
-]
-
